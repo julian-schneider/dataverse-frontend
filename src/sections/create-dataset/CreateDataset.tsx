@@ -48,8 +48,10 @@ export function CreateDataset({
     collectionId
   )
 
-  const { datasetTypes, isLoading: isLoadingDatasetTypes } = useGetAvailableDatasetTypes({
-    datasetRepository
+  const { datasetTypes, isLoadingDatasetTypes } = useGetAvailableDatasetTypes({
+    datasetRepository,
+    collectionRepository,
+    collectionId
   })
 
   const { collectionUserPermissions, isLoading: isLoadingCollectionUserPermissions } =
@@ -88,11 +90,11 @@ export function CreateDataset({
     setIsLoading(isLoadingData)
   }, [isLoadingData, setIsLoading])
 
-  // When dataset types are loaded we set the default one to DATASET if available, it should always be there
+  // When dataset types are loaded we set the default one to DATASET if available, otherwise use the first one
   useEffect(() => {
     if (datasetTypes.length > 0) {
       const defaultType: DatasetType | null =
-        datasetTypes.find((type) => type.name === 'dataset') || null
+        datasetTypes.find((type) => type.name === 'dataset') || datasetTypes[0]
 
       setSelectedType(defaultType)
     }
@@ -153,13 +155,32 @@ export function CreateDataset({
           />
         )}
 
-        {/* Show the dataset type selector only if there's more than one dataset type (besides 'dataset') */}
-        {datasetTypes.length > 1 && selectedType && (
-          <DatasetTypeSelect
-            datasetTypes={datasetTypes}
-            onChange={handleDatasetTypeChange}
-            selectedType={selectedType}
-          />
+        {datasetTypes.length > 0 && selectedType && (
+          <>
+            {datasetTypes.length === 1 ? (
+              <div className="mb-3">
+                <div className="form-row">
+                  <div className="col-sm-3">
+                    <label className="form-label">{t('datasetType.label')}</label>
+                  </div>
+                  <div className="col-sm-12">
+                    <div className="alert alert-info mb-2">
+                      <div>
+                        <strong className="text-capitalize">{selectedType.name}</strong>
+                      </div>
+                      <div className="small text-muted">{selectedType.description}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <DatasetTypeSelect
+                datasetTypes={datasetTypes}
+                onChange={handleDatasetTypeChange}
+                selectedType={selectedType}
+              />
+            )}
+          </>
         )}
 
         <DatasetMetadataForm

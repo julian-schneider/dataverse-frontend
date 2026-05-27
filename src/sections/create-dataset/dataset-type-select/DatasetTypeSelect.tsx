@@ -9,12 +9,14 @@ interface DatasetTypeSelectProps {
   datasetTypes: DatasetType[]
   onChange: (selectedTypeId: string) => void
   selectedType: DatasetType
+  disabled?: boolean
 }
 
 export const DatasetTypeSelect = ({
   datasetTypes,
   onChange,
-  selectedType
+  selectedType,
+  disabled = false
 }: DatasetTypeSelectProps) => {
   const { t } = useTranslation('createDataset')
   const [isOpen, setIsOpen] = useState(false)
@@ -23,6 +25,12 @@ export const DatasetTypeSelect = ({
   const handleSelectType = (typeId: number) => {
     onChange(typeId.toString())
     setIsOpen(false)
+  }
+
+  const handleToggle = () => {
+    if (!disabled) {
+      setIsOpen((prev) => !prev)
+    }
   }
 
   // Close menu when clicking outside, focusing outside, or pressing Escape
@@ -58,7 +66,8 @@ export const DatasetTypeSelect = ({
           <div className={styles.toggle}>
             <input
               type="button"
-              onClick={() => setIsOpen((prev) => !prev)}
+              disabled={disabled}
+              onClick={handleToggle}
               aria-label={t('datasetType.toggleMenu')}
             />
             <span className="text-capitalize" data-testid="selected-type">
@@ -66,14 +75,14 @@ export const DatasetTypeSelect = ({
             </span>
           </div>
 
-          <div className={cn(styles.menu, { [styles.open]: isOpen })} role="menu">
+          <div className={cn(styles.menu, { [styles.open]: isOpen && !disabled })} role="menu">
             {datasetTypes.map((dt) => (
               <Card
                 className={cn(styles['type-option'], {
                   [styles.selected]: dt.id === selectedType.id
                 })}
-                onClick={() => handleSelectType(dt.id)}
-                tabIndex={0}
+                onClick={() => !disabled && handleSelectType(dt.id)}
+                tabIndex={disabled ? -1 : 0}
                 key={dt.id}>
                 <Card.Body className="p-2">
                   <span>

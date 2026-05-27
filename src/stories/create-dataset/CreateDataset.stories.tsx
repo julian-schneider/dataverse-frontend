@@ -63,25 +63,31 @@ export const Default: Story = {
 
 export const WithTemplatesAndTypes: Story = {
   render: () => (
-    <RepositoriesStoryProvider collectionRepository={new CollectionMockRepository()}>
-      <CreateDataset
-        datasetRepository={new DatasetMockRepository()}
-        templateRepository={new TemplateMockRepository()}
-        metadataBlockInfoRepository={new MetadataBlockInfoMockRepository()}
-      collectionRepository={new CollectionMockRepository()}
-      collectionId={'collectionId'}
-    />
+    <NotImplementedModalProvider>
+      <RepositoriesStoryProvider collectionRepository={new CollectionMockRepository()}>
+        <CreateDataset
+          datasetRepository={new DatasetMockRepository()}
+          templateRepository={new TemplateMockRepository()}
+          metadataBlockInfoRepository={new MetadataBlockInfoMockRepository()}
+          collectionId={'collectionId'}
+        />
+      </RepositoriesStoryProvider>
+    </NotImplementedModalProvider>
   )
 }
 
 export const Loading: Story = {
   render: () => (
-    <CreateDataset
-      datasetRepository={datasetRepositoryMockWithoutTemplatesAndTypes}
-      metadataBlockInfoRepository={new MetadataBlockInfoMockLoadingRepository()}
-        collectionId={'collectionId'}
-      />
-    </RepositoriesStoryProvider>
+    <NotImplementedModalProvider>
+      <RepositoriesStoryProvider collectionRepository={new CollectionMockRepository()}>
+        <CreateDataset
+          datasetRepository={datasetRepositoryMockWithoutTemplatesAndTypes}
+          templateRepository={new TemplateMockRepository()}
+          metadataBlockInfoRepository={new MetadataBlockInfoMockLoadingRepository()}
+          collectionId={'collectionId'}
+        />
+      </RepositoriesStoryProvider>
+    </NotImplementedModalProvider>
   )
 }
 

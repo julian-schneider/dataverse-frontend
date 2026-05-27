@@ -4,14 +4,19 @@ import { JSDataverseReadErrorHandler } from '@/shared/helpers/JSDataverseReadErr
 import { DatasetRepository } from '../repositories/DatasetRepository'
 import { getAvailableDatasetTypes } from '../useCases/getAvailableDatasetTypes'
 import { DatasetType } from '../models/DatasetType'
+import { CollectionRepository } from '@/collection/domain/repositories/CollectionRepository'
 
 interface useGetAvailableDatasetTypesProps {
   datasetRepository: DatasetRepository
+  collectionRepository?: CollectionRepository
+  collectionId?: string
   autoFetch?: boolean
 }
 
 export const useGetAvailableDatasetTypes = ({
   datasetRepository,
+  collectionRepository,
+  collectionId,
   autoFetch = true
 }: useGetAvailableDatasetTypesProps) => {
   const [datasetTypes, setDatasetTypes] = useState<DatasetType[]>([])
@@ -23,7 +28,12 @@ export const useGetAvailableDatasetTypes = ({
     setErrorGetDatasetTypes(null)
 
     try {
-      const response: DatasetType[] = await getAvailableDatasetTypes(datasetRepository)
+      const response =
+        collectionRepository && collectionId
+          ? (await collectionRepository.getById(collectionId)).allowedDatasetTypes ?? []
+          : await getAvailableDatasetTypes(datasetRepository)
+
+      setDatasetTypes(response)
 
       setDatasetTypes(response)
     } catch (err) {
@@ -39,7 +49,7 @@ export const useGetAvailableDatasetTypes = ({
     } finally {
       setIsLoadingDatasetTypes(false)
     }
-  }, [datasetRepository])
+  }, [datasetRepository, collectionRepository, collectionId])
 
   useEffect(() => {
     if (autoFetch) {
