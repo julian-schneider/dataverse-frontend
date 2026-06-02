@@ -22,7 +22,10 @@ const meta: Meta<typeof FileOptionsMenu> = {
     WithI18next,
     WithSettings,
     WithLoggedInUser,
-    WithRepositories({ datasetRepository: new DatasetMockRepository() })
+    WithRepositories({
+      datasetRepository: new DatasetMockRepository(),
+      fileRepository: new FileMockRepository()
+    })
   ]
 }
 
@@ -31,42 +34,22 @@ type Story = StoryObj<typeof FileOptionsMenu>
 
 export const DefaultWithLoggedInUser: Story = {
   decorators: [WithDatasetAllPermissionsGranted],
-  render: () => (
-    <FileOptionsMenu
-      file={FilePreviewMother.createDefault()}
-      fileRepository={new FileMockRepository()}
-    />
-  )
+  render: () => <FileOptionsMenu file={FilePreviewMother.createDefault()} />
 }
 
 export const Restricted: Story = {
   decorators: [WithDatasetAllPermissionsGranted],
-  render: () => (
-    <FileOptionsMenu
-      file={FilePreviewMother.createRestricted()}
-      fileRepository={new FileMockRepository()}
-    />
-  )
+  render: () => <FileOptionsMenu file={FilePreviewMother.createRestricted()} />
 }
 
 export const WithDatasetLocked: Story = {
   decorators: [WithDatasetLockedFromEdits],
-  render: () => (
-    <FileOptionsMenu
-      file={FilePreviewMother.createDefault()}
-      fileRepository={new FileMockRepository()}
-    />
-  )
+  render: () => <FileOptionsMenu file={FilePreviewMother.createDefault()} />
 }
 
 export const WithFileAlreadyDeleted: Story = {
   decorators: [WithDatasetAllPermissionsGranted],
-  render: () => (
-    <FileOptionsMenu
-      file={FilePreviewMother.createDeleted()}
-      fileRepository={new FileMockRepository()}
-    />
-  )
+  render: () => <FileOptionsMenu file={FilePreviewMother.createDeleted()} />
 }
 
 const externalToolsRepositoryWithFileConfigureTool = new ExternalToolsMockRepository()
@@ -82,10 +65,7 @@ export const WithConfigureTool: Story = {
   decorators: [WithDatasetAllPermissionsGranted],
   render: () => (
     <ExternalToolsProvider externalToolsRepository={externalToolsRepositoryWithFileConfigureTool}>
-      <FileOptionsMenu
-        file={FilePreviewMother.createDefault()}
-        fileRepository={new FileMockRepository()}
-      />
+      <FileOptionsMenu file={FilePreviewMother.createDefault()} />
     </ExternalToolsProvider>
   )
 }

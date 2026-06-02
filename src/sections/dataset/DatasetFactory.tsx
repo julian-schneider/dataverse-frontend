@@ -82,7 +82,6 @@ function DatasetWithSearchParams() {
         searchParams={{ privateUrlToken: privateUrlToken }}
         isPublishing={publishInProgress}>
         <Dataset
-          fileRepository={fileRepository}
           metadataBlockInfoRepository={metadataBlockInfoRepository}
           contactRepository={contactRepository}
           filesTabInfiniteScrollEnabled={FILES_TAB_INFINITE_SCROLL_ENABLED}
@@ -99,7 +98,6 @@ function DatasetWithSearchParams() {
       searchParams={{ persistentId: persistentId, version: version }}
       isPublishing={publishInProgress}>
       <Dataset
-        fileRepository={fileRepository}
         metadataBlockInfoRepository={metadataBlockInfoRepository}
         contactRepository={contactRepository}
         publishInProgress={publishInProgress}

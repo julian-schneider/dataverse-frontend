@@ -2,6 +2,7 @@ import { StoryFn } from '@storybook/react'
 import { ReactNode } from 'react'
 import { CollectionRepository } from '@/collection/domain/repositories/CollectionRepository'
 import { DatasetRepository } from '@/dataset/domain/repositories/DatasetRepository'
+import { FileRepository } from '@/files/domain/repositories/FileRepository'
 import { RepositoriesProvider } from '@/shared/contexts/repositories/RepositoriesProvider'
 
 function failFastRepository<T>(name: string): T {
@@ -21,17 +22,20 @@ function failFastRepository<T>(name: string): T {
 interface WithRepositoriesProps {
   collectionRepository?: CollectionRepository
   datasetRepository?: DatasetRepository
+  fileRepository?: FileRepository
 }
 
 export function WithRepositories({
   collectionRepository = failFastRepository<CollectionRepository>('CollectionRepository'),
-  datasetRepository = failFastRepository<DatasetRepository>('DatasetRepository')
+  datasetRepository = failFastRepository<DatasetRepository>('DatasetRepository'),
+  fileRepository = failFastRepository<FileRepository>('FileRepository')
 }: WithRepositoriesProps) {
   function WithRepositoriesDecorator(Story: StoryFn) {
     return (
       <RepositoriesProvider
         collectionRepository={collectionRepository}
-        datasetRepository={datasetRepository}>
+        datasetRepository={datasetRepository}
+        fileRepository={fileRepository}>
         <Story />
       </RepositoriesProvider>
     )
@@ -49,12 +53,14 @@ interface RepositoriesStoryProviderProps extends WithRepositoriesProps {
 export function RepositoriesStoryProvider({
   children,
   collectionRepository = failFastRepository<CollectionRepository>('CollectionRepository'),
-  datasetRepository = failFastRepository<DatasetRepository>('DatasetRepository')
+  datasetRepository = failFastRepository<DatasetRepository>('DatasetRepository'),
+  fileRepository = failFastRepository<FileRepository>('FileRepository')
 }: RepositoriesStoryProviderProps) {
   return (
     <RepositoriesProvider
       collectionRepository={collectionRepository}
-      datasetRepository={datasetRepository}>
+      datasetRepository={datasetRepository}
+      fileRepository={fileRepository}>
       {children}
     </RepositoriesProvider>
   )

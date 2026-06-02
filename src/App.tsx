@@ -8,6 +8,7 @@ import { ExternalToolsJSDataverseRepository } from './externalTools/infrastructu
 import { RepositoriesProvider } from './shared/contexts/repositories/RepositoriesProvider'
 import { CollectionJSDataverseRepository } from './collection/infrastructure/repositories/CollectionJSDataverseRepository'
 import { DatasetJSDataverseRepository } from './dataset/infrastructure/repositories/DatasetJSDataverseRepository'
+import { FileJSDataverseRepository } from './files/infrastructure/FileJSDataverseRepository'
 import 'react-loading-skeleton/dist/skeleton.css'
 import './assets/global.scss'
 import './assets/react-toastify-custom.scss'
@@ -16,6 +17,7 @@ import './assets/swal-custom.scss'
 const externalToolsRepository = new ExternalToolsJSDataverseRepository()
 const collectionRepository = new CollectionJSDataverseRepository()
 const datasetRepository = new DatasetJSDataverseRepository()
+const fileRepository = new FileJSDataverseRepository()
 
 function App() {
   const appConfig = requireAppConfig()
@@ -41,7 +43,8 @@ function App() {
         <ExternalToolsProvider externalToolsRepository={externalToolsRepository}>
           <RepositoriesProvider
             collectionRepository={collectionRepository}
-            datasetRepository={datasetRepository}>
+            datasetRepository={datasetRepository}
+            fileRepository={fileRepository}>
             <Router />
           </RepositoriesProvider>
         </ExternalToolsProvider>
