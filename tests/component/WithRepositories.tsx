@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { CollectionRepository } from '@/collection/domain/repositories/CollectionRepository'
 import { DatasetRepository } from '@/dataset/domain/repositories/DatasetRepository'
 import { FileRepository } from '@/files/domain/repositories/FileRepository'
+import { UserRepository } from '@/users/domain/repositories/UserRepository'
 import { RepositoriesProvider } from '@/shared/contexts/repositories/RepositoriesProvider'
 
 function failFastRepository<T>(name: string): T {
@@ -23,19 +24,22 @@ interface WithRepositoriesProps {
   collectionRepository?: CollectionRepository
   datasetRepository?: DatasetRepository
   fileRepository?: FileRepository
+  userRepository?: UserRepository
 }
 
 export function WithRepositories({
   children,
   collectionRepository = failFastRepository<CollectionRepository>('CollectionRepository'),
   datasetRepository = failFastRepository<DatasetRepository>('DatasetRepository'),
-  fileRepository = failFastRepository<FileRepository>('FileRepository')
+  fileRepository = failFastRepository<FileRepository>('FileRepository'),
+  userRepository = failFastRepository<UserRepository>('UserRepository')
 }: WithRepositoriesProps) {
   return (
     <RepositoriesProvider
       collectionRepository={collectionRepository}
       datasetRepository={datasetRepository}
-      fileRepository={fileRepository}>
+      fileRepository={fileRepository}
+      userRepository={userRepository}>
       {children}
     </RepositoriesProvider>
   )
