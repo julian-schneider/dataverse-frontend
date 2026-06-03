@@ -13,7 +13,6 @@ import {
   storybookGuestbook
 } from '@/stories/shared-mock-repositories/guestbook/GuestbookMockRepository'
 import { DatasetContext } from '@/sections/dataset/DatasetContext'
-import { GuestbookRepositoryProvider } from '@/sections/guestbooks/GuestbookRepositoryProvider'
 import { RepositoriesStoryProvider } from '@/stories/WithRepositories'
 import { FileRepository } from '@/files/domain/repositories/FileRepository'
 
@@ -37,16 +36,14 @@ const guestbookRepository = new GuestbookMockRepository()
 
 const withDatasetContext = (dataset = testDatasetWithGuestbook) => {
   const DatasetTermsStoryDecorator = (Story: () => JSX.Element) => (
-    <GuestbookRepositoryProvider repository={guestbookRepository}>
-      <DatasetContext.Provider
-        value={{
-          dataset,
-          isLoading: false,
-          refreshDataset: () => {}
-        }}>
-        <Story />
-      </DatasetContext.Provider>
-    </GuestbookRepositoryProvider>
+    <DatasetContext.Provider
+      value={{
+        dataset,
+        isLoading: false,
+        refreshDataset: () => {}
+      }}>
+      <Story />
+    </DatasetContext.Provider>
   )
 
   DatasetTermsStoryDecorator.displayName = 'DatasetTermsStoryDecorator'
@@ -55,7 +52,9 @@ const withDatasetContext = (dataset = testDatasetWithGuestbook) => {
 
 const withFileRepository = (fileRepository: FileRepository) => {
   const DatasetTermsFileRepositoryStoryDecorator = (Story: () => JSX.Element) => (
-    <RepositoriesStoryProvider fileRepository={fileRepository}>
+    <RepositoriesStoryProvider
+      fileRepository={fileRepository}
+      guestbookRepository={guestbookRepository}>
       <Story />
     </RepositoriesStoryProvider>
   )

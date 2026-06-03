@@ -9,6 +9,7 @@ import { RepositoriesProvider } from './shared/contexts/repositories/Repositorie
 import { CollectionJSDataverseRepository } from './collection/infrastructure/repositories/CollectionJSDataverseRepository'
 import { DatasetJSDataverseRepository } from './dataset/infrastructure/repositories/DatasetJSDataverseRepository'
 import { FileJSDataverseRepository } from './files/infrastructure/FileJSDataverseRepository'
+import { GuestbookJSDataverseRepository } from './guestbooks/infrastructure/repositories/GuestbookJSDataverseRepository'
 import { UserJSDataverseRepository } from './users/infrastructure/repositories/UserJSDataverseRepository'
 import 'react-loading-skeleton/dist/skeleton.css'
 import './assets/global.scss'
@@ -19,6 +20,7 @@ const externalToolsRepository = new ExternalToolsJSDataverseRepository()
 const collectionRepository = new CollectionJSDataverseRepository()
 const datasetRepository = new DatasetJSDataverseRepository()
 const fileRepository = new FileJSDataverseRepository()
+const guestbookRepository = new GuestbookJSDataverseRepository()
 const userRepository = new UserJSDataverseRepository()
 
 function App() {
@@ -47,6 +49,7 @@ function App() {
             collectionRepository={collectionRepository}
             datasetRepository={datasetRepository}
             fileRepository={fileRepository}
+            guestbookRepository={guestbookRepository}
             userRepository={userRepository}>
             <Router />
           </RepositoriesProvider>

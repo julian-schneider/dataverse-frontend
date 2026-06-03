@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { CollectionRepository } from '@/collection/domain/repositories/CollectionRepository'
 import { DatasetRepository } from '@/dataset/domain/repositories/DatasetRepository'
 import { FileRepository } from '@/files/domain/repositories/FileRepository'
+import { GuestbookRepository } from '@/guestbooks/domain/repositories/GuestbookRepository'
 import { UserRepository } from '@/users/domain/repositories/UserRepository'
 import { RepositoriesProvider } from '@/shared/contexts/repositories/RepositoriesProvider'
 
@@ -24,6 +25,7 @@ interface WithRepositoriesProps {
   collectionRepository?: CollectionRepository
   datasetRepository?: DatasetRepository
   fileRepository?: FileRepository
+  guestbookRepository?: GuestbookRepository
   userRepository?: UserRepository
 }
 
@@ -32,6 +34,7 @@ export function WithRepositories({
   collectionRepository = failFastRepository<CollectionRepository>('CollectionRepository'),
   datasetRepository = failFastRepository<DatasetRepository>('DatasetRepository'),
   fileRepository = failFastRepository<FileRepository>('FileRepository'),
+  guestbookRepository = failFastRepository<GuestbookRepository>('GuestbookRepository'),
   userRepository = failFastRepository<UserRepository>('UserRepository')
 }: WithRepositoriesProps) {
   return (
@@ -39,6 +42,7 @@ export function WithRepositories({
       collectionRepository={collectionRepository}
       datasetRepository={datasetRepository}
       fileRepository={fileRepository}
+      guestbookRepository={guestbookRepository}
       userRepository={userRepository}>
       {children}
     </RepositoriesProvider>

@@ -12,7 +12,6 @@ import { DatasetContext } from '@/sections/dataset/DatasetContext'
 import { Dataset as DatasetModel } from '@/dataset/domain/models/Dataset'
 import { ComponentProps, ReactNode } from 'react'
 import { GuestbookRepository } from '@/guestbooks/domain/repositories/GuestbookRepository'
-import { GuestbookRepositoryProvider } from '@/sections/guestbooks/GuestbookRepositoryProvider'
 import { WithRepositories } from '@tests/component/WithRepositories'
 
 const datasetPersistentId = 'test-dataset-persistent-id'
@@ -56,7 +55,7 @@ const termsOfUseWithUndefinedValue = TermsOfUseMother.create({
 const guestbookRepository: GuestbookRepository = {} as GuestbookRepository
 
 const DatasetTermsWithRepositories = (props: ComponentProps<typeof DatasetTerms>) => (
-  <WithRepositories fileRepository={fileRepository}>
+  <WithRepositories fileRepository={fileRepository} guestbookRepository={guestbookRepository}>
     <DatasetTerms {...props} />
   </WithRepositories>
 )
@@ -66,11 +65,6 @@ describe('DatasetTerms', () => {
     <DatasetContext.Provider value={{ dataset, isLoading: false, refreshDataset: () => {} }}>
       {component}
     </DatasetContext.Provider>
-  )
-  const withGuestbookRepository = (component: ReactNode) => (
-    <GuestbookRepositoryProvider repository={guestbookRepository}>
-      {component}
-    </GuestbookRepositoryProvider>
   )
 
   beforeEach(() => {
@@ -132,16 +126,14 @@ describe('DatasetTerms', () => {
     })
 
     cy.customMount(
-      withGuestbookRepository(
-        withDatasetContext(
-          <DatasetTermsWithRepositories
-            license={license}
-            termsOfUse={termsOfUse}
-            datasetPersistentId={datasetPersistentId}
-            datasetVersion={datasetVersion}
-          />,
-          DatasetMother.create({ guestbookId })
-        )
+      withDatasetContext(
+        <DatasetTermsWithRepositories
+          license={license}
+          termsOfUse={termsOfUse}
+          datasetPersistentId={datasetPersistentId}
+          datasetVersion={datasetVersion}
+        />,
+        DatasetMother.create({ guestbookId })
       )
     )
 
@@ -171,16 +163,14 @@ describe('DatasetTerms', () => {
     })
 
     cy.customMount(
-      withGuestbookRepository(
-        withDatasetContext(
-          <DatasetTermsWithRepositories
-            license={license}
-            termsOfUse={termsOfUse}
-            datasetPersistentId={datasetPersistentId}
-            datasetVersion={datasetVersion}
-          />,
-          DatasetMother.create({ guestbookId })
-        )
+      withDatasetContext(
+        <DatasetTermsWithRepositories
+          license={license}
+          termsOfUse={termsOfUse}
+          datasetPersistentId={datasetPersistentId}
+          datasetVersion={datasetVersion}
+        />,
+        DatasetMother.create({ guestbookId })
       ),
       ['/datasets?tab=terms&termsTab=guestbook']
     )

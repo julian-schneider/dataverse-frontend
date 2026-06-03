@@ -22,7 +22,6 @@ import { CollectionMockRepository } from '@/stories/collection/CollectionMockRep
 import { ContactMockRepository } from '../shared-mock-repositories/contact/ContactMockRepository'
 import { DataverseInfoMockRepository } from '../shared-mock-repositories/info/DataverseInfoMockRepository'
 import { GuestbookMockRepository } from '../shared-mock-repositories/guestbook/GuestbookMockRepository'
-import { GuestbookRepositoryProvider } from '@/sections/guestbooks/GuestbookRepositoryProvider'
 import { GuestbookRepository } from '@/guestbooks/domain/repositories/GuestbookRepository'
 import { DatasetProvider } from '@/sections/dataset/DatasetProvider'
 import { RepositoriesStoryProvider } from '@/stories/WithRepositories'
@@ -46,13 +45,11 @@ const WithDatasetGuestbook = (Story: () => JSX.Element) => {
   const datasetRepository = new DatasetWithGuestbookMockRepository()
 
   return (
-    <GuestbookRepositoryProvider repository={guestbookRepository}>
-      <DatasetProvider
-        repository={datasetRepository}
-        searchParams={{ persistentId: 'doi:10.5072/FK2/8YOKQI' }}>
-        <Story />
-      </DatasetProvider>
-    </GuestbookRepositoryProvider>
+    <DatasetProvider
+      repository={datasetRepository}
+      searchParams={{ persistentId: 'doi:10.5072/FK2/8YOKQI' }}>
+      <Story />
+    </DatasetProvider>
   )
 }
 
@@ -64,7 +61,8 @@ export const Default: Story = {
     <RepositoriesStoryProvider
       collectionRepository={new CollectionMockRepository()}
       datasetRepository={new DatasetMockRepository()}
-      fileRepository={new FileMockRepository()}>
+      fileRepository={new FileMockRepository()}
+      guestbookRepository={guestbookRepository}>
       <Dataset
         metadataBlockInfoRepository={new MetadataBlockInfoMockRepository()}
         contactRepository={new ContactMockRepository()}
