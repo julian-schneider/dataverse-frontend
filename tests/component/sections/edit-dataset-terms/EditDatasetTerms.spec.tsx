@@ -153,7 +153,6 @@ describe('EditDatasetTerms', () => {
         <EditDatasetTerms
           defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
           licenseRepository={licenseRepository}
-          datasetRepository={datasetRepository}
         />
       </DatasetProvider>
     )
@@ -339,8 +338,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
             licenseRepository={licenseRepository}
-            datasetRepository={datasetRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -363,7 +360,6 @@ describe('EditDatasetTerms', () => {
             // Force an invalid key to hit the default branch in getCurrentFormDirtyState
             defaultActiveTabKey={'unknown-tab' as unknown as EditDatasetTermsTabKey}
             licenseRepository={licenseRepository}
-            datasetRepository={datasetRepository}
           />,
           dataset
         )
@@ -385,7 +381,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            datasetRepository={datasetRepository}
           />,
           dataset
         )
