@@ -241,9 +241,9 @@ describe('Create Dataset', () => {
       })
 
       cy.findAllByText('Template 2').should('exist').should('have.length', 2) // Template 2 is selected, we see two
-    })    
+    })
   })
-  
+
   describe('dataset types functionality', () => {
     it('should not show dataset types select when there is only one dataset type', () => {
       cy.customMount(

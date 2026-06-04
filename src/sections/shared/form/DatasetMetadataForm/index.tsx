@@ -31,7 +31,7 @@ type DatasetMetadataFormProps =
       metadataBlockInfoRepository: MetadataBlockInfoRepository
       datasetMetadaBlocksCurrentValues: DatasetMetadataBlocks
       datasetLastUpdateTime?: string
-      datasetTemplate?: never,
+      datasetTemplate?: never
       datasetTypeName?: DatasetType['name']
     }
 

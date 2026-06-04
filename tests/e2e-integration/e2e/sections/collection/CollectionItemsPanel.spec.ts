@@ -55,7 +55,7 @@ describe('Collection Items Panel', () => {
 
         const collectionName = 'ItemsTestCollection'
         const collection = await CollectionHelper.create(`${collectionName}-${Date.now()}`)
-        collectionId = collection.id
+        collectionId = collection.id!
         // Creates 8 datasets with 1 file each
         for (const _number of numbersOfDatasetsToCreate) {
           await DatasetHelper.createWithFileAndTitle(
