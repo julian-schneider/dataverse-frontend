@@ -74,15 +74,17 @@ export class TestsUtils {
   }
 
   static finishSignUp() {
-    cy.get('body').then(($body) => {
-      const isOnSignUpPage = $body.find('[data-testid="sign-up-page"]').length > 0
-      const hasTermsCheckbox = $body.find('#termsAccepted').length > 0
+    cy.location('pathname', { timeout: 20_000 }).should('not.include', '/auth-callback')
 
-      if (!isOnSignUpPage || !hasTermsCheckbox) {
+    cy.get('body', { timeout: 20_000 }).then(($body) => {
+      const isOnSignUpPage = $body.find('[data-testid="sign-up-page"]').length > 0
+
+      if (!isOnSignUpPage) {
         return
       }
 
-      cy.get('#termsAccepted').check({ force: true })
+      cy.findByTestId('valid-token-not-linked-account-form', { timeout: 20_000 }).should('exist')
+      cy.findByTestId('termsAcceptedCheckbox').check({ force: true })
       cy.findByRole('button', { name: 'Create Account' }).click()
     })
   }

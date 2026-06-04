@@ -90,7 +90,9 @@ describe('EditDatasetTerms', () => {
     datasetRepository.getByPersistentId = cy.stub().resolves(dataset)
     datasetRepository.getByPrivateUrlToken = cy.stub().resolves(dataset)
     return (
-      <WithRepositories datasetRepository={datasetRepository}>
+      <WithRepositories
+        datasetRepository={datasetRepository}
+        guestbookRepository={guestbookRepository}>
         <DatasetProvider
           searchParams={{ persistentId: 'some-persistent-id', version: 'some-version' }}
           repository={datasetRepository}>
@@ -503,7 +505,9 @@ describe('EditDatasetTerms', () => {
       datasetRepository.getByPersistentId = cy.stub().resolves(dataset)
       datasetRepository.getByPrivateUrlToken = cy.stub().resolves(dataset)
       return (
-        <WithRepositories datasetRepository={datasetRepository}>
+        <WithRepositories
+          datasetRepository={datasetRepository}
+          guestbookRepository={guestbookRepository}>
           <DatasetProvider
             searchParams={{ persistentId: 'some-persistent-id', version: 'some-version' }}
             repository={datasetRepository}>
@@ -652,7 +656,9 @@ describe('EditDatasetTerms Mobile View', () => {
     datasetRepository.getByPersistentId = cy.stub().resolves(dataset)
     datasetRepository.getByPrivateUrlToken = cy.stub().resolves(dataset)
     return (
-      <WithRepositories datasetRepository={datasetRepository}>
+      <WithRepositories
+        datasetRepository={datasetRepository}
+        guestbookRepository={guestbookRepository}>
         <DatasetProvider
           searchParams={{ persistentId: 'some-persistent-id', version: 'some-version' }}
           repository={datasetRepository}>
