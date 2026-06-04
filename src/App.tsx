@@ -44,16 +44,17 @@ function App() {
   return (
     <>
       <AuthProvider authConfig={authConfig}>
-        <ExternalToolsProvider externalToolsRepository={externalToolsRepository}>
-          <RepositoriesProvider
-            collectionRepository={collectionRepository}
-            datasetRepository={datasetRepository}
-            fileRepository={fileRepository}
-            guestbookRepository={guestbookRepository}
-            userRepository={userRepository}>
+        <RepositoriesProvider
+          collectionRepository={collectionRepository}
+          datasetRepository={datasetRepository}
+          externalToolsRepository={externalToolsRepository}
+          fileRepository={fileRepository}
+          guestbookRepository={guestbookRepository}
+          userRepository={userRepository}>
+          <ExternalToolsProvider>
             <Router />
-          </RepositoriesProvider>
-        </ExternalToolsProvider>
+          </ExternalToolsProvider>
+        </RepositoriesProvider>
       </AuthProvider>
       <ToastContainer position="top-right" autoClose={5000} pauseOnHover />
     </>

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useMemo } from 'react'
 import { CollectionRepository } from '@/collection/domain/repositories/CollectionRepository'
 import { DatasetRepository } from '@/dataset/domain/repositories/DatasetRepository'
+import { ExternalToolsRepository } from '@/externalTools/domain/repositories/ExternalToolsRepository'
 import { FileRepository } from '@/files/domain/repositories/FileRepository'
 import { GuestbookRepository } from '@/guestbooks/domain/repositories/GuestbookRepository'
 import { UserRepository } from '@/users/domain/repositories/UserRepository'
@@ -8,6 +9,7 @@ import { UserRepository } from '@/users/domain/repositories/UserRepository'
 export interface RepositoriesContextValue {
   collectionRepository: CollectionRepository
   datasetRepository: DatasetRepository
+  externalToolsRepository: ExternalToolsRepository
   fileRepository: FileRepository
   guestbookRepository: GuestbookRepository
   userRepository: UserRepository
@@ -23,6 +25,7 @@ export function RepositoriesProvider({
   children,
   collectionRepository,
   datasetRepository,
+  externalToolsRepository,
   fileRepository,
   guestbookRepository,
   userRepository
@@ -31,11 +34,19 @@ export function RepositoriesProvider({
     () => ({
       collectionRepository,
       datasetRepository,
+      externalToolsRepository,
       fileRepository,
       guestbookRepository,
       userRepository
     }),
-    [collectionRepository, datasetRepository, fileRepository, guestbookRepository, userRepository]
+    [
+      collectionRepository,
+      datasetRepository,
+      externalToolsRepository,
+      fileRepository,
+      guestbookRepository,
+      userRepository
+    ]
   )
 
   return <RepositoriesContext.Provider value={value}>{children}</RepositoriesContext.Provider>
@@ -61,6 +72,12 @@ export function useDatasetRepositories() {
   const { datasetRepository, fileRepository } = useRepositories()
 
   return { datasetRepository, fileRepository }
+}
+
+export function useExternalToolsRepositories() {
+  const { externalToolsRepository } = useRepositories()
+
+  return { externalToolsRepository }
 }
 
 export function useFileRepositories() {

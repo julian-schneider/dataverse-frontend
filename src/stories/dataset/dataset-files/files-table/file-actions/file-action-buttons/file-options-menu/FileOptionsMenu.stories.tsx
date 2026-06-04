@@ -12,7 +12,7 @@ import { ExternalToolsProvider } from '@/shared/contexts/external-tools/External
 import { ExternalToolsMockRepository } from '@/stories/shared-mock-repositories/externalTools/ExternalToolsMockRepository'
 import { FakerHelper } from '@tests/component/shared/FakerHelper'
 import { ExternalToolsMother } from '@tests/component/externalTools/domain/models/ExternalToolsMother'
-import { WithRepositories } from '@/stories/WithRepositories'
+import { RepositoriesStoryProvider, WithRepositories } from '@/stories/WithRepositories'
 
 const meta: Meta<typeof FileOptionsMenu> = {
   title:
@@ -64,9 +64,12 @@ externalToolsRepositoryWithFileConfigureTool.getExternalTools = () => {
 export const WithConfigureTool: Story = {
   decorators: [WithDatasetAllPermissionsGranted],
   render: () => (
-    <ExternalToolsProvider externalToolsRepository={externalToolsRepositoryWithFileConfigureTool}>
-      <FileOptionsMenu file={FilePreviewMother.createDefault()} />
-    </ExternalToolsProvider>
+    <RepositoriesStoryProvider
+      externalToolsRepository={externalToolsRepositoryWithFileConfigureTool}>
+      <ExternalToolsProvider>
+        <FileOptionsMenu file={FilePreviewMother.createDefault()} />
+      </ExternalToolsProvider>
+    </RepositoriesStoryProvider>
   )
 }
 

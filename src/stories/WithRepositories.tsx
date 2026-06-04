@@ -2,6 +2,7 @@ import { StoryFn } from '@storybook/react'
 import { ReactNode } from 'react'
 import { CollectionRepository } from '@/collection/domain/repositories/CollectionRepository'
 import { DatasetRepository } from '@/dataset/domain/repositories/DatasetRepository'
+import { ExternalToolsRepository } from '@/externalTools/domain/repositories/ExternalToolsRepository'
 import { FileRepository } from '@/files/domain/repositories/FileRepository'
 import { GuestbookRepository } from '@/guestbooks/domain/repositories/GuestbookRepository'
 import { UserRepository } from '@/users/domain/repositories/UserRepository'
@@ -24,6 +25,7 @@ function failFastRepository<T>(name: string): T {
 interface WithRepositoriesProps {
   collectionRepository?: CollectionRepository
   datasetRepository?: DatasetRepository
+  externalToolsRepository?: ExternalToolsRepository
   fileRepository?: FileRepository
   guestbookRepository?: GuestbookRepository
   userRepository?: UserRepository
@@ -32,6 +34,7 @@ interface WithRepositoriesProps {
 export function WithRepositories({
   collectionRepository = failFastRepository<CollectionRepository>('CollectionRepository'),
   datasetRepository = failFastRepository<DatasetRepository>('DatasetRepository'),
+  externalToolsRepository = failFastRepository<ExternalToolsRepository>('ExternalToolsRepository'),
   fileRepository = failFastRepository<FileRepository>('FileRepository'),
   guestbookRepository = failFastRepository<GuestbookRepository>('GuestbookRepository'),
   userRepository = failFastRepository<UserRepository>('UserRepository')
@@ -41,6 +44,7 @@ export function WithRepositories({
       <RepositoriesProvider
         collectionRepository={collectionRepository}
         datasetRepository={datasetRepository}
+        externalToolsRepository={externalToolsRepository}
         fileRepository={fileRepository}
         guestbookRepository={guestbookRepository}
         userRepository={userRepository}>
@@ -62,6 +66,7 @@ export function RepositoriesStoryProvider({
   children,
   collectionRepository = failFastRepository<CollectionRepository>('CollectionRepository'),
   datasetRepository = failFastRepository<DatasetRepository>('DatasetRepository'),
+  externalToolsRepository = failFastRepository<ExternalToolsRepository>('ExternalToolsRepository'),
   fileRepository = failFastRepository<FileRepository>('FileRepository'),
   guestbookRepository = failFastRepository<GuestbookRepository>('GuestbookRepository'),
   userRepository = failFastRepository<UserRepository>('UserRepository')
@@ -70,6 +75,7 @@ export function RepositoriesStoryProvider({
     <RepositoriesProvider
       collectionRepository={collectionRepository}
       datasetRepository={datasetRepository}
+      externalToolsRepository={externalToolsRepository}
       fileRepository={fileRepository}
       guestbookRepository={guestbookRepository}
       userRepository={userRepository}>
