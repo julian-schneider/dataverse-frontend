@@ -9,6 +9,7 @@ import { MetadataForm } from './MetadataForm'
 import { DatasetMetadataBlocks } from '../../../../dataset/domain/models/Dataset'
 import { Alert } from '@iqss/dataverse-design-system'
 import { Template } from '@/templates/domain/models/Template'
+import { DatasetType } from '@/dataset/domain/models/DatasetType'
 
 type DatasetMetadataFormProps =
   | {

@@ -27,8 +27,9 @@ export default meta
 type Story = StoryObj<typeof CreateDataset>
 
 const datasetRepositoryMockWithoutTemplatesAndTypes = new DatasetMockRepository()
+const templateRepositoryMockWithoutTemplates = new TemplateMockRepository()
 
-datasetRepositoryMockWithoutTemplatesAndTypes.getTemplates = () => {
+templateRepositoryMockWithoutTemplates.getTemplatesByCollectionId = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve([])
@@ -82,7 +83,7 @@ export const Loading: Story = {
       <RepositoriesStoryProvider collectionRepository={new CollectionMockRepository()}>
         <CreateDataset
           datasetRepository={datasetRepositoryMockWithoutTemplatesAndTypes}
-          templateRepository={new TemplateMockRepository()}
+          templateRepository={templateRepositoryMockWithoutTemplates}
           metadataBlockInfoRepository={new MetadataBlockInfoMockLoadingRepository()}
           collectionId={'collectionId'}
         />

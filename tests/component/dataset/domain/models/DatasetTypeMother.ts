@@ -9,6 +9,7 @@ export class DatasetTypeMother {
     return {
       id: faker.datatype.number({ min: 1 }),
       name: faker.lorem.words(3),
+      displayName: faker.lorem.words(3),
       ...props
     }
   }

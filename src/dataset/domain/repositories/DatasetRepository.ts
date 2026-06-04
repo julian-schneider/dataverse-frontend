@@ -33,7 +33,7 @@ export interface DatasetRepository {
   create: (
     dataset: DatasetDTO,
     collectionId: string,
-    datasetType?: DatasetType
+    datasetType?: DatasetType['name']
   ) => Promise<{ persistentId: string }>
   updateMetadata: (
     datasetId: string | number,

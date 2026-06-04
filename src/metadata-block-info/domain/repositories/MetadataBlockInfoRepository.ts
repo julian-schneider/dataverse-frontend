@@ -13,6 +13,7 @@ export interface MetadataBlockInfoRepository {
   ) => Promise<MetadataBlockInfo[]>
   getByCollectionId: (
     collectionId: number | string,
+    onlyDisplayedOnCreate?: boolean,
     datasetType?: string
   ) => Promise<MetadataBlockInfo[]>
   getAllFacetableMetadataFields: () => Promise<MetadataField[]>

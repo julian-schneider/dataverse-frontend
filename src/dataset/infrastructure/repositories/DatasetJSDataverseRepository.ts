@@ -71,6 +71,7 @@ const includeDeaccessioned = true
 
 interface IDatasetDetails {
   jsDataset: JSDataset
+  datasetType?: string
   summaryFieldsNames: string[]
   citation: string
   jsDatasetPermissions: JSDatasetPermissions
@@ -172,6 +173,7 @@ export class DatasetJSDataverseRepository implements DatasetRepository {
       ]) => {
         return {
           jsDataset,
+          datasetType: (jsDataset as { datasetType?: string }).datasetType,
           summaryFieldsNames,
           citation,
           jsDatasetPermissions,
