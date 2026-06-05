@@ -17,6 +17,9 @@ describe('CitationDownloadButton', () => {
       cy.stub(win.URL, 'createObjectURL').returns('mock-url')
       cy.stub(win.URL, 'revokeObjectURL')
     })
+    cy.customMount(
+      <ViewStyledCitationModal show={true} handleClose={() => {}} citation={mockCitation} />
+    )
   })
 
   it('renders the button', () => {
@@ -157,15 +160,13 @@ describe('CitationDownloadButton', () => {
       </WithRepositories>
     )
 
-    cy.customMount(
-      <ViewStyledCitationModal show={true} handleClose={() => {}} citation={mockCitation} />
-    )
+    cy.findByRole('button', { name: 'Cite Dataset' }).click()
+    cy.findByText('View Styled Citation').click()
 
-    cy.findByText('Styled Citation').click()
+    cy.findByRole('dialog').should('exist')
     cy.findByText('Select a CSL Style').should('exist')
     cy.findByText(mockCitation.content).should('exist')
     cy.findByRole('button', { name: /Copy to clipboard icon/ }).should('exist')
-    cy.findByRole('dialog').should('exist')
   })
 
   it('closes styled citation modal when close is triggered', () => {
@@ -181,7 +182,8 @@ describe('CitationDownloadButton', () => {
     cy.findByText('View Styled Citation').click()
 
     cy.findByRole('dialog').should('exist')
-    cy.findByRole('button', { name: /close/i }).click()
+    cy.findByText(mockCitation.content).should('exist')
+    cy.findByRole('button', { name: 'Cancel' }).click()
     cy.findByRole('dialog').should('not.exist')
   })
 
