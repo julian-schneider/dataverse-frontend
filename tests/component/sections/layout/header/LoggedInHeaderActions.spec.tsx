@@ -187,12 +187,12 @@ describe('LoggedInHeaderActions', () => {
     cy.clock()
     cy.mountAuthenticated(
       <WithRepositories collectionRepository={collectionRepository}>
-        <LoggedInHeaderActions 
-          user={testUser} 
+        <LoggedInHeaderActions
+          user={testUser}
           collectionRepository={collectionRepository}
-          notificationRepository={notificationRepository} 
+          notificationRepository={notificationRepository}
           datasetRepository={datasetRepository}
-          />
+        />
       </WithRepositories>
     )
 

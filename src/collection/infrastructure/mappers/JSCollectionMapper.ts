@@ -29,7 +29,8 @@ export class JSCollectionMapper {
       isMetadataBlockRoot: jsCollection.isMetadataBlockRoot,
       isFacetRoot: jsCollection.isFacetRoot,
       childCount: jsCollection.childCount,
-      allowedDatasetTypes: (jsCollection as unknown as Record<string, unknown>).allowedDatasetTypes as DatasetType[] | undefined
+      allowedDatasetTypes: (jsCollection as unknown as Record<string, unknown>)
+        .allowedDatasetTypes as DatasetType[] | undefined
     }
   }
 
