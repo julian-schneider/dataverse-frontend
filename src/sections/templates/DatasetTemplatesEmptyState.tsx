@@ -16,7 +16,7 @@ export const DatasetTemplatesEmptyState = ({ collectionId }: DatasetTemplatesEmp
     returnObjects: true
   }) as string[]
 
-  const generalInfoUrl = `/spa${RouteWithParams.EDIT_COLLECTION(collectionId)}`
+  const generalInfoUrl = `/modern${RouteWithParams.EDIT_COLLECTION(collectionId)}`
   const templatesGuideUrl =
     'https://guides.dataverse.org/en/6.9/user/dataverse-management.html#dataset-templates'
 
