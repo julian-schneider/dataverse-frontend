@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useForm, Controller, FormProvider } from 'react-hook-form'
-import { toast } from 'react-toastify'
 import { Form, Row, Col, Button, Alert } from '@iqss/dataverse-design-system'
 import { CustomTerms } from '@/dataset/domain/models/Dataset'
 import { LicenseRepository } from '@/licenses/domain/repositories/LicenseRepository'
@@ -36,7 +35,6 @@ export function EditTemplateLicenseTerms({
   onFormStateChange
 }: EditTemplateLicenseTermsProps) {
   const { t: tDataset } = useTranslation('dataset')
-  const { t: tTemplates } = useTranslation('datasetTemplates')
   const { t: tShared } = useTranslation('shared')
 
   const formContainerRef = useRef<HTMLDivElement>(null)
@@ -48,10 +46,7 @@ export function EditTemplateLicenseTerms({
 
   const { handleUpdateLicenseTerms, isLoading, error } = useUpdateTemplateLicenseTerms({
     templateRepository,
-    onSuccess: () => {
-      toast.success(tTemplates('editTemplate.alerts.licenseUpdated'))
-      onSuccess()
-    }
+    onSuccess
   })
 
   const initialCustomTerms = useMemo<CustomTerms>(() => {
@@ -71,7 +66,7 @@ export function EditTemplateLicenseTerms({
   }, [template.termsOfUse.customTerms])
 
   const licenseOptions = useMemo(() => {
-    const dynamicOptions = licenses
+    const dynamicOptions = [...licenses]
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map((license) => ({
         value: license.id.toString(),
@@ -239,7 +234,7 @@ export function EditTemplateLicenseTerms({
                           <Col>
                             <Form.Group.TextArea
                               data-testid={`customTerms.${field.name}`}
-                              value={value as string}
+                              value={typeof value === 'string' ? value : ''}
                               onChange={onChange}
                               isInvalid={invalid}
                               rows={field.rows}

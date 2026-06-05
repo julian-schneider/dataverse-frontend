@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useForm, Controller, FormProvider, useWatch } from 'react-hook-form'
-import { toast } from 'react-toastify'
 import { Form, Row, Col, Button, Alert } from '@iqss/dataverse-design-system'
 import { TermsOfAccess } from '@/dataset/domain/models/Dataset'
 import { TemplateRepository } from '@/templates/domain/repositories/TemplateRepository'
@@ -25,7 +24,6 @@ export function EditTemplateTermsOfAccess({
   onFormStateChange
 }: EditTemplateTermsOfAccessProps) {
   const { t: tDataset } = useTranslation('dataset')
-  const { t: tTemplates } = useTranslation('datasetTemplates')
   const { t: tShared } = useTranslation('shared')
 
   const defaultTermsOfAccess: TermsOfAccess = {
@@ -45,10 +43,7 @@ export function EditTemplateTermsOfAccess({
 
   const { handleUpdateTermsOfAccess, isLoading, error } = useUpdateTemplateTermsOfAccess({
     templateRepository,
-    onSuccess: () => {
-      toast.success(tTemplates('editTemplate.alerts.termsOfAccessUpdated'))
-      onSuccess()
-    }
+    onSuccess
   })
 
   const form = useForm<TermsOfAccess>({
@@ -140,7 +135,7 @@ export function EditTemplateTermsOfAccess({
                   <Form.Group style={{ margin: '5px' }}>
                     <Form.Group.Checkbox
                       id="fileAccessRequest"
-                      checked={value}
+                      checked={value === undefined ? true : Boolean(value)}
                       onChange={onChange}
                       label={tDataset('termsTab.enableAccessRequest')}
                     />
@@ -168,7 +163,7 @@ export function EditTemplateTermsOfAccess({
                     <Row>
                       <Col>
                         <Form.Group.TextArea
-                          value={value as string}
+                          value={typeof value === 'string' ? value : ''}
                           onChange={onChange}
                           isInvalid={invalid}
                           rows={field.rows}

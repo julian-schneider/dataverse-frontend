@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Tabs, Breadcrumb, Alert } from '@iqss/dataverse-design-system'
@@ -10,6 +11,7 @@ import { EditTemplateTermsOfAccess } from './EditTemplateTermsOfAccess'
 import styles from '../create-template/CreateTemplate.module.scss'
 import termsStyles from './EditTemplateTerms.module.scss'
 import { EditTemplateTermsSkeleton } from './EditTemplateTermsSkeleton'
+import { useLoading } from '@/shared/contexts/loading/LoadingContext'
 
 interface EditTemplateTermsProps {
   collectionId: string
@@ -26,6 +28,7 @@ export const EditTemplateTerms = ({
 }: EditTemplateTermsProps) => {
   const { t } = useTranslation('datasetTemplates')
   const { t: tDataset } = useTranslation('dataset')
+  const { setIsLoading } = useLoading()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -41,6 +44,10 @@ export const EditTemplateTerms = ({
   const showCreateSuccess = Boolean(
     (location.state as { fromCreateTemplate?: boolean } | null)?.fromCreateTemplate
   )
+
+  useEffect(() => {
+    setIsLoading(isLoadingTemplate)
+  }, [isLoadingTemplate, setIsLoading])
 
   if (isLoadingTemplate) {
     return <EditTemplateTermsSkeleton />

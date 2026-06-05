@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Alert, Breadcrumb } from '@iqss/dataverse-design-system'
@@ -9,6 +10,7 @@ import { useGetTemplate } from '@/templates/domain/hooks/useGetTemplate'
 import { NotFoundPage } from '@/sections/not-found-page/NotFoundPage'
 import { TemplateMetadataForm } from '@/sections/shared/form/TemplateMetadataForm/TemplateMetadataForm'
 import { RouteWithParams } from '@/sections/Route.enum'
+import { useLoading } from '@/shared/contexts/loading/LoadingContext'
 import { EditTemplateMetadataSkeleton } from './EditTemplateMetadataSkeleton'
 import styles from '../create-template/CreateTemplate.module.scss'
 
@@ -28,6 +30,7 @@ export const EditTemplateMetadata = ({
   metadataBlockInfoRepository
 }: EditTemplateMetadataProps) => {
   const { t } = useTranslation('datasetTemplates')
+  const { setIsLoading } = useLoading()
   const { collection, isLoading: isLoadingCollection } = useCollection(
     collectionRepository,
     collectionId
@@ -38,6 +41,10 @@ export const EditTemplateMetadata = ({
   })
 
   const isLoadingData = isLoadingCollection || isLoadingTemplate
+
+  useEffect(() => {
+    setIsLoading(isLoadingData)
+  }, [isLoadingData, setIsLoading])
 
   if (!isLoadingCollection && !collection) {
     return <NotFoundPage dvObjectNotFoundType="collection" />

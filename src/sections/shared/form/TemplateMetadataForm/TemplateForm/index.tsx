@@ -212,8 +212,10 @@ export const TemplateForm = (props: TemplateFormProps) => {
             )}
           </Col>
         </Form.Group>
-        <RequiredFieldText i18nKey="asterisksRequiredDatasetFields" />
-        <RequiredFieldText />
+        <div className={styles['required-field-text']}>
+          <RequiredFieldText i18nKey="asterisksRequiredDatasetFields" />
+          <RequiredFieldText />
+        </div>
         <Accordion defaultActiveKey="0" className={styles.accordion}>
           {metadataBlocksInfo.map((metadataBlock, index) => (
             <Accordion.Item

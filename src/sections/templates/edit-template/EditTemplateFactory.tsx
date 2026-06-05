@@ -31,6 +31,10 @@ function EditTemplateDispatcher() {
 
   const templateId = Number(id)
 
+  if (Number.isNaN(templateId)) {
+    return <Navigate to={Route.HOME} replace />
+  }
+
   if (editMode === TemplateEditMode.METADATA) {
     return (
       <EditTemplateMetadata

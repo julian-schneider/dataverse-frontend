@@ -2,7 +2,6 @@ import { CreateTemplate } from '../../../../../src/sections/templates/create-tem
 import { CollectionRepository } from '../../../../../src/collection/domain/repositories/CollectionRepository'
 import { MetadataBlockInfoRepository } from '../../../../../src/metadata-block-info/domain/repositories/MetadataBlockInfoRepository'
 import { TemplateRepository } from '../../../../../src/templates/domain/repositories/TemplateRepository'
-import { RouteWithParams } from '../../../../../src/sections/Route.enum'
 import { CollectionMother } from '../../../collection/domain/models/CollectionMother'
 import { MetadataBlockInfoMother } from '../../../metadata-block-info/domain/models/MetadataBlockInfoMother'
 import { UpwardHierarchyNodeMother } from '../../../shared/hierarchy/domain/models/UpwardHierarchyNodeMother'
@@ -92,11 +91,10 @@ describe('Create Template', () => {
       'href',
       '/datasets?persistentId=doi:10.5072/FK2/ABC123&version=DRAFT'
     )
-    cy.findByRole('link', { name: 'Dataset Templates' }).should(
-      'have.attr',
-      'href',
-      RouteWithParams.COLLECTION_TEMPLATES('root')
-    )
+    cy.findByRole('navigation', { name: 'breadcrumb' }).within(() => {
+      cy.findByText('Create Dataset Template').should('exist')
+    })
+    cy.findByRole('heading', { name: 'Create Dataset Template' }).should('exist')
     cy.findByLabelText(/Template Name/).should('exist')
     cy.findByRole('button', { name: 'Save + Add Terms' }).should('exist')
   })

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Alert } from '@iqss/dataverse-design-system'
 import { MetadataBlockInfoRepository } from '@/metadata-block-info/domain/repositories/MetadataBlockInfoRepository'
 import { type MetadataField } from '@/metadata-block-info/domain/models/MetadataBlockInfo'
@@ -8,6 +8,7 @@ import { useGetMetadataBlocksInfo } from '../DatasetMetadataForm/useGetMetadataB
 import { MetadataFieldsHelper } from '../DatasetMetadataForm/MetadataFieldsHelper'
 import { MetadataFormSkeleton } from '../DatasetMetadataForm/MetadataForm/MetadataFormSkeleton'
 import { TemplateForm } from './TemplateForm'
+import { useLoading } from '@/shared/contexts/loading/LoadingContext'
 
 type TemplateMetadataFormProps =
   | {
@@ -32,6 +33,7 @@ export const TemplateMetadataForm = ({
   templateRepository,
   template
 }: TemplateMetadataFormProps) => {
+  const { setIsLoading } = useLoading()
   const {
     metadataBlocksInfo: metadataBlocksInfoForDisplay,
     isLoading,
@@ -41,6 +43,10 @@ export const TemplateMetadataForm = ({
     collectionId,
     metadataBlockInfoRepository
   })
+
+  useEffect(() => {
+    setIsLoading(isLoading)
+  }, [isLoading, setIsLoading])
 
   const metadataBlocksInfo = useMemo(() => {
     const normalized = MetadataFieldsHelper.replaceMetadataBlocksInfoDotNamesKeysWithSlash(

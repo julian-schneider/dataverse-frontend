@@ -169,18 +169,15 @@ describe('Dataset Templates', () => {
       /The template has been selected as the default template for this dataverse./i
     ).should('exist')
 
-    cy.findByText(templateName)
-      .closest('tr')
-      .within(() => {
-        cy.findByRole('button', { name: 'Default' }).should('be.disabled')
-        cy.findByRole('button', { name: 'Make Default' }).should('not.exist')
-      })
+    cy.contains('tr', templateName).should('contain.text', 'Default')
+    cy.contains('tr', templateName).within(() => {
+      cy.findByRole('button', { name: 'Default' }).should('not.be.disabled')
+      cy.findByRole('button', { name: 'Make Default' }).should('not.exist')
+    })
 
-    cy.findByText(templateName)
-      .closest('tr')
-      .within(() => {
-        cy.findByRole('button', { name: 'Default' }).click({ force: true })
-      })
+    cy.contains('tr', templateName).within(() => {
+      cy.findByRole('button', { name: 'Default' }).click({ force: true })
+    })
 
     cy.findByText(
       /The template has been removed as the default template for this dataverse./i
@@ -239,12 +236,13 @@ describe('Dataset Templates', () => {
     ).should('exist')
 
     cy.visit(CREATE_DATASET_PAGE_URL)
-    cy.wait(3_000)
 
-    cy.findByTestId('dataset-template-select').within(() => {
-      cy.findByText(templateName).should('exist')
-      cy.findByText('None').should('not.exist')
-    })
+    cy.findByTestId('dataset-template-select')
+      .should('exist')
+      .within(() => {
+        cy.findByText(templateName).should('exist')
+        cy.findByText('None').should('not.exist')
+      })
 
     cy.findByLabelText(/^Title/i).should('have.value', 'Auto Selected Title')
 

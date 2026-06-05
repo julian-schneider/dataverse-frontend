@@ -39,8 +39,11 @@ import { ConfirmDeleteTemplateModal } from './confirm-delete-template-modal/Conf
 import { TemplatePreviewModal } from './template-preview-modal/TemplatePreviewModal'
 import { useCopyTemplate } from './useCopyTemplate'
 import { useSetTemplateAsDefault } from './useSetTemplateAsDefault'
+import { useLoading } from '@/shared/contexts/loading/LoadingContext'
 
 import styles from './DatasetTemplates.module.scss'
+
+const EDIT_TEMPLATE_SUCCESS_TOAST_ID = 'edit-template-success'
 
 interface DatasetTemplatesProps {
   collectionRepository: CollectionRepository
@@ -58,11 +61,12 @@ export const DatasetTemplates = ({
   const { t } = useTranslation('datasetTemplates')
   const navigate = useNavigate()
   const location = useLocation()
+  const { setIsLoading } = useLoading()
 
   useEffect(() => {
     const state = location.state as { fromEditTemplate?: boolean } | null
     if (state?.fromEditTemplate) {
-      toast.success(t('alerts.editSuccess'))
+      toast.success(t('alerts.editSuccess'), { toastId: EDIT_TEMPLATE_SUCCESS_TOAST_ID })
       navigate(location.pathname, { replace: true, state: null })
     }
   }, [location, navigate, t])
@@ -98,14 +102,20 @@ export const DatasetTemplates = ({
       templateRepository
     })
 
-  const { collectionUserPermissions } = useGetCollectionUserPermissions({
-    collectionIdOrAlias: collectionId,
-    collectionRepository
-  })
+  const { collectionUserPermissions, isLoading: isLoadingCollectionUserPermissions } =
+    useGetCollectionUserPermissions({
+      collectionIdOrAlias: collectionId,
+      collectionRepository
+    })
   const canUserEditTemplate = Boolean(collectionUserPermissions?.canEditCollection)
   const rootCollectionNames = collection?.hierarchy?.toArray().map((node) => node.name) ?? []
 
-  const isLoadingData = isLoadingCollection || isLoadingDatasetTemplates
+  const isLoadingData =
+    isLoadingCollection || isLoadingDatasetTemplates || isLoadingCollectionUserPermissions
+
+  useEffect(() => {
+    setIsLoading(isLoadingData)
+  }, [isLoadingData, setIsLoading])
 
   const filteredTemplates = useMemo(() => {
     if (includeParentTemplates) {
@@ -241,7 +251,11 @@ export const DatasetTemplates = ({
         />
       )}
       <section>
-        <BreadcrumbsGenerator hierarchy={collection.hierarchy} />
+        <BreadcrumbsGenerator
+          hierarchy={collection.hierarchy}
+          withActionItem
+          actionItemText={t('pageTitle')}
+        />
         <header className={styles.header}>
           <div className={styles['header-title']}>
             <h1>{collection.name}</h1>
@@ -340,7 +354,10 @@ export const DatasetTemplates = ({
                         className={styles['action-group']}
                         aria-label={t('table.action')}>
                         {template.isDefault ? (
-                          <span
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            disabled={isSettingDefault}
                             onClick={async () => {
                               if (isSettingDefault) return
                               const didUnset = await handleUnsetTemplateAsDefault()
@@ -348,11 +365,9 @@ export const DatasetTemplates = ({
                                 toggleDefaultTemplate(null)
                               }
                             }}>
-                            <Button variant="secondary" size="sm" disabled>
-                              <CheckLg />
-                              {t('actions.default')}
-                            </Button>
-                          </span>
+                            <CheckLg />
+                            {t('actions.default')}
+                          </Button>
                         ) : (
                           <Button
                             variant="secondary"
