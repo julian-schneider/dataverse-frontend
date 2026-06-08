@@ -250,11 +250,11 @@ describe('Create Dataset', () => {
         .stub()
         .resolves(CollectionMother.create({ name: COLLECTION_NAME, id: 'test-alias' }))
 
-      cy.customMount(
+      mountCreateDataset(
         <CreateDataset
           datasetRepository={datasetRepository}
+          templateRepository={templateRepository}
           metadataBlockInfoRepository={metadataBlockInfoRepository}
-          collectionRepository={collectionRepository}
           collectionId={'test-collectionId'}
         />
       )
@@ -272,11 +272,11 @@ describe('Create Dataset', () => {
         })
       )
 
-      cy.customMount(
+      mountCreateDataset(
         <CreateDataset
           datasetRepository={datasetRepository}
+          templateRepository={templateRepository}
           metadataBlockInfoRepository={metadataBlockInfoRepository}
-          collectionRepository={collectionRepository}
           collectionId={'test-collectionId'}
         />
       )
@@ -301,11 +301,11 @@ describe('Create Dataset', () => {
         })
       )
 
-      cy.customMount(
+      mountCreateDataset(
         <CreateDataset
           datasetRepository={datasetRepository}
+          templateRepository={templateRepository}
           metadataBlockInfoRepository={metadataBlockInfoRepository}
-          collectionRepository={collectionRepository}
           collectionId={'test-collectionId'}
         />
       )
@@ -329,11 +329,11 @@ describe('Create Dataset', () => {
         })
       )
 
-      cy.customMount(
+      mountCreateDataset(
         <CreateDataset
           datasetRepository={datasetRepository}
+          templateRepository={templateRepository}
           metadataBlockInfoRepository={metadataBlockInfoRepository}
-          collectionRepository={collectionRepository}
           collectionId={'test-collectionId'}
         />
       )
@@ -358,11 +358,11 @@ describe('Create Dataset', () => {
         })
       )
 
-      cy.customMount(
+      mountCreateDataset(
         <CreateDataset
           datasetRepository={datasetRepository}
+          templateRepository={templateRepository}
           metadataBlockInfoRepository={metadataBlockInfoRepository}
-          collectionRepository={collectionRepository}
           collectionId={'test-collectionId'}
         />
       )
@@ -395,11 +395,11 @@ describe('Create Dataset', () => {
         })
       )
 
-      cy.customMount(
+      mountCreateDataset(
         <CreateDataset
           datasetRepository={datasetRepository}
+          templateRepository={templateRepository}
           metadataBlockInfoRepository={metadataBlockInfoRepository}
-          collectionRepository={collectionRepository}
           collectionId={'test-collectionId'}
         />
       )
