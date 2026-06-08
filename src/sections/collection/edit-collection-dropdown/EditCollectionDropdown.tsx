@@ -77,7 +77,7 @@ export const EditCollectionDropdown = ({
         <DropdownButtonItem onClick={handleNotImplementedClick}>
           {t('editCollection.groups')}
         </DropdownButtonItem>
-        <DropdownButtonItem onClick={handleNotImplementedClick}>
+        <DropdownButtonItem as={Link} to={RouteWithParams.COLLECTION_TEMPLATES(collection.id)}>
           {t('editCollection.datasetTemplates')}
         </DropdownButtonItem>
         <DropdownButtonItem onClick={handleDatasetGuestbooksClick}>

@@ -12,6 +12,7 @@ This changelog follows the principles of [Keep a Changelog](https://keepachangel
   - a guestbooks table with sorting, enable/disable actions, preview, and per-guestbook response download
   - Create Guestbook and Download All Responses actions
   - the Create Guestbook page
+- Dataset Templates UI integration, including create/edit flows, previews, and skeleton states.
 
 ### Changed
 
