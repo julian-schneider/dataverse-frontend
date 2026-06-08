@@ -245,7 +245,11 @@ describe('Create Dataset', () => {
   })
 
   describe('dataset types functionality', () => {
-    it('should not show dataset types select when there is only one dataset type', () => {
+    it('should not show dataset types select when allowedDatasetTypes is not configured', () => {
+      collectionRepository.getById = cy.stub().resolves(
+        CollectionMother.create({ name: COLLECTION_NAME, id: 'test-alias' })
+      )
+
       cy.customMount(
         <CreateDataset
           datasetRepository={datasetRepository}
@@ -257,7 +261,32 @@ describe('Create Dataset', () => {
       cy.findByTestId('dataset-type-select').should('not.exist')
     })
 
-    it('should show dataset type select when there is more than one type', () => {
+    it('should show dataset type info when there is only one allowed dataset type', () => {
+      const singleDatasetType = DatasetTypeMother.creatDefaultDatasetType()
+
+      collectionRepository.getById = cy
+        .stub()
+        .resolves(
+          CollectionMother.create({
+            name: COLLECTION_NAME,
+            id: 'test-alias',
+            allowedDatasetTypes: [singleDatasetType]
+          })
+        )
+
+      cy.customMount(
+        <CreateDataset
+          datasetRepository={datasetRepository}
+          metadataBlockInfoRepository={metadataBlockInfoRepository}
+          collectionRepository={collectionRepository}
+          collectionId={'test-collectionId'}
+        />
+      )
+      cy.findByTestId('dataset-type-select').should('not.exist')
+      cy.findByText('dataset').should('exist')
+    })
+
+    it('should show dataset type select when there is more than one allowed dataset type', () => {
       const datasetTypesMock = [
         DatasetTypeMother.creatDefaultDatasetType(),
         DatasetTypeMother.create({
@@ -266,7 +295,15 @@ describe('Create Dataset', () => {
         })
       ]
 
-      datasetRepository.getAvailableDatasetTypes = cy.stub().resolves(datasetTypesMock)
+      collectionRepository.getById = cy
+        .stub()
+        .resolves(
+          CollectionMother.create({
+            name: COLLECTION_NAME,
+            id: 'test-alias',
+            allowedDatasetTypes: datasetTypesMock
+          })
+        )
 
       cy.customMount(
         <CreateDataset
@@ -288,7 +325,15 @@ describe('Create Dataset', () => {
         })
       ]
 
-      datasetRepository.getAvailableDatasetTypes = cy.stub().resolves(datasetTypesMock)
+      collectionRepository.getById = cy
+        .stub()
+        .resolves(
+          CollectionMother.create({
+            name: COLLECTION_NAME,
+            id: 'test-alias',
+            allowedDatasetTypes: datasetTypesMock
+          })
+        )
 
       cy.customMount(
         <CreateDataset
@@ -311,7 +356,15 @@ describe('Create Dataset', () => {
         })
       ]
 
-      datasetRepository.getAvailableDatasetTypes = cy.stub().resolves(datasetTypesMock)
+      collectionRepository.getById = cy
+        .stub()
+        .resolves(
+          CollectionMother.create({
+            name: COLLECTION_NAME,
+            id: 'test-alias',
+            allowedDatasetTypes: datasetTypesMock
+          })
+        )
 
       cy.customMount(
         <CreateDataset
@@ -342,7 +395,15 @@ describe('Create Dataset', () => {
         })
       ]
 
-      datasetRepository.getAvailableDatasetTypes = cy.stub().resolves(datasetTypesMock)
+      collectionRepository.getById = cy
+        .stub()
+        .resolves(
+          CollectionMother.create({
+            name: COLLECTION_NAME,
+            id: 'test-alias',
+            allowedDatasetTypes: datasetTypesMock
+          })
+        )
 
       cy.customMount(
         <CreateDataset
