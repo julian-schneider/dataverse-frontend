@@ -135,8 +135,12 @@ describe('EditTermsOfAccess', () => {
     it('disables save button when request access is disabled and terms are empty', () => {
       cy.customMount(withProviders(<EditTermsOfAccess />, mockDataset))
 
-      cy.findByLabelText('Enable access request').uncheck()
-      cy.findByLabelText(/Terms of Access for Restricted Files/i).clear()
+      cy.findByLabelText('Enable access request').should('be.checked').uncheck()
+      cy.findByLabelText('Enable access request').should('not.be.checked')
+      cy.findByLabelText(/Terms of Access for Restricted Files/i)
+        .should('have.value', 'Access requires approval')
+        .clear()
+        .should('have.value', '')
       cy.findByRole('button', { name: 'Save Changes' }).should('be.disabled')
       cy.findByLabelText(/Terms of Access for Restricted Files/i).type('Provide contact details')
       cy.findByRole('button', { name: 'Save Changes' }).should('be.enabled')
