@@ -95,6 +95,26 @@ describe('GuestbookActionButtons', () => {
     cy.get('@onDownloadResponses').should('have.been.calledOnce')
   })
 
+  it('uses enabled button defaults when optional loading flags are omitted', () => {
+    const onToggleEnabled = cy.stub().as('onToggleEnabled')
+    const onDownloadResponses = cy.stub().as('onDownloadResponses')
+
+    cy.customMount(
+      <GuestbookActionButtons
+        isEnabled={true}
+        onView={() => {}}
+        onToggleEnabled={onToggleEnabled}
+        onDownloadResponses={onDownloadResponses}
+      />
+    )
+
+    cy.findByRole('button', { name: 'Disable' }).should('not.be.disabled').click()
+    cy.findByRole('button', { name: 'Download responses' }).should('not.be.disabled').click()
+
+    cy.get('@onToggleEnabled').should('have.been.calledOnce')
+    cy.get('@onDownloadResponses').should('have.been.calledOnce')
+  })
+
   it('opens the not implemented modal from copy, edit, and view responses buttons', () => {
     cy.customMount(<GuestbookActionButtonsTestWrapper />)
 

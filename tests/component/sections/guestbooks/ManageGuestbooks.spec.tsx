@@ -7,6 +7,10 @@ import { GuestbookRepository } from '@/guestbooks/domain/repositories/GuestbookR
 import { GuestbookRepositoryProvider } from '@/sections/guestbooks/GuestbookRepositoryProvider'
 import { Guestbooks } from '@/sections/guestbooks/ManageGuestbooks'
 import { UpwardHierarchyNodeMother } from '@tests/component/shared/hierarchy/domain/models/UpwardHierarchyNodeMother'
+import {
+  DvObjectType,
+  UpwardHierarchyNode
+} from '@/shared/hierarchy/domain/models/UpwardHierarchyNode'
 
 describe('ManageGuestbooks', () => {
   const collectionRepository = {} as CollectionRepository
@@ -72,6 +76,18 @@ describe('ManageGuestbooks', () => {
     dataverseId: 17,
     usageCount: 8,
     responseCount: 6
+  }
+  const guestbookWithoutStats: Guestbook = {
+    id: 14,
+    name: 'Stats Missing Guestbook',
+    enabled: true,
+    emailRequired: false,
+    nameRequired: false,
+    institutionRequired: false,
+    positionRequired: false,
+    customQuestions: [],
+    createTime: '2026-06-01T00:00:00.000Z',
+    dataverseId: 17
   }
 
   const TranslationPreloader = ({ children }: { children: ReactNode }) => {
@@ -218,6 +234,41 @@ describe('ManageGuestbooks', () => {
     ])
   })
 
+  it('sorts guestbooks by usage count with missing stats treated as zero and toggles direction', () => {
+    ;(guestbookRepository.getGuestbooksByCollectionId as Cypress.Agent<sinon.SinonStub>).resolves([
+      guestbook,
+      guestbookWithoutStats,
+      localGuestbookLater
+    ])
+
+    mountComponent()
+
+    cy.get('thead')
+      .findByRole('button', { name: /^Usage$/i })
+      .click()
+
+    getRenderedGuestbookNames().should('deep.equal', [
+      'Stats Missing Guestbook',
+      'zeta local guestbook',
+      'Downloadable Guestbook'
+    ])
+
+    cy.contains('tbody tr', 'Stats Missing Guestbook').within(() => {
+      cy.get('td').eq(2).should('have.text', '0')
+      cy.get('td').eq(3).should('have.text', '0')
+    })
+
+    cy.get('thead')
+      .findByRole('button', { name: /^Usage$/i })
+      .click()
+
+    getRenderedGuestbookNames().should('deep.equal', [
+      'Downloadable Guestbook',
+      'zeta local guestbook',
+      'Stats Missing Guestbook'
+    ])
+  })
+
   it('sorts guestbooks by response count', () => {
     mountComponent()
 
@@ -230,6 +281,36 @@ describe('ManageGuestbooks', () => {
       'Alpha Root Guestbook',
       'zeta local guestbook',
       'Beta Local Guestbook'
+    ])
+  })
+
+  it('sorts guestbooks by response count with missing stats treated as zero and toggles direction', () => {
+    ;(guestbookRepository.getGuestbooksByCollectionId as Cypress.Agent<sinon.SinonStub>).resolves([
+      guestbook,
+      guestbookWithoutStats,
+      localGuestbookLater
+    ])
+
+    mountComponent()
+
+    cy.get('thead')
+      .findByRole('button', { name: /^Responses$/i })
+      .click()
+
+    getRenderedGuestbookNames().should('deep.equal', [
+      'Stats Missing Guestbook',
+      'Downloadable Guestbook',
+      'zeta local guestbook'
+    ])
+
+    cy.get('thead')
+      .findByRole('button', { name: /^Responses$/i })
+      .click()
+
+    getRenderedGuestbookNames().should('deep.equal', [
+      'zeta local guestbook',
+      'Downloadable Guestbook',
+      'Stats Missing Guestbook'
     ])
   })
 
@@ -290,6 +371,44 @@ describe('ManageGuestbooks', () => {
     )
 
     cy.findByLabelText('Include Guestbooks from Root').should('not.exist')
+  })
+
+  it('uses Root in the include guestbooks checkbox label when the root hierarchy name is missing', () => {
+    const rootNodeWithoutName = new UpwardHierarchyNode(
+      undefined as unknown as string,
+      DvObjectType.COLLECTION,
+      'root'
+    )
+    const subCollectionNode = new UpwardHierarchyNode(
+      'SubCollection',
+      DvObjectType.COLLECTION,
+      '17',
+      undefined,
+      undefined,
+      true,
+      rootNodeWithoutName
+    )
+    collectionRepository.getById = cy.stub().resolves(
+      CollectionMother.create({
+        id: '17',
+        name: 'SubCollection',
+        hierarchy: subCollectionNode
+      })
+    )
+
+    mountComponent()
+
+    cy.findByLabelText('Include Guestbooks from Root').should('exist')
+  })
+
+  it('renders the collection not found page when the collection cannot be fetched', () => {
+    collectionRepository.getById = cy.stub().rejects(new Error('missing collection'))
+
+    mountComponent()
+
+    cy.findByTestId('not-found-page').should('exist')
+    cy.findByText(/We can't find the/i).should('exist')
+    cy.findByText('Collection').should('exist')
   })
 
   it('opens and closes the preview guestbook modal from the page ui', () => {
