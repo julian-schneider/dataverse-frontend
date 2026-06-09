@@ -7,6 +7,7 @@ import { ErrorPage } from '@/sections/error-page/ErrorPage'
 import { AppLoader } from '@/sections/shared/layout/app-loader/AppLoader'
 import { AuthCallback } from '@/sections/auth-callback/AuthCallback'
 import { SessionProvider } from '@/sections/session/SessionProvider'
+import { GuestbookSkeleton } from '@/sections/guestbooks/GuestbookSkeleton'
 import { ProtectedRoute } from './ProtectedRoute'
 
 const userRepository = new UserJSDataverseRepository()
@@ -331,7 +332,7 @@ export const routes: RouteObject[] = [
               {
                 path: Route.GUESTBOOKS,
                 element: (
-                  <Suspense fallback={<AppLoader />}>
+                  <Suspense fallback={<GuestbookSkeleton />}>
                     <GuestbooksPage />
                   </Suspense>
                 ),
@@ -349,7 +350,7 @@ export const routes: RouteObject[] = [
               {
                 path: Route.GUESTBOOKS_CREATE,
                 element: (
-                  <Suspense fallback={<AppLoader />}>
+                  <Suspense fallback={<GuestbookSkeleton />}>
                     <CreateGuestbookPage />
                   </Suspense>
                 ),

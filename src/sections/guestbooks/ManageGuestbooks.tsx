@@ -13,6 +13,7 @@ import { NotFoundPage } from '@/sections/not-found-page/NotFoundPage'
 import { BreadcrumbsGenerator } from '@/sections/shared/hierarchy/BreadcrumbsGenerator'
 import { SeparationLine } from '@/sections/shared/layout/SeparationLine/SeparationLine'
 import { downloadFile } from '@/sections/shared/citation/citation-download/useDownloadCitation'
+import { useLoading } from '@/shared/contexts/loading/LoadingContext'
 import { GuestbookActionButtons } from './action-buttons/GuestbookActionButtons'
 import { CreateGuestbookButton } from './create-guestbooks/CreateGuestbookButton'
 import { GuestbookSkeleton } from './GuestbookSkeleton'
@@ -39,6 +40,7 @@ export const Guestbooks = ({ collectionRepository, collectionId }: GuestbooksPro
   const [isDownloadingAllResponses, setIsDownloadingAllResponses] = useState(false)
   const [downloadingGuestbookId, setDownloadingGuestbookId] = useState<number | undefined>()
   const [downloadResponsesError, setDownloadResponsesError] = useState<string | null>(null)
+  const { setIsLoading } = useLoading()
   const guestbookRepository = useGuestbookRepository()
 
   const { collection, isLoading } = useCollection(collectionRepository, collectionId)
@@ -51,10 +53,15 @@ export const Guestbooks = ({ collectionRepository, collectionId }: GuestbooksPro
   const rootCollectionNames = collection?.hierarchy?.toArray().map((node) => node.name) ?? []
 
   const currentDataverseId = Number(collection?.id) || 1
+  const isLoadingData = isLoading || isLoadingGuestbooksByCollectionId
 
   useEffect(() => {
     setDisplayGuestbooks(guestbooks)
   }, [guestbooks])
+
+  useEffect(() => {
+    setIsLoading(isLoadingData)
+  }, [isLoadingData, setIsLoading])
 
   const filteredGuestbooks = useMemo(
     () =>
@@ -185,7 +192,7 @@ export const Guestbooks = ({ collectionRepository, collectionId }: GuestbooksPro
     return <NotFoundPage dvObjectNotFoundType="collection" />
   }
 
-  if (isLoading || isLoadingGuestbooksByCollectionId || !collection) {
+  if (isLoadingData || !collection) {
     return <GuestbookSkeleton />
   }
 
@@ -216,7 +223,7 @@ export const Guestbooks = ({ collectionRepository, collectionId }: GuestbooksPro
 
       <div className={styles['table-actions']}>
         <div className={styles['table-actions-left']}>
-          {rootCollectionNames.length > 0 && (
+          {rootCollectionNames.length > 1 && (
             <Form.Group.Checkbox
               id="include-guestbooks-from-root"
               label={t('filters.includeFromRoot', { root: rootCollectionNames[0] ?? 'Root' })}

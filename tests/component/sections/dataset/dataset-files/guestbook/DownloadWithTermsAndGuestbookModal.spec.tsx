@@ -637,7 +637,7 @@ describe('DownloadWithTermsAndGuestbookModal', () => {
       .parents('div')
       .first()
       .find('textarea')
-      .type('For a replication package')
+      .type('For a replication package{enter}With a second line')
 
     cy.findByText('Preferred format').parents('div').first().find('button').click()
     cy.findByText('JSON').should('exist')
@@ -660,7 +660,10 @@ describe('DownloadWithTermsAndGuestbookModal', () => {
           position: undefined,
           answers: [
             { id: 'custom-question-2-0', value: 'CSV' },
-            { id: 'custom-question-1-1', value: 'For a replication package' }
+            {
+              id: 'custom-question-1-1',
+              value: ['For a replication package', 'With a second line']
+            }
           ]
         }
       })

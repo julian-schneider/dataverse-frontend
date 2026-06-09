@@ -6,6 +6,7 @@ import { Guestbook } from '@/guestbooks/domain/models/Guestbook'
 import { GuestbookRepository } from '@/guestbooks/domain/repositories/GuestbookRepository'
 import { GuestbookRepositoryProvider } from '@/sections/guestbooks/GuestbookRepositoryProvider'
 import { Guestbooks } from '@/sections/guestbooks/ManageGuestbooks'
+import { UpwardHierarchyNodeMother } from '@tests/component/shared/hierarchy/domain/models/UpwardHierarchyNodeMother'
 
 describe('ManageGuestbooks', () => {
   const collectionRepository = {} as CollectionRepository
@@ -90,7 +91,15 @@ describe('ManageGuestbooks', () => {
     collectionRepository.getById = cy.stub().resolves(
       CollectionMother.create({
         id: '17',
-        name: 'Root'
+        name: 'SubCollection',
+        hierarchy: UpwardHierarchyNodeMother.createSubCollection({
+          id: '17',
+          name: 'SubCollection',
+          parent: UpwardHierarchyNodeMother.createCollection({
+            id: 'root',
+            name: 'Root'
+          })
+        })
       })
     )
 
@@ -256,6 +265,31 @@ describe('ManageGuestbooks', () => {
 
     cy.findByLabelText('Include Guestbooks from Root').click()
     cy.findByText('Alpha Root Guestbook').should('exist')
+  })
+
+  it('hides the include guestbooks checkbox at the root collection', () => {
+    collectionRepository.getById = cy.stub().resolves(
+      CollectionMother.create({
+        id: 'root',
+        name: 'Root',
+        hierarchy: UpwardHierarchyNodeMother.createCollection({
+          id: 'root',
+          name: 'Root'
+        })
+      })
+    )
+
+    cy.customMount(
+      <GuestbookRepositoryProvider repository={guestbookRepository}>
+        <Suspense fallback="loading">
+          <TranslationPreloader>
+            <Guestbooks collectionRepository={collectionRepository} collectionId="root" />
+          </TranslationPreloader>
+        </Suspense>
+      </GuestbookRepositoryProvider>
+    )
+
+    cy.findByLabelText('Include Guestbooks from Root').should('not.exist')
   })
 
   it('opens and closes the preview guestbook modal from the page ui', () => {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { type CreateGuestbookDTO } from '@iqss/dataverse-client-javascript'
 import { Alert, Button, Col, Form, Row } from '@iqss/dataverse-design-system'
@@ -10,6 +10,7 @@ import { RouteWithParams } from '@/sections/Route.enum'
 import { useCollection } from '@/sections/collection/useCollection'
 import { NotFoundPage } from '@/sections/not-found-page/NotFoundPage'
 import { BreadcrumbsGenerator } from '@/sections/shared/hierarchy/BreadcrumbsGenerator'
+import { useLoading } from '@/shared/contexts/loading/LoadingContext'
 import { useGuestbookRepository } from '../GuestbookRepositoryContext'
 import { GuestbookSkeleton } from '../GuestbookSkeleton'
 import { useCreateGuestbook } from './useCreateGuestbook'
@@ -32,6 +33,7 @@ export const CreateGuestbook = ({ collectionId, collectionRepository }: CreateGu
   const { t } = useTranslation('guestbooks')
   const navigate: NavigateFunction = useNavigate()
   const guestbookRepository = useGuestbookRepository()
+  const { setIsLoading } = useLoading()
   const { collection, isLoading } = useCollection(collectionRepository, collectionId)
   const [guestbookName, setGuestbookName] = useState('')
   const [nameRequired, setNameRequired] = useState(false)
@@ -58,6 +60,10 @@ export const CreateGuestbook = ({ collectionId, collectionRepository }: CreateGu
       onSuccessfulCreate: navigateToGuestbooks
     }
   )
+
+  useEffect(() => {
+    setIsLoading(isLoading)
+  }, [isLoading, setIsLoading])
 
   const updateQuestion = (
     questionId: number,

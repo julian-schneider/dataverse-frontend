@@ -193,7 +193,7 @@ export function DownloadWithTermsAndGuestbookModal({
 
         answers.push({
           id: resolveAnswerId(fieldName, question, guestbook),
-          value
+          value: question.type === 'textarea' ? value.split(/\r?\n/) : value
         })
 
         return answers
