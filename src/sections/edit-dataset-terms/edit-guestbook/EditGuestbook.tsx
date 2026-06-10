@@ -14,8 +14,8 @@ import { useAssignDatasetGuestbook } from './useAssignDatasetGuestbook'
 import { useRemoveDatasetGuestbook } from './useRemoveDatasetGuestbook'
 import { useDataset } from '../../dataset/DatasetContext'
 import { PreviewGuestbookModal } from '@/sections/guestbooks/preview-modal/PreviewGuestbookModal'
-import styles from './EditGuestbook.module.scss'
 import { useGuestbookRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
+import styles from './EditGuestbook.module.scss'
 
 interface EditGuestbookProps {
   onPreview?: () => void

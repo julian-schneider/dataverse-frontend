@@ -7,8 +7,8 @@ import { Validator } from '@/shared/helpers/Validator'
 import { type ValidTokenNotLinkedAccountFormData } from './types'
 import { TermsOfUse } from '@/info/domain/models/TermsOfUse'
 import { SubmissionStatus, useSubmitUser } from './useSubmitUser'
-import styles from './FormFields.module.scss'
 import { useUserRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
+import styles from './FormFields.module.scss'
 
 interface FormFieldsProps {
   formDefaultValues: ValidTokenNotLinkedAccountFormData

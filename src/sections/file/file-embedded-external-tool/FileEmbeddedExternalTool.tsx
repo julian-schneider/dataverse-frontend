@@ -10,8 +10,8 @@ import { getFileExternalToolResolved } from '@/externalTools/domain/useCases/Get
 import { JSDataverseWriteErrorHandler } from '@/shared/helpers/JSDataverseWriteErrorHandler'
 import { File } from '@/files/domain/models/File'
 import { FilePageHelper } from '../FilePageHelper'
-import styles from './FileEmbeddedExternalTool.module.scss'
 import { useExternalToolsRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
+import styles from './FileEmbeddedExternalTool.module.scss'
 
 interface FileEmbeddedExternalToolProps {
   file: File

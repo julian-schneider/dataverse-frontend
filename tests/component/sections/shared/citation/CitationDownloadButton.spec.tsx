@@ -2,6 +2,7 @@ import { DatasetRepository } from '@/dataset/domain/repositories/DatasetReposito
 import { CitationDownloadButton } from '../../../../../src/sections/shared/citation/citation-download/CitationDownloadButton'
 import { FormattedCitation } from '@/dataset/domain/models/DatasetCitation'
 import { WithRepositories } from '@tests/component/WithRepositories'
+import { ViewStyledCitationModal } from '@/sections/shared/citation/citation-download/ViewStyledCitationModal'
 import i18next from '@/i18n'
 
 const datasetRepository: DatasetRepository = {} as DatasetRepository
@@ -18,6 +19,10 @@ describe('CitationDownloadButton', () => {
       cy.stub(win.URL, 'createObjectURL').as('createObjectURL').returns('mock-url')
       cy.stub(win.URL, 'revokeObjectURL').as('revokeObjectURL')
     })
+
+    cy.customMount(
+      <ViewStyledCitationModal show={true} handleClose={() => {}} citation={mockCitation} />
+    )
   })
 
   it('renders the button', () => {

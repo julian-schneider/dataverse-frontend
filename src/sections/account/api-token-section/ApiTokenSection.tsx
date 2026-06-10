@@ -9,9 +9,9 @@ import { TokenInfo } from '@/users/domain/models/TokenInfo'
 import { DateHelper } from '@/shared/helpers/DateHelper'
 import { Button } from '@iqss/dataverse-design-system'
 import { Alert } from '@iqss/dataverse-design-system'
+import { useUserRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
 import accountStyles from '../Account.module.scss'
 import styles from './ApiTokenSection.module.scss'
-import { useUserRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
 
 export const ApiTokenSection = () => {
   const { userRepository } = useUserRepositories()
