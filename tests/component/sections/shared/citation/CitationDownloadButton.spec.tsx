@@ -2,6 +2,7 @@ import { DatasetRepository } from '@/dataset/domain/repositories/DatasetReposito
 import { CitationDownloadButton } from '../../../../../src/sections/shared/citation/citation-download/CitationDownloadButton'
 import { FormattedCitation } from '@/dataset/domain/models/DatasetCitation'
 import { ViewStyledCitationModal } from '@/sections/shared/citation/citation-download/ViewStyledCitationModal'
+import { WithRepositories } from '@tests/component/WithRepositories'
 
 const datasetRepository: DatasetRepository = {} as DatasetRepository
 const mockCitation: FormattedCitation = {
@@ -20,7 +21,9 @@ describe('CitationDownloadButton', () => {
 
   it('renders the button', () => {
     cy.customMount(
-      <CitationDownloadButton datasetRepository={datasetRepository} datasetId="" version="" />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <CitationDownloadButton datasetId="" version="" />
+      </WithRepositories>
     )
     cy.findByRole('button', { name: 'Cite Dataset' }).should('exist')
   })
@@ -29,11 +32,9 @@ describe('CitationDownloadButton', () => {
     datasetRepository.getDatasetCitationInOtherFormats = cy.stub().resolves(mockCitation)
 
     cy.customMount(
-      <CitationDownloadButton
-        datasetRepository={datasetRepository}
-        datasetId="test-dataset"
-        version="1.0"
-      />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <CitationDownloadButton datasetId="test-dataset" version="1.0" />
+      </WithRepositories>
     )
 
     cy.findByRole('button', { name: 'Cite Dataset' }).click()
@@ -57,11 +58,9 @@ describe('CitationDownloadButton', () => {
     datasetRepository.getDatasetCitationInOtherFormats = cy.stub().resolves(mockCitation)
 
     cy.customMount(
-      <CitationDownloadButton
-        datasetRepository={datasetRepository}
-        datasetId="test-dataset"
-        version="1.0"
-      />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <CitationDownloadButton datasetId="test-dataset" version="1.0" />
+      </WithRepositories>
     )
 
     cy.findByRole('button', { name: 'Cite Dataset' }).click()
@@ -83,11 +82,9 @@ describe('CitationDownloadButton', () => {
     datasetRepository.getDatasetCitationInOtherFormats = cy.stub().resolves(mockCitation)
 
     cy.customMount(
-      <CitationDownloadButton
-        datasetRepository={datasetRepository}
-        datasetId="test-dataset"
-        version="1.0"
-      />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <CitationDownloadButton datasetId="test-dataset" version="1.0" />
+      </WithRepositories>
     )
 
     cy.findByRole('button', { name: 'Cite Dataset' }).click()
@@ -112,11 +109,9 @@ describe('CitationDownloadButton', () => {
     datasetRepository.getDatasetCitationInOtherFormats = cy.stub().resolves(mockCitation)
 
     cy.customMount(
-      <CitationDownloadButton
-        datasetRepository={datasetRepository}
-        datasetId="my-dataset"
-        version="2.0"
-      />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <CitationDownloadButton datasetId="my-dataset" version="2.0" />
+      </WithRepositories>
     )
 
     cy.findByRole('button', { name: 'Cite Dataset' }).click()
@@ -130,7 +125,9 @@ describe('CitationDownloadButton', () => {
   it('opens the dropdown list and displays the citation download options', () => {
     datasetRepository.getDatasetCitationInOtherFormats = cy.stub().resolves(mockCitation)
     cy.customMount(
-      <CitationDownloadButton datasetRepository={datasetRepository} datasetId="" version="" />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <CitationDownloadButton datasetId="" version="" />
+      </WithRepositories>
     )
     cy.findByRole('button', { name: 'Cite Dataset' }).click()
     cy.findByText('Download EndNote XML').should('exist')
@@ -144,7 +141,9 @@ describe('CitationDownloadButton', () => {
       .stub()
       .rejects(new Error('Download error'))
     cy.customMount(
-      <CitationDownloadButton datasetRepository={datasetRepository} datasetId="" version="" />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <CitationDownloadButton datasetId="" version="" />
+      </WithRepositories>
     )
     cy.findByRole('button', { name: 'Cite Dataset' }).click()
     cy.findByText('Download EndNote XML').click()
@@ -154,11 +153,9 @@ describe('CitationDownloadButton', () => {
   it('opens styled citation modal when View Styled Citation is clicked', () => {
     datasetRepository.getDatasetCitationInOtherFormats = cy.stub().resolves(mockCitation)
     cy.customMount(
-      <CitationDownloadButton
-        datasetRepository={datasetRepository}
-        datasetId="test-dataset"
-        version="1.0"
-      />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <CitationDownloadButton datasetId="test-dataset" version="1.0" />
+      </WithRepositories>
     )
 
     cy.customMount(
@@ -176,11 +173,9 @@ describe('CitationDownloadButton', () => {
     datasetRepository.getDatasetCitationInOtherFormats = cy.stub().resolves(mockCitation)
 
     cy.customMount(
-      <CitationDownloadButton
-        datasetRepository={datasetRepository}
-        datasetId="test-dataset"
-        version="1.0"
-      />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <CitationDownloadButton datasetId="test-dataset" version="1.0" />
+      </WithRepositories>
     )
 
     cy.findByRole('button', { name: 'Cite Dataset' }).click()
@@ -197,11 +192,9 @@ describe('CitationDownloadButton', () => {
       .rejects(new Error('Citation fetch error'))
 
     cy.customMount(
-      <CitationDownloadButton
-        datasetRepository={datasetRepository}
-        datasetId="test-dataset"
-        version="1.0"
-      />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <CitationDownloadButton datasetId="test-dataset" version="1.0" />
+      </WithRepositories>
     )
 
     cy.findByRole('button', { name: 'Cite Dataset' }).click()
