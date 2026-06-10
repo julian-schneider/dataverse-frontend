@@ -8,6 +8,8 @@ This changelog follows the principles of [Keep a Changelog](https://keepachangel
 
 ### Added
 
+- Dataset Templates UI integration, including create/edit flows, previews, and skeleton states.
+
 ### Changed
 
 - File pages now include a "Cite Data File" dropdown for downloading file citations in EndNote XML, RIS, and BibTeX formats.
