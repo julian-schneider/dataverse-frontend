@@ -5,21 +5,18 @@ import { toast } from 'react-toastify'
 import { Form, Row, Col, Button, Alert } from '@iqss/dataverse-design-system'
 import styles from '../edit-license-and-terms/EditLicenseAndTerms.module.scss'
 import { TermsOfAccess } from '@/dataset/domain/models/Dataset'
-import { DatasetRepository } from '@/dataset/domain/repositories/DatasetRepository'
 import { useDataset } from '../../dataset/DatasetContext'
 import { useUpdateTermsOfAccess } from './useUpdateTermsOfAccess'
 import { useNavigate } from 'react-router-dom'
 import { buildDatasetDraftReturnUrl, buildDatasetTermsReturnUrl } from '../datasetTermsNavigation'
+import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
 
 interface EditTermsOfAccessProps {
-  datasetRepository: DatasetRepository
   onFormStateChange?: (isDirty: boolean) => void
 }
 
-export function EditTermsOfAccess({
-  datasetRepository,
-  onFormStateChange
-}: EditTermsOfAccessProps) {
+export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps) {
+  const { datasetRepository } = useDatasetRepositories()
   const { t } = useTranslation('dataset')
   const { t: tShared } = useTranslation('shared')
   const { dataset, refreshDataset } = useDataset()

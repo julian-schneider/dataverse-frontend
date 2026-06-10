@@ -7,10 +7,10 @@ import { Form, Row, Col, Button, Alert } from '@iqss/dataverse-design-system'
 import { CustomTerms } from '../../../dataset/domain/models/Dataset'
 import { LicenseRepository } from '../../../licenses/domain/repositories/LicenseRepository'
 import { useGetLicenses } from './useGetLicenses'
-import { DatasetRepository } from '@/dataset/domain/repositories/DatasetRepository'
 import { useDataset } from '../../dataset/DatasetContext'
 import { useUpdateDatasetLicense } from './useUpdateDatasetLicense'
 import { buildDatasetDraftReturnUrl, buildDatasetTermsReturnUrl } from '../datasetTermsNavigation'
+import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
 import styles from './EditLicenseAndTerms.module.scss'
 
 const CUSTOM_LICENSE_VALUE = 'CUSTOM' as const
@@ -22,15 +22,14 @@ interface EditLicenseAndTermsFormData {
 
 interface EditLicenseAndTermsProps {
   licenseRepository: LicenseRepository
-  datasetRepository: DatasetRepository
   onFormStateChange?: (isDirty: boolean) => void
 }
 
 export function EditLicenseAndTerms({
   licenseRepository,
-  datasetRepository,
   onFormStateChange
 }: EditLicenseAndTermsProps) {
+  const { datasetRepository } = useDatasetRepositories()
   const { t } = useTranslation('dataset')
   const { t: tShared } = useTranslation('shared')
   const { dataset, refreshDataset } = useDataset()
