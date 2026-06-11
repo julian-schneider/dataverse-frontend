@@ -1,7 +1,7 @@
 {
   "title": "Dataset Guestbooks",
   "filters": {
-    "includeFromRoot": "Include Guestbooks from {{root}}"
+    "includeFromParent": "Include Guestbooks from {{parent}}"
   },
   "actions": {
     "create": "Create Dataset Guestbook",

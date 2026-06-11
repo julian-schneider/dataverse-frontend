@@ -4,8 +4,9 @@ export const createGuestbookRepositoryStub = (): GuestbookRepository => ({
   createGuestbook: cy.stub(),
   getGuestbook: cy.stub(),
   getGuestbooksByCollectionId: cy.stub(),
+  getGuestbookResponsesByGuestbookId: cy.stub(),
   setGuestbookEnabled: cy.stub(),
-  downloadGuestbookResponsesByDataverseId: cy.stub(),
+  downloadGuestbookResponsesByCollectionId: cy.stub(),
   downloadGuestbookResponsesOfAGuestbook: cy.stub(),
   assignDatasetGuestbook: cy.stub(),
   removeDatasetGuestbook: cy.stub()

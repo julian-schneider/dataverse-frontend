@@ -1,5 +1,8 @@
 {
   "title": "Libros de visitas del dataset",
+  "filters": {
+    "includeFromParent": "Incluir libros de visitas de {{parent}}"
+  },
   "errors": {
     "getGuestbook": "Algo salió mal al obtener el libro de visitas. Inténtalo de nuevo más tarde."
   },

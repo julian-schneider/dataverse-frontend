@@ -99,8 +99,9 @@ describe('EditGuestbook', () => {
       createGuestbook: cy.stub(),
       getGuestbook: cy.stub(),
       getGuestbooksByCollectionId: cy.stub().resolves(mockGuestbooks),
+      getGuestbookResponsesByGuestbookId: cy.stub(),
       setGuestbookEnabled: cy.stub(),
-      downloadGuestbookResponsesByDataverseId: cy.stub(),
+      downloadGuestbookResponsesByCollectionId: cy.stub(),
       downloadGuestbookResponsesOfAGuestbook: cy.stub(),
       assignDatasetGuestbook: cy.stub().resolves(undefined),
       removeDatasetGuestbook: cy.stub().resolves(undefined)
@@ -116,8 +117,32 @@ describe('EditGuestbook', () => {
 
     cy.findByLabelText('Data Request Guestbook').should('be.checked')
     cy.findByLabelText('Secondary Guestbook').should('not.be.checked')
+    cy.wrap(
+      guestbookRepository.getGuestbooksByCollectionId as Cypress.Agent<sinon.SinonStub>
+    ).should('have.been.calledWith', 'root', false, false)
     cy.findByRole('button', { name: 'Clear Selection' }).should('be.enabled')
     cy.findByRole('button', { name: 'Save Changes' }).should('be.disabled')
+  })
+
+  it('includes inherited guestbooks when the dataset is in a subcollection', () => {
+    const dataset = DatasetMother.create({
+      guestbookId: mockGuestbooks[0].id,
+      hierarchy: UpwardHierarchyNodeMother.createDataset({
+        parent: UpwardHierarchyNodeMother.createSubCollection({
+          id: '17',
+          name: 'SubCollection',
+          parent: UpwardHierarchyNodeMother.createCollection({ id: 'root', name: 'Root' })
+        })
+      })
+    })
+
+    cy.customMount(
+      withProviders(<EditGuestbook guestbookRepository={guestbookRepository} />, dataset)
+    )
+
+    cy.wrap(
+      guestbookRepository.getGuestbooksByCollectionId as Cypress.Agent<sinon.SinonStub>
+    ).should('have.been.calledWith', '17', false, true)
   })
 
   it('enables Save Changes when selecting a different guestbook', () => {

@@ -1,5 +1,6 @@
 import { type CreateGuestbookDTO } from '@iqss/dataverse-client-javascript'
 import { Guestbook } from '../models/Guestbook'
+import { GuestbookResponseSubset } from '../models/GuestbookResponse'
 
 export interface GuestbookRepository {
   createGuestbook: (
@@ -9,14 +10,22 @@ export interface GuestbookRepository {
   getGuestbook: (guestbookId: number) => Promise<Guestbook>
   getGuestbooksByCollectionId: (
     collectionIdOrAlias: number | string,
-    includeStats?: boolean
+    includeStats?: boolean,
+    includeInherited?: boolean
   ) => Promise<Guestbook[]>
+  getGuestbookResponsesByGuestbookId: (
+    guestbookId: number,
+    limit?: number,
+    offset?: number
+  ) => Promise<GuestbookResponseSubset>
   setGuestbookEnabled: (
     collectionIdOrAlias: number | string,
     guestbookId: number,
     enabled: boolean
   ) => Promise<void>
-  downloadGuestbookResponsesByDataverseId: (dataverseId: number | string) => Promise<string>
+  downloadGuestbookResponsesByCollectionId: (
+    collectionIdOrAlias: number | string
+  ) => Promise<string>
   downloadGuestbookResponsesOfAGuestbook: (
     dataverseId: number | string,
     guestbookId: number

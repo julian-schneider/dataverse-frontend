@@ -8,6 +8,7 @@ interface GuestbookActionButtonsProps {
   isEnabled: boolean
   onView: () => void
   onToggleEnabled: () => void
+  canToggleEnabled?: boolean
   isTogglingEnabled?: boolean
   onDownloadResponses: () => void
   isDownloadingResponses?: boolean
@@ -19,6 +20,7 @@ export const GuestbookActionButtons = ({
   isEnabled,
   onView,
   onToggleEnabled,
+  canToggleEnabled = true,
   isTogglingEnabled = false,
   onDownloadResponses,
   isDownloadingResponses = false,
@@ -31,14 +33,16 @@ export const GuestbookActionButtons = ({
   return (
     <>
       <ButtonGroup className={actionGroupClassName} aria-label={t('table.action')}>
-        <Button
-          variant="secondary"
-          size="sm"
-          className={toggleStatusButtonClassName}
-          onClick={onToggleEnabled}
-          disabled={isTogglingEnabled}>
-          {isEnabled ? t('actions.disable') : t('actions.enable')}
-        </Button>
+        {canToggleEnabled && (
+          <Button
+            variant="secondary"
+            size="sm"
+            className={toggleStatusButtonClassName}
+            onClick={onToggleEnabled}
+            disabled={isTogglingEnabled}>
+            {isEnabled ? t('actions.disable') : t('actions.enable')}
+          </Button>
+        )}
         <Tooltip placement="top" overlay={t('actions.view')}>
           <Button variant="secondary" size="sm" onClick={onView} aria-label={t('actions.view')}>
             <Eye />

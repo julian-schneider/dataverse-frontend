@@ -9,13 +9,15 @@ interface UseGetGuestbooksByCollectionIdProps {
   collectionIdOrAlias?: number | string
   autoFetch?: boolean
   includeStats?: boolean
+  includeInherited?: boolean
 }
 
 export const useGetGuestbooksByCollectionId = ({
   guestbookRepository,
   collectionIdOrAlias,
   autoFetch = true,
-  includeStats = false
+  includeStats = false,
+  includeInherited = false
 }: UseGetGuestbooksByCollectionIdProps) => {
   const [guestbooks, setGuestbooks] = useState<Guestbook[]>([])
   const [isLoadingGuestbooksByCollectionId, setIsLoadingGuestbooksByCollectionId] =
@@ -38,7 +40,8 @@ export const useGetGuestbooksByCollectionId = ({
     try {
       const fetchedGuestbooks = await guestbookRepository.getGuestbooksByCollectionId(
         collectionIdOrAlias,
-        includeStats
+        includeStats,
+        includeInherited
       )
       setGuestbooks(Array.isArray(fetchedGuestbooks) ? fetchedGuestbooks : [])
     } catch (err) {
@@ -56,7 +59,7 @@ export const useGetGuestbooksByCollectionId = ({
     } finally {
       setIsLoadingGuestbooksByCollectionId(false)
     }
-  }, [collectionIdOrAlias, guestbookRepository, includeStats])
+  }, [collectionIdOrAlias, guestbookRepository, includeInherited, includeStats])
 
   useEffect(() => {
     if (autoFetch) {

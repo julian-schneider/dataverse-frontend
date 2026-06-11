@@ -36,6 +36,8 @@ export function EditGuestbook({
   const navigate = useNavigate()
   const collectionIdOrAlias = dataset?.parentCollectionNode?.id
   const collectionName = dataset?.parentCollectionNode?.name ?? ''
+  const includeInheritedGuestbooks = Boolean(dataset?.parentCollectionNode?.parent)
+  //TODO: we should add includeInheritedGuestbooks boolean to dataset api response
 
   const navigateToDatasetView = useCallback(() => {
     if (!dataset) return
@@ -59,7 +61,8 @@ export function EditGuestbook({
   const { guestbooks, isLoadingGuestbooksByCollectionId, errorGetGuestbooksByCollectionId } =
     useGetGuestbooksByCollectionId({
       guestbookRepository,
-      collectionIdOrAlias
+      collectionIdOrAlias,
+      includeInherited: includeInheritedGuestbooks
     })
   const enabledGuestbooks = useMemo(
     () => guestbooks.filter((guestbook) => guestbook.enabled),

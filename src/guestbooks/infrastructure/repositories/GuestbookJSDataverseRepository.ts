@@ -1,11 +1,13 @@
 import {
   assignDatasetGuestbook,
   createGuestbook,
-  downloadGuestbookResponsesByDataverseId,
+  downloadGuestbookResponsesByCollectionId,
   downloadGuestbookResponsesOfAGuestbook,
   type CreateGuestbookDTO,
+  type GuestbookResponseSubset,
   getGuestbooksByCollectionId,
   getGuestbook,
+  getGuestbookResponsesByGuestbookId,
   setGuestbookEnabled,
   removeDatasetGuestbook
 } from '@iqss/dataverse-client-javascript'
@@ -26,11 +28,20 @@ export class GuestbookJSDataverseRepository implements GuestbookRepository {
 
   getGuestbooksByCollectionId(
     collectionIdOrAlias: number | string,
-    includeStats = false
+    includeStats = false,
+    includeInherited = false
   ): Promise<Guestbook[]> {
     return getGuestbooksByCollectionId
-      .execute(collectionIdOrAlias, includeStats)
+      .execute(collectionIdOrAlias, includeStats, includeInherited)
       .then((guestbooks) => guestbooks as Guestbook[])
+  }
+
+  getGuestbookResponsesByGuestbookId(
+    guestbookId: number,
+    limit?: number,
+    offset?: number
+  ): Promise<GuestbookResponseSubset> {
+    return getGuestbookResponsesByGuestbookId.execute(guestbookId, limit, offset)
   }
 
   setGuestbookEnabled(
@@ -41,8 +52,8 @@ export class GuestbookJSDataverseRepository implements GuestbookRepository {
     return setGuestbookEnabled.execute(collectionIdOrAlias, guestbookId, enabled)
   }
 
-  downloadGuestbookResponsesByDataverseId(dataverseId: number | string): Promise<string> {
-    return downloadGuestbookResponsesByDataverseId.execute(dataverseId)
+  downloadGuestbookResponsesByCollectionId(collectionIdOrAlias: number | string): Promise<string> {
+    return downloadGuestbookResponsesByCollectionId.execute(collectionIdOrAlias)
   }
 
   downloadGuestbookResponsesOfAGuestbook(

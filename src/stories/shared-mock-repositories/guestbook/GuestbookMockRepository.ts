@@ -1,5 +1,6 @@
 import {
   type CreateGuestbookDTO,
+  type GuestbookResponseSubset,
   type Guestbook as JSDataverseGuestbook
 } from '@iqss/dataverse-client-javascript'
 import { GuestbookRepository } from '@/guestbooks/domain/repositories/GuestbookRepository'
@@ -54,7 +55,8 @@ export class GuestbookMockRepository implements GuestbookRepository {
 
   getGuestbooksByCollectionId(
     _collectionIdOrAlias: number | string,
-    _includeStats?: boolean
+    _includeStats?: boolean,
+    _includeInherited?: boolean
   ): Promise<Guestbook[]> {
     return Promise.resolve(storybookClientGuestbooks as Guestbook[])
   }
@@ -67,7 +69,18 @@ export class GuestbookMockRepository implements GuestbookRepository {
     return Promise.resolve()
   }
 
-  downloadGuestbookResponsesByDataverseId(_dataverseId: number | string): Promise<string> {
+  getGuestbookResponsesByGuestbookId(
+    _guestbookId: number,
+    _limit?: number,
+    _offset?: number
+  ): Promise<GuestbookResponseSubset> {
+    return Promise.resolve({
+      guestbookResponses: [],
+      totalGuestbookResponseCount: 0
+    })
+  }
+
+  downloadGuestbookResponsesByCollectionId(_collectionIdOrAlias: number | string): Promise<string> {
     return Promise.resolve('name,email\nJane Doe,jane@example.com')
   }
 

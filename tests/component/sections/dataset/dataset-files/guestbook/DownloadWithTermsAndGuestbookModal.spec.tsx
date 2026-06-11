@@ -150,8 +150,9 @@ describe('DownloadWithTermsAndGuestbookModal', () => {
           return getGuestbookImpl(guestbookId)
         }),
       getGuestbooksByCollectionId: cy.stub().resolves([]),
+      getGuestbookResponsesByGuestbookId: cy.stub(),
       setGuestbookEnabled: cy.stub(),
-      downloadGuestbookResponsesByDataverseId: cy.stub(),
+      downloadGuestbookResponsesByCollectionId: cy.stub(),
       downloadGuestbookResponsesOfAGuestbook: cy.stub(),
       assignDatasetGuestbook: (_datasetId: number | string, _guestbookId: number) =>
         Promise.resolve(),
@@ -318,7 +319,7 @@ describe('DownloadWithTermsAndGuestbookModal', () => {
     })
 
     cy.customMount(
-      withAnonymousSession(
+      withRepositories(
         <DownloadWithTermsAndGuestbookModal
           show
           handleClose={handleClose}
@@ -328,8 +329,9 @@ describe('DownloadWithTermsAndGuestbookModal', () => {
       )
     )
 
-    cy.findByLabelText(/^Name/).clear().type('Test User')
+    cy.findByLabelText(/^Name/).should('not.be.disabled').clear().type('Test User')
     cy.findByLabelText(/^Email/)
+      .should('not.be.disabled')
       .clear()
       .type('test.user@example.com')
     cy.findByRole('button', { name: 'Accept' }).click()
