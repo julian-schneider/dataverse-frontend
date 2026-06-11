@@ -50,7 +50,7 @@ export const CreateGuestbook = ({ collectionId, collectionRepository }: CreateGu
     }
   ])
   const guestbooksGuideUrl =
-    'https://guides.dataverse.org/en/6.9/user/dataverse-management.html#dataset-guestbooks'
+    'https://guides.dataverse.org/en/latest/user/dataverse-management.html#dataset-guestbooks'
   const guestbooksRoute = RouteWithParams.GUESTBOOKS(collectionId)
   const navigateToGuestbooks = () => navigate(guestbooksRoute)
   const { isCreatingGuestbook, errorCreatingGuestbook, handleCreateGuestbook } = useCreateGuestbook(

@@ -23,11 +23,9 @@ export interface GuestbookRepository {
     guestbookId: number,
     enabled: boolean
   ) => Promise<void>
-  downloadGuestbookResponsesByCollectionId: (
-    collectionIdOrAlias: number | string
-  ) => Promise<string>
-  downloadGuestbookResponsesOfAGuestbook: (
-    dataverseId: number | string,
+  downloadGuestbookResponsesByCollectionId: (collectionId: number | string) => Promise<string>
+  downloadGuestbookResponsesByGuestbookId: (
+    collectionId: number | string,
     guestbookId: number
   ) => Promise<string>
   assignDatasetGuestbook: (datasetId: number | string, guestbookId: number) => Promise<void>

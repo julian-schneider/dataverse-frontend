@@ -102,6 +102,12 @@ describe('ManageGuestbooks', () => {
     localGuestbookLater,
     localGuestbookMostQuestions
   ]
+  const currentCollectionGuestbooks = [
+    guestbook,
+    localGuestbookLater,
+    localGuestbookMostQuestions,
+    guestbookWithoutStats
+  ]
 
   beforeEach(() => {
     collectionRepository.getById = cy.stub().resolves(
@@ -122,16 +128,24 @@ describe('ManageGuestbooks', () => {
     guestbookRepository = {
       createGuestbook: cy.stub(),
       getGuestbook: cy.stub(),
-      getGuestbooksByCollectionId: cy.stub().resolves(defaultGuestbooks),
+      getGuestbooksByCollectionId: cy
+        .stub()
+        .callsFake(
+          (
+            _collectionIdOrAlias: number | string,
+            _includeStats = false,
+            includeInherited = false
+          ) => Promise.resolve(includeInherited ? defaultGuestbooks : currentCollectionGuestbooks)
+        ),
       getGuestbookResponsesByGuestbookId: cy.stub(),
       setGuestbookEnabled: cy.stub().as('setGuestbookEnabled').resolves(undefined),
       downloadGuestbookResponsesByCollectionId: cy
         .stub()
         .as('downloadGuestbookResponsesByCollectionId')
         .resolves('name,email\nJane Doe,jane@example.com'),
-      downloadGuestbookResponsesOfAGuestbook: cy
+      downloadGuestbookResponsesByGuestbookId: cy
         .stub()
-        .as('downloadGuestbookResponsesOfAGuestbook')
+        .as('downloadGuestbookResponsesByGuestbookId')
         .resolves('name,email\nJane Doe,jane@example.com'),
       assignDatasetGuestbook: cy.stub(),
       removeDatasetGuestbook: cy.stub()
@@ -143,12 +157,12 @@ describe('ManageGuestbooks', () => {
     })
   })
 
-  const mountComponent = () =>
+  const mountComponent = (collectionId = '17') =>
     cy.customMount(
       <GuestbookRepositoryProvider repository={guestbookRepository}>
         <Suspense fallback="loading">
           <TranslationPreloader>
-            <Guestbooks collectionRepository={collectionRepository} collectionId="17" />
+            <Guestbooks collectionRepository={collectionRepository} collectionId={collectionId} />
           </TranslationPreloader>
         </Suspense>
       </GuestbookRepositoryProvider>
@@ -168,7 +182,7 @@ describe('ManageGuestbooks', () => {
       .findByRole('button', { name: 'Download responses' })
       .click()
 
-    cy.get('@downloadGuestbookResponsesOfAGuestbook').should('have.been.calledOnceWith', 17, 10)
+    cy.get('@downloadGuestbookResponsesByGuestbookId').should('have.been.calledOnceWith', 17, 10)
     cy.then(() => {
       expect(createElementSpy).to.have.been.calledWith('a')
     })
@@ -334,7 +348,10 @@ describe('ManageGuestbooks', () => {
 
     cy.wrap(
       guestbookRepository.getGuestbooksByCollectionId as Cypress.Agent<sinon.SinonStub>
-    ).should('have.been.calledOnceWith', '17', true, true)
+    ).should('have.been.calledWith', '17', true, true)
+    cy.wrap(
+      guestbookRepository.getGuestbooksByCollectionId as Cypress.Agent<sinon.SinonStub>
+    ).should('have.been.calledWith', '17', false, false)
   })
 
   it('fetches and filters inherited guestbooks when include guestbooks from parent is toggled', () => {
@@ -363,6 +380,7 @@ describe('ManageGuestbooks', () => {
 
     cy.findByLabelText('Include Guestbooks from Root').should('be.checked')
     cy.wrap(getGuestbooksByCollectionIdStub).should('have.been.calledWith', '17', true, true)
+    cy.wrap(getGuestbooksByCollectionIdStub).should('have.been.calledWith', '17', false, false)
 
     cy.then(() => {
       getGuestbooksByCollectionIdStub.resetHistory()
@@ -516,19 +534,55 @@ describe('ManageGuestbooks', () => {
     cy.findByText('The guestbook status has been updated.').should('exist')
   })
 
-  it('does not show enable or disable for inherited guestbooks from a parent collection', () => {
+  it('only shows view, copy, download, and view responses actions for inherited guestbooks from a parent collection', () => {
     mountComponent()
 
     cy.contains('tbody tr', 'Alpha Root Guestbook').within(() => {
+      cy.findByText('Guestbook created at root').should('exist')
       cy.findByRole('button', { name: 'Disable' }).should('not.exist')
       cy.findByRole('button', { name: 'Enable' }).should('not.exist')
       cy.findByRole('button', { name: 'View' }).should('exist')
+      cy.findByRole('button', { name: 'Copy' }).should('exist')
+      cy.findByRole('button', { name: 'Edit' }).should('not.exist')
       cy.findByRole('button', { name: 'Download responses' }).should('exist')
+      cy.findByRole('button', { name: 'View Responses' }).should('exist')
     })
 
-    cy.contains('tbody tr', 'Downloadable Guestbook')
-      .findByRole('button', { name: 'Disable' })
-      .should('exist')
+    cy.contains('tbody tr', 'Downloadable Guestbook').within(() => {
+      cy.findByRole('button', { name: 'Disable' }).should('exist')
+      cy.findByRole('button', { name: 'Edit' }).should('exist')
+    })
+  })
+
+  it('keeps current collection guestbook actions when the collection id is an alias', () => {
+    collectionRepository.getById = cy.stub().resolves(
+      CollectionMother.create({
+        id: 'subcollection',
+        name: 'SubCollection',
+        hierarchy: UpwardHierarchyNodeMother.createSubCollection({
+          id: 'subcollection',
+          name: 'SubCollection',
+          parent: UpwardHierarchyNodeMother.createCollection({
+            id: 'root',
+            name: 'Root'
+          })
+        })
+      })
+    )
+
+    mountComponent('subcollection')
+
+    cy.contains('tbody tr', 'Downloadable Guestbook').within(() => {
+      cy.findByText(/Guestbook created at/i).should('not.exist')
+      cy.findByRole('button', { name: 'Disable' }).should('exist')
+      cy.findByRole('button', { name: 'Edit' }).should('exist')
+    })
+
+    cy.contains('tbody tr', 'Alpha Root Guestbook').within(() => {
+      cy.findByText('Guestbook created at root').should('exist')
+      cy.findByRole('button', { name: 'Disable' }).should('not.exist')
+      cy.findByRole('button', { name: 'Edit' }).should('not.exist')
+    })
   })
 
   it('shows an error when toggling guestbook status fails', () => {
@@ -549,7 +603,7 @@ describe('ManageGuestbooks', () => {
 
   it('shows an error when guestbook response download fails', () => {
     ;(
-      guestbookRepository.downloadGuestbookResponsesOfAGuestbook as Cypress.Agent<sinon.SinonStub>
+      guestbookRepository.downloadGuestbookResponsesByGuestbookId as Cypress.Agent<sinon.SinonStub>
     ).rejects(new Error('download failed'))
 
     mountComponent()

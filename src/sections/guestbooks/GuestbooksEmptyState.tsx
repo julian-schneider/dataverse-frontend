@@ -17,7 +17,7 @@ export const GuestbooksEmptyState = ({ collectionId }: GuestbooksEmptyStateProps
 
   const generalInfoUrl = `/spa${RouteWithParams.EDIT_COLLECTION(collectionId)}`
   const guestbooksGuideUrl =
-    'https://guides.dataverse.org/en/6.9/user/dataverse-management.html#dataset-guestbooks'
+    'https://guides.dataverse.org/en/latest/user/dataverse-management.html#dataset-guestbooks'
 
   return (
     <div className={styles['empty-state']}>

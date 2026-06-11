@@ -2,7 +2,7 @@ import {
   assignDatasetGuestbook,
   createGuestbook,
   downloadGuestbookResponsesByCollectionId,
-  downloadGuestbookResponsesOfAGuestbook,
+  downloadGuestbookResponsesOfAGuestbook as downloadGuestbookResponsesByGuestbookId,
   type CreateGuestbookDTO,
   type GuestbookResponseSubset,
   getGuestbooksByCollectionId,
@@ -52,15 +52,15 @@ export class GuestbookJSDataverseRepository implements GuestbookRepository {
     return setGuestbookEnabled.execute(collectionIdOrAlias, guestbookId, enabled)
   }
 
-  downloadGuestbookResponsesByCollectionId(collectionIdOrAlias: number | string): Promise<string> {
-    return downloadGuestbookResponsesByCollectionId.execute(collectionIdOrAlias)
+  downloadGuestbookResponsesByCollectionId(collectionId: number | string): Promise<string> {
+    return downloadGuestbookResponsesByCollectionId.execute(collectionId)
   }
 
-  downloadGuestbookResponsesOfAGuestbook(
-    dataverseId: number | string,
+  downloadGuestbookResponsesByGuestbookId(
+    collectionId: number | string,
     guestbookId: number
   ): Promise<string> {
-    return downloadGuestbookResponsesOfAGuestbook.execute(dataverseId, guestbookId)
+    return downloadGuestbookResponsesByGuestbookId.execute(collectionId, guestbookId)
   }
 
   assignDatasetGuestbook(datasetId: number | string, guestbookId: number): Promise<void> {

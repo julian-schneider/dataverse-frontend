@@ -27,6 +27,7 @@ const guestbook: Guestbook = {
 const GuestbookActionButtonsTestWrapper = ({
   isEnabled = true,
   canToggleEnabled = true,
+  canEdit = true,
   isTogglingEnabled = false,
   isDownloadingResponses = false,
   onToggleEnabled = () => {},
@@ -34,6 +35,7 @@ const GuestbookActionButtonsTestWrapper = ({
 }: {
   isEnabled?: boolean
   canToggleEnabled?: boolean
+  canEdit?: boolean
   isTogglingEnabled?: boolean
   isDownloadingResponses?: boolean
   onToggleEnabled?: () => void
@@ -48,6 +50,7 @@ const GuestbookActionButtonsTestWrapper = ({
         onView={() => setShowPreview(true)}
         onToggleEnabled={onToggleEnabled}
         canToggleEnabled={canToggleEnabled}
+        canEdit={canEdit}
         isTogglingEnabled={isTogglingEnabled}
         onDownloadResponses={onDownloadResponses}
         isDownloadingResponses={isDownloadingResponses}
@@ -82,7 +85,20 @@ describe('GuestbookActionButtons', () => {
 
     cy.findByRole('button', { name: 'Disable' }).should('not.exist')
     cy.findByRole('button', { name: 'View' }).should('exist')
+    cy.findByRole('button', { name: 'Copy' }).should('exist')
+    cy.findByRole('button', { name: 'Edit' }).should('exist')
     cy.findByRole('button', { name: 'Download responses' }).should('exist')
+    cy.findByRole('button', { name: 'View Responses' }).should('exist')
+  })
+
+  it('does not render the edit button when editing is not allowed', () => {
+    cy.customMount(<GuestbookActionButtonsTestWrapper canEdit={false} />)
+
+    cy.findByRole('button', { name: 'View' }).should('exist')
+    cy.findByRole('button', { name: 'Copy' }).should('exist')
+    cy.findByRole('button', { name: 'Edit' }).should('not.exist')
+    cy.findByRole('button', { name: 'Download responses' }).should('exist')
+    cy.findByRole('button', { name: 'View Responses' }).should('exist')
   })
 
   it('opens and closes the preview guestbook modal from the view button', () => {

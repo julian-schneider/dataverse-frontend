@@ -9,6 +9,7 @@ interface GuestbookActionButtonsProps {
   onView: () => void
   onToggleEnabled: () => void
   canToggleEnabled?: boolean
+  canEdit?: boolean
   isTogglingEnabled?: boolean
   onDownloadResponses: () => void
   isDownloadingResponses?: boolean
@@ -21,6 +22,7 @@ export const GuestbookActionButtons = ({
   onView,
   onToggleEnabled,
   canToggleEnabled = true,
+  canEdit = true,
   isTogglingEnabled = false,
   onDownloadResponses,
   isDownloadingResponses = false,
@@ -57,15 +59,17 @@ export const GuestbookActionButtons = ({
             <Files />
           </Button>
         </Tooltip>
-        <Tooltip placement="top" overlay={t('actions.edit')}>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setShowNotImplementedModal(true)}
-            aria-label={t('actions.edit')}>
-            <Pencil />
-          </Button>
-        </Tooltip>
+        {canEdit && (
+          <Tooltip placement="top" overlay={t('actions.edit')}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowNotImplementedModal(true)}
+              aria-label={t('actions.edit')}>
+              <Pencil />
+            </Button>
+          </Tooltip>
+        )}
         <Tooltip placement="top" overlay={t('actions.downloadResponses')}>
           <Button
             variant="secondary"

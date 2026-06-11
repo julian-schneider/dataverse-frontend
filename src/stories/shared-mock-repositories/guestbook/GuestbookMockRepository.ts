@@ -84,7 +84,7 @@ export class GuestbookMockRepository implements GuestbookRepository {
     return Promise.resolve('name,email\nJane Doe,jane@example.com')
   }
 
-  downloadGuestbookResponsesOfAGuestbook(
+  downloadGuestbookResponsesByGuestbookId(
     _dataverseId: number | string,
     _guestbookId: number
   ): Promise<string> {

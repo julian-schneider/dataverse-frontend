@@ -203,7 +203,7 @@ describe('AccessFileMenu', () => {
       getGuestbookResponsesByGuestbookId: cy.stub(),
       setGuestbookEnabled: cy.stub(),
       downloadGuestbookResponsesByCollectionId: cy.stub(),
-      downloadGuestbookResponsesOfAGuestbook: cy.stub(),
+      downloadGuestbookResponsesByGuestbookId: cy.stub(),
       assignDatasetGuestbook: cy.stub().resolves(),
       removeDatasetGuestbook: cy.stub().resolves()
     }
@@ -339,7 +339,7 @@ describe('AccessFileMenu', () => {
       getGuestbookResponsesByGuestbookId: cy.stub(),
       setGuestbookEnabled: cy.stub(),
       downloadGuestbookResponsesByCollectionId: cy.stub(),
-      downloadGuestbookResponsesOfAGuestbook: cy.stub(),
+      downloadGuestbookResponsesByGuestbookId: cy.stub(),
       assignDatasetGuestbook: cy.stub().resolves(),
       removeDatasetGuestbook: cy.stub().resolves()
     }

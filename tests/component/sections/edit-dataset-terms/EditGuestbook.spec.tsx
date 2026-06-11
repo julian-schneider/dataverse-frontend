@@ -102,7 +102,7 @@ describe('EditGuestbook', () => {
       getGuestbookResponsesByGuestbookId: cy.stub(),
       setGuestbookEnabled: cy.stub(),
       downloadGuestbookResponsesByCollectionId: cy.stub(),
-      downloadGuestbookResponsesOfAGuestbook: cy.stub(),
+      downloadGuestbookResponsesByGuestbookId: cy.stub(),
       assignDatasetGuestbook: cy.stub().resolves(undefined),
       removeDatasetGuestbook: cy.stub().resolves(undefined)
     }

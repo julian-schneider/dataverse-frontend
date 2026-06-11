@@ -16,7 +16,7 @@ describe('useAssignDatasetGuestbook', () => {
       getGuestbookResponsesByGuestbookId: cy.stub(),
       setGuestbookEnabled: cy.stub(),
       downloadGuestbookResponsesByCollectionId: cy.stub(),
-      downloadGuestbookResponsesOfAGuestbook: cy.stub(),
+      downloadGuestbookResponsesByGuestbookId: cy.stub(),
       assignDatasetGuestbook: cy.stub(),
       removeDatasetGuestbook: cy.stub()
     }

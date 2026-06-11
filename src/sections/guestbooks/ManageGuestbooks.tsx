@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 import { CollectionRepository } from '@/collection/domain/repositories/CollectionRepository'
 import { Guestbook } from '@/guestbooks/domain/models/Guestbook'
 import { downloadGuestbookResponsesByCollectionId } from '@/guestbooks/domain/useCases/downloadGuestbookResponsesByCollectionId'
-import { downloadGuestbookResponsesOfAGuestbook } from '@/guestbooks/domain/useCases/downloadGuestbookResponsesOfAGuestbook'
+import { downloadGuestbookResponsesByGuestbookId } from '@/guestbooks/domain/useCases/downloadGuestbookResponsesByGuestbookId'
 import { setGuestbookEnabled } from '@/guestbooks/domain/useCases/setGuestbookEnabled'
 import { useCollection } from '@/sections/collection/useCollection'
 import { NotFoundPage } from '@/sections/not-found-page/NotFoundPage'
@@ -51,14 +51,29 @@ export const Guestbooks = ({ collectionRepository, collectionId }: GuestbooksPro
       includeStats: true,
       includeInherited: includeGuestbooksFromParent
     })
-  const collectionHierarchyNames = collection?.hierarchy?.toArray().map((node) => node.name) ?? []
+  const {
+    guestbooks: currentCollectionGuestbooks,
+    isLoadingGuestbooksByCollectionId: isLoadingCurrentCollectionGuestbooks,
+    errorGetGuestbooksByCollectionId: errorGetCurrentCollectionGuestbooks
+  } = useGetGuestbooksByCollectionId({
+    guestbookRepository,
+    collectionIdOrAlias: collection?.id,
+    includeStats: false,
+    includeInherited: false
+  })
+  const collectionHierarchy = collection?.hierarchy?.toArray() ?? []
+  const collectionHierarchyNames = collectionHierarchy.map((node) => node.name)
   const parentCollectionName =
     collectionHierarchyNames.length > 1
       ? collectionHierarchyNames[collectionHierarchyNames.length - 2] ?? 'Parent'
       : undefined
 
-  const currentDataverseId = Number(collection?.id) || 1
-  const isLoadingData = isLoading || isLoadingGuestbooksByCollectionId
+  const currentCollectionGuestbookIds = useMemo(
+    () => new Set(currentCollectionGuestbooks.map((guestbook) => guestbook.id)),
+    [currentCollectionGuestbooks]
+  )
+  const isLoadingData =
+    isLoading || isLoadingGuestbooksByCollectionId || isLoadingCurrentCollectionGuestbooks
 
   useEffect(() => {
     setDisplayGuestbooks(guestbooks)
@@ -68,15 +83,20 @@ export const Guestbooks = ({ collectionRepository, collectionId }: GuestbooksPro
     setIsLoading(isLoadingData)
   }, [isLoadingData, setIsLoading])
 
-  const filteredGuestbooks = useMemo(
-    () =>
-      includeGuestbooksFromParent
-        ? displayGuestbooks
-        : displayGuestbooks.filter((guestbook) => guestbook.dataverseId === currentDataverseId),
-    [displayGuestbooks, includeGuestbooksFromParent, currentDataverseId]
-  )
+  const filteredGuestbooks = displayGuestbooks
   const hasGuestbookResponses = filteredGuestbooks.some(
     (guestbook) => (guestbook.responseCount ?? 0) > 0
+  )
+  const guestbookFetchErrors = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          [errorGetGuestbooksByCollectionId, errorGetCurrentCollectionGuestbooks].filter(
+            (error): error is string => Boolean(error)
+          )
+        )
+      ),
+    [errorGetCurrentCollectionGuestbooks, errorGetGuestbooksByCollectionId]
   )
   const sortedGuestbooks = useMemo(() => {
     if (!sortBy) {
@@ -124,6 +144,24 @@ export const Guestbooks = ({ collectionRepository, collectionId }: GuestbooksPro
     `${styles['sort-button']}${sortBy === column ? ` ${styles['sort-button-active']}` : ''}`
   const sortHeaderClass = (column: 'name' | 'created' | 'usage' | 'responses') =>
     sortBy === column ? styles['sort-header-active'] : ''
+  const isGuestbookFromCurrentCollection = (guestbook: Guestbook): boolean =>
+    currentCollectionGuestbookIds.has(guestbook.id)
+  const getGuestbookOriginAlias = (guestbook: Guestbook): string => {
+    const matchingCollection = collectionHierarchy.find(
+      (node) =>
+        node.id === String(guestbook.dataverseId) || Number(node.id) === guestbook.dataverseId
+    )
+
+    if (matchingCollection) {
+      return matchingCollection.id
+    }
+
+    if (guestbook.dataverseId === 1) {
+      return collectionHierarchy[0]?.id ?? 'root'
+    }
+
+    return collectionHierarchy[collectionHierarchy.length - 2]?.id ?? String(guestbook.dataverseId)
+  }
 
   const handleIncludeGuestbooksFromParentChange = (event: ChangeEvent<HTMLInputElement>) => {
     setIncludeGuestbooksFromParent(event.target.checked)
@@ -160,7 +198,7 @@ export const Guestbooks = ({ collectionRepository, collectionId }: GuestbooksPro
     setDownloadingGuestbookId(guestbook.id)
 
     try {
-      const csvContent = await downloadGuestbookResponsesOfAGuestbook(
+      const csvContent = await downloadGuestbookResponsesByGuestbookId(
         guestbookRepository,
         guestbook.dataverseId,
         guestbook.id
@@ -259,9 +297,11 @@ export const Guestbooks = ({ collectionRepository, collectionId }: GuestbooksPro
           )}
         </div>
       </div>
-      {errorGetGuestbooksByCollectionId && (
-        <Alert variant="danger">{errorGetGuestbooksByCollectionId}</Alert>
-      )}
+      {guestbookFetchErrors.map((error) => (
+        <Alert key={error} variant="danger">
+          {error}
+        </Alert>
+      ))}
       {toggleGuestbookError && <Alert variant="danger">{toggleGuestbookError}</Alert>}
       {downloadResponsesError && <Alert variant="danger">{downloadResponsesError}</Alert>}
 
@@ -324,16 +364,19 @@ export const Guestbooks = ({ collectionRepository, collectionId }: GuestbooksPro
                 <td>{guestbook.usageCount ?? 0}</td>
                 <td>{guestbook.responseCount ?? 0}</td>
                 <td>
-                  {guestbook.dataverseId !== currentDataverseId && (
+                  {!isGuestbookFromCurrentCollection(guestbook) && (
                     <span className={styles['template-origin']}>
-                      {t('table.guestbookCreatedAt', { alias: guestbook.dataverseId })}
+                      {t('table.guestbookCreatedAt', {
+                        alias: getGuestbookOriginAlias(guestbook)
+                      })}
                     </span>
                   )}
                   <GuestbookActionButtons
                     isEnabled={guestbook.enabled}
                     onView={() => setGuestbookToPreview(guestbook)}
                     onToggleEnabled={() => handleToggleEnabled(guestbook)}
-                    canToggleEnabled={guestbook.dataverseId === currentDataverseId}
+                    canToggleEnabled={isGuestbookFromCurrentCollection(guestbook)}
+                    canEdit={isGuestbookFromCurrentCollection(guestbook)}
                     isTogglingEnabled={togglingGuestbookId === guestbook.id}
                     onDownloadResponses={() => handleDownloadResponses(guestbook)}
                     isDownloadingResponses={downloadingGuestbookId === guestbook.id}
