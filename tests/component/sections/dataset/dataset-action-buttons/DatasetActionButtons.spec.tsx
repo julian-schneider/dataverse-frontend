@@ -26,12 +26,10 @@ describe('DatasetActionButtons', () => {
     })
 
     cy.mountAuthenticated(
-      <WithRepositories collectionRepository={collectionRepository}>
-        <DatasetActionButtons
-          dataset={dataset}
-          datasetRepository={datasetRepository}
-          contactRepository={contactRepository}
-        />
+      <WithRepositories
+        collectionRepository={collectionRepository}
+        datasetRepository={datasetRepository}>
+        <DatasetActionButtons dataset={dataset} contactRepository={contactRepository} />
       </WithRepositories>
     )
 
@@ -58,12 +56,10 @@ describe('DatasetActionButtons', () => {
     })
 
     cy.mountAuthenticated(
-      <WithRepositories collectionRepository={collectionRepository}>
-        <DatasetActionButtons
-          dataset={dataset}
-          datasetRepository={datasetRepository}
-          contactRepository={contactRepository}
-        />
+      <WithRepositories
+        collectionRepository={collectionRepository}
+        datasetRepository={datasetRepository}>
+        <DatasetActionButtons dataset={dataset} contactRepository={contactRepository} />
       </WithRepositories>
     )
 
@@ -109,12 +105,10 @@ describe('DatasetActionButtons', () => {
       version: DatasetVersionMother.createDeaccessioned()
     })
     cy.mountAuthenticated(
-      <WithRepositories collectionRepository={collectionRepository}>
-        <DatasetActionButtons
-          dataset={dataset}
-          datasetRepository={datasetRepository}
-          contactRepository={contactRepository}
-        />
+      <WithRepositories
+        collectionRepository={collectionRepository}
+        datasetRepository={datasetRepository}>
+        <DatasetActionButtons dataset={dataset} contactRepository={contactRepository} />
       </WithRepositories>
     )
 
