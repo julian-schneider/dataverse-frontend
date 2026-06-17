@@ -183,7 +183,11 @@ export class FileJSDataverseRepository implements FileRepository {
     )
   }
   private static getAllWithPermissions(files: JSFile[]): Promise<FilePermissions[]> {
-    return Promise.all(files.map((jsFile) => this.getPermissionsById(jsFile.id)))
+    return Promise.all(
+      files.map((jsFile) =>
+        this.getPermissionsByIdOrGuest(jsFile.id, jsFile).then(({ permissions }) => permissions)
+      )
+    )
   }
 
   private static getPermissionsById(id: number): Promise<FilePermissions> {
@@ -320,7 +324,10 @@ export class FileJSDataverseRepository implements FileRepository {
       })
   }
 
-  private static getPermissionsByIdOrGuest(id: number): Promise<{
+  private static getPermissionsByIdOrGuest(
+    id: number,
+    jsFile?: JSFile
+  ): Promise<{
     permissions: FilePermissions
     isGuestFallback: boolean
   }> {
@@ -332,7 +339,10 @@ export class FileJSDataverseRepository implements FileRepository {
 
           if (errorHandler.getStatusCode() === 401) {
             return {
-              permissions: FileJSDataverseRepository.guestFilePermissions,
+              permissions:
+                jsFile !== undefined
+                  ? FileJSDataverseRepository.getGuestPermissionsForFile(jsFile)
+                  : FileJSDataverseRepository.guestFilePermissions,
               isGuestFallback: true
             }
           }
