@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert, Tabs} from '@iqss/dataverse-design-system'
+import { Alert, Col, Form, Tabs } from '@iqss/dataverse-design-system'
 import { MetadataBlockInfoRepository } from '../../metadata-block-info/domain/repositories/MetadataBlockInfoRepository'
 import { useDataset } from '../dataset/DatasetContext'
 import { useLoading } from '../../shared/contexts/loading/LoadingContext'

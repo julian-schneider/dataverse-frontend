@@ -18,6 +18,7 @@ import { type Template } from '@/templates/domain/models/Template'
 import { DatasetTemplateSelect } from './dataset-template-select/DatasetTemplateSelect'
 import { TemplateRepository } from '@/templates/domain/repositories/TemplateRepository'
 import { useCollectionRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
+import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
 import { useGetAvailableDatasetTypes } from '@/dataset/domain/hooks/useGetAvailableDatasetTypes'
 import { DatasetType } from '@/dataset/domain/models/DatasetType'
 import { DatasetTypeSelect } from './dataset-type-select/DatasetTypeSelect'
@@ -34,6 +35,7 @@ export function CreateDataset({
   collectionId
 }: CreateDatasetProps) {
   const { collectionRepository } = useCollectionRepositories()
+  const { datasetRepository } = useDatasetRepositories()
   const { t } = useTranslation('createDataset')
   const { isModalOpen, hideModal } = useNotImplementedModal()
   const { setIsLoading } = useLoading()

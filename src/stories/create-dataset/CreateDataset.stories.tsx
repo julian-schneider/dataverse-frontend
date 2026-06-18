@@ -66,9 +66,10 @@ export const Default: Story = {
 export const WithTemplatesAndTypes: Story = {
   render: () => (
     <NotImplementedModalProvider>
-      <RepositoriesStoryProvider collectionRepository={new CollectionMockRepository()}>
+      <RepositoriesStoryProvider
+        collectionRepository={new CollectionMockRepository()}
+        datasetRepository={new DatasetMockRepository()}>
         <CreateDataset
-          datasetRepository={new DatasetMockRepository()}
           templateRepository={new TemplateMockRepository()}
           metadataBlockInfoRepository={new MetadataBlockInfoMockRepository()}
           collectionId={'collectionId'}
@@ -81,9 +82,10 @@ export const WithTemplatesAndTypes: Story = {
 export const Loading: Story = {
   render: () => (
     <NotImplementedModalProvider>
-      <RepositoriesStoryProvider collectionRepository={new CollectionMockRepository()}>
+      <RepositoriesStoryProvider
+        collectionRepository={new CollectionMockRepository()}
+        datasetRepository={datasetRepositoryMockWithoutTemplatesAndTypes}>
         <CreateDataset
-          datasetRepository={datasetRepositoryMockWithoutTemplatesAndTypes}
           templateRepository={templateRepositoryMockWithoutTemplates}
           metadataBlockInfoRepository={new MetadataBlockInfoMockLoadingRepository()}
           collectionId={'collectionId'}
