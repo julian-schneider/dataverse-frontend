@@ -165,7 +165,7 @@ export function CreateDataset({
                   <div className="col-sm-12">
                     <div className="alert alert-info mb-2">
                       <div>
-                        <strong className="text-capitalize">{selectedType.name}</strong>
+                        <strong >{selectedType.displayName}</strong>
                       </div>
                       <div className="small text-muted">{selectedType.description}</div>
                     </div>
