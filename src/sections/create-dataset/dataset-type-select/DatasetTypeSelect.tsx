@@ -70,8 +70,8 @@ export const DatasetTypeSelect = ({
               onClick={handleToggle}
               aria-label={t('datasetType.toggleMenu')}
             />
-            <span className="text-capitalize" data-testid="selected-type">
-              {selectedType.name}
+            <span  data-testid="selected-type">
+              {selectedType.displayName}
             </span>
           </div>
 
