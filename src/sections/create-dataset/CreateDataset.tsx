@@ -18,8 +18,6 @@ import { type Template } from '@/templates/domain/models/Template'
 import { DatasetTemplateSelect } from './dataset-template-select/DatasetTemplateSelect'
 import { TemplateRepository } from '@/templates/domain/repositories/TemplateRepository'
 import { useCollectionRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
-import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
-import { useGetAvailableDatasetTypes } from '@/dataset/domain/hooks/useGetAvailableDatasetTypes'
 import { DatasetType } from '@/dataset/domain/models/DatasetType'
 import { DatasetTypeSelect } from './dataset-type-select/DatasetTypeSelect'
 
@@ -35,7 +33,6 @@ export function CreateDataset({
   collectionId
 }: CreateDatasetProps) {
   const { collectionRepository } = useCollectionRepositories()
-  const { datasetRepository } = useDatasetRepositories()
   const { t } = useTranslation('createDataset')
   const { isModalOpen, hideModal } = useNotImplementedModal()
   const { setIsLoading } = useLoading()
@@ -47,11 +44,7 @@ export function CreateDataset({
     collectionId
   )
 
-  const { datasetTypes, isLoadingDatasetTypes } = useGetAvailableDatasetTypes({
-    datasetRepository,
-    collectionRepository,
-    collectionId
-  })
+  const datasetTypes = collection?.allowedDatasetTypes ?? []
 
   const { collectionUserPermissions, isLoading: isLoadingCollectionUserPermissions } =
     useGetCollectionUserPermissions({
@@ -80,10 +73,7 @@ export function CreateDataset({
   }
 
   const isLoadingData =
-    isLoadingCollectionUserPermissions ||
-    isLoadingCollection ||
-    isLoadingDatasetTemplates ||
-    isLoadingDatasetTypes
+    isLoadingCollectionUserPermissions || isLoadingCollection || isLoadingDatasetTemplates
 
   useEffect(() => {
     setIsLoading(isLoadingData)
@@ -165,7 +155,7 @@ export function CreateDataset({
                   <div className="col-sm-12">
                     <div className="alert alert-info mb-2">
                       <div>
-                        <strong >{selectedType.displayName}</strong>
+                        <strong>{selectedType.displayName}</strong>
                       </div>
                       <div className="small text-muted">{selectedType.description}</div>
                     </div>
