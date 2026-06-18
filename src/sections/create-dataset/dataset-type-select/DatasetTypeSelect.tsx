@@ -86,7 +86,7 @@ export const DatasetTypeSelect = ({
                 key={dt.id}>
                 <Card.Body className="p-2">
                   <span>
-                    <strong className="text-capitalize">{dt.name}</strong>
+                    <strong >{dt.displayName}</strong>
                     <br />
                     <span className="small text-muted">{dt.description}</span>
                   </span>
