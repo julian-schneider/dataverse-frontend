@@ -70,9 +70,7 @@ export const DatasetTypeSelect = ({
               onClick={handleToggle}
               aria-label={t('datasetType.toggleMenu')}
             />
-            <span  data-testid="selected-type">
-              {selectedType.displayName}
-            </span>
+            <span data-testid="selected-type">{selectedType.displayName}</span>
           </div>
 
           <div className={cn(styles.menu, { [styles.open]: isOpen && !disabled })} role="menu">
