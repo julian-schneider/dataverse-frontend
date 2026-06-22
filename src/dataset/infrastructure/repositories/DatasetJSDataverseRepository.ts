@@ -71,7 +71,6 @@ const includeDeaccessioned = true
 
 interface IDatasetDetails {
   jsDataset: JSDataset
-  datasetType?: string
   summaryFieldsNames: string[]
   citation: string
   jsDatasetPermissions: JSDatasetPermissions
@@ -273,8 +272,7 @@ export class DatasetJSDataverseRepository implements DatasetRepository {
           datasetDetails.latestPublishedVersionMajorNumber,
           datasetDetails.latestPublishedVersionMinorNumber,
           datasetDetails.datasetVersionDiff,
-          datasetDetails.fileStore,
-          datasetDetails.datasetType
+          datasetDetails.fileStore
         )
       })
       .catch((error: ReadError) => {
