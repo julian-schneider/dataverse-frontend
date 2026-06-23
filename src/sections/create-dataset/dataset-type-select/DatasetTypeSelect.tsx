@@ -33,6 +33,15 @@ export const DatasetTypeSelect = ({
     }
   }
 
+  const handleKeyDown = (event: KeyboardEvent, typeId: number) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleSelectType(typeId)
+    } else if (event.key === 'Escape') {
+      setIsOpen(false)
+    }
+  }
+
   // Close menu when clicking outside, focusing outside, or pressing Escape
   useEffect(() => {
     const handleClose = (event: MouseEvent | FocusEvent) => {
@@ -40,17 +49,17 @@ export const DatasetTypeSelect = ({
         setIsOpen(false)
       }
     }
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleDocKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setIsOpen(false)
     }
 
     document.addEventListener('mousedown', handleClose)
     document.addEventListener('focusin', handleClose)
-    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keydown', handleDocKeyDown)
     return () => {
       document.removeEventListener('mousedown', handleClose)
       document.removeEventListener('focusin', handleClose)
-      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('keydown', handleDocKeyDown)
     }
   }, [])
 
@@ -69,6 +78,7 @@ export const DatasetTypeSelect = ({
               disabled={disabled}
               onClick={handleToggle}
               aria-label={t('datasetType.toggleMenu')}
+              id="dataset-type"
             />
             <span data-testid="selected-type">{selectedType.displayName}</span>
           </div>
@@ -80,7 +90,9 @@ export const DatasetTypeSelect = ({
                   [styles.selected]: dt.id === selectedType.id
                 })}
                 onClick={() => !disabled && handleSelectType(dt.id)}
+                onKeyDown={(e) => !disabled && handleKeyDown(e as unknown as KeyboardEvent, dt.id)}
                 tabIndex={disabled ? -1 : 0}
+                role="menuitem"
                 key={dt.id}>
                 <Card.Body className="p-2">
                   <span>
