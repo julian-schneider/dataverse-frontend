@@ -94,6 +94,7 @@ export const SelectAdvancedMenu = (props: SelectAdvancedMenuProps) => {
           className={styles['option-item-not-multiple']}
           onClick={() => handleClickOption('')}
           active={selected === ''}
+          aria-selected={selected === ''}
           key="__placeholder__">
           {selectWord}
         </DropdownBS.Item>
@@ -118,6 +119,7 @@ export const SelectAdvancedMenu = (props: SelectAdvancedMenuProps) => {
                 onClick={() => handleClickOption(opt.value)}
                 onKeyDown={handleKeyDown}
                 active={selected === opt.value}
+                aria-selected={selected === opt.value}
                 key={opt.value}>
                 <span className={styles['option-content']}>
                   <span className={styles['option-label']}>{opt.label}</span>
