@@ -125,15 +125,21 @@ export class DatasetReviewHelper extends DataverseApiHelper {
     const datasetType = await this.request<DatasetTypeResponse>(
       `/datasets/datasetTypes/${REVIEW_DATASET_TYPE_NAME}`,
       'GET'
-    ).catch(() =>
-      this.request<DatasetTypeResponse>('/datasets/datasetTypes', 'POST', {
+    ).catch((error: unknown) => {
+      const status = (error as { response?: { status?: number } }).response?.status
+
+      if (status !== 404) {
+        throw error
+      }
+
+      return this.request<DatasetTypeResponse>('/datasets/datasetTypes', 'POST', {
         name: REVIEW_DATASET_TYPE_NAME,
         displayName: 'Review',
         description: 'A review of a dataset compiled by the expert community.',
         linkedMetadataBlocks: [],
         availableLicenses: []
       })
-    )
+    })
 
     await this.request(`/datasets/datasetTypes/${datasetType.id}`, 'PUT', [
       'review',
@@ -188,7 +194,15 @@ export class DatasetReviewHelper extends DataverseApiHelper {
   ): Promise<void> {
     const exists = await this.request(`/metadatablocks/${metadataBlockName}`, 'GET')
       .then(() => true)
-      .catch(() => false)
+      .catch((error: unknown) => {
+        const status = (error as { response?: { status?: number } }).response?.status
+
+        if (status === 404) {
+          return false
+        }
+
+        throw error
+      })
 
     if (exists) {
       return
