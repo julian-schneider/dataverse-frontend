@@ -330,6 +330,31 @@ describe('Create Dataset', () => {
       cy.findByTestId('selected-type').should('have.text', 'dataset')
     })
 
+    it('should set first dataset type as default when none has name "dataset"', () => {
+      const datasetTypesMock = [
+        DatasetTypeMother.create({ id: 5, name: 'software', displayName: 'Software' }),
+        DatasetTypeMother.create({ id: 6, name: 'workflow', displayName: 'Workflow' })
+      ]
+
+      collectionRepository.getById = cy.stub().resolves(
+        CollectionMother.create({
+          name: COLLECTION_NAME,
+          id: 'test-alias',
+          allowedDatasetTypes: datasetTypesMock
+        })
+      )
+
+      mountCreateDataset(
+        <CreateDataset
+          templateRepository={templateRepository}
+          metadataBlockInfoRepository={metadataBlockInfoRepository}
+          collectionId={'test-collectionId'}
+        />
+      )
+      cy.findByTestId('dataset-type-select').should('exist')
+      cy.findByTestId('selected-type').should('have.text', 'Software')
+    })
+
     it('should change dataset type when user selects another one', () => {
       const datasetTypesMock = [
         DatasetTypeMother.creatDefaultDatasetType(),

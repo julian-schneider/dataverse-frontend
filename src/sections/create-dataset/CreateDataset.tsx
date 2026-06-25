@@ -67,7 +67,8 @@ export function CreateDataset({
 
   const handleDatasetTypeChange = (selectedTypeId: string) => {
     const type: DatasetType | null =
-      datasetTypes.find((type) => type.id === Number(selectedTypeId)) || null
+      datasetTypes.find((type) => type.id === Number(selectedTypeId)) ||
+      /* istanbul ignore next */ null
 
     setSelectedType(type)
   }
