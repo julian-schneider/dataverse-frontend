@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { DatasetReview } from '@/dataset/domain/models/DatasetReview'
 import { QueryParamKey, Route } from '@/sections/Route.enum'
 import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
-import styles from './DatasetReviews.module.scss'
 import { useGetDatasetReviews } from './useGetDatasetReviews'
+import styles from './DatasetReviews.module.scss'
 
 interface DatasetReviewsProps {
   datasetId: string | number
