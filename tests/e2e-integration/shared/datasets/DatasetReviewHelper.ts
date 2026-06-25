@@ -194,7 +194,15 @@ export class DatasetReviewHelper extends DataverseApiHelper {
   ): Promise<void> {
     const exists = await this.request(`/metadatablocks/${metadataBlockName}`, 'GET')
       .then(() => true)
-      .catch(() => false)
+      .catch((error: unknown) => {
+        const status = (error as { response?: { status?: number } }).response?.status
+
+        if (status === 404) {
+          return false
+        }
+
+        throw error
+      })
 
     if (exists) {
       return
