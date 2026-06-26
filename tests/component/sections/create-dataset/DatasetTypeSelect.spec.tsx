@@ -6,13 +6,21 @@ const datasetTypes = [
   DatasetTypeMother.create({ id: 2, name: 'software', displayName: 'Software' })
 ]
 
-const defaultProps = {
-  datasetTypes,
-  onChange: cy.stub(),
-  selectedType: datasetTypes[0]
-}
-
 describe('DatasetTypeSelect', () => {
+  let defaultProps: {
+    datasetTypes: typeof datasetTypes
+    onChange: Cypress.Agent<sinon.SinonStub>
+    selectedType: (typeof datasetTypes)[0]
+  }
+
+  beforeEach(() => {
+    defaultProps = {
+      datasetTypes,
+      onChange: cy.stub(),
+      selectedType: datasetTypes[0]
+    }
+  })
+
   it('should open the menu when toggle is clicked', () => {
     cy.customMount(<DatasetTypeSelect {...defaultProps} />)
     cy.get('[role="menu"]').should('not.be.visible')
