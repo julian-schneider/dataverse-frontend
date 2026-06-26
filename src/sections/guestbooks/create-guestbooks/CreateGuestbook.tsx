@@ -125,7 +125,7 @@ export const CreateGuestbook = ({ collectionId, collectionRepository }: CreateGu
 
   const buildGuestbookDTO = (): CreateGuestbookDTO => ({
     name: guestbookName.trim(),
-    enabled: false,
+    enabled: true,
     nameRequired,
     emailRequired,
     institutionRequired,

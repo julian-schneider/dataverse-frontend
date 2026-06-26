@@ -65,6 +65,18 @@ describe('CreateGuestbook', () => {
     })
   }
 
+  it('creates guestbooks as enabled by default', () => {
+    mountCreateGuestbook()
+
+    cy.get('#guestbook-name').type('Enabled By Default Guestbook')
+    cy.get('button[type="submit"]').click()
+
+    cy.wrap(null).should(() => {
+      expect(createGuestbookStub).to.have.been.calledOnce
+      expect(createGuestbookStub.getCall(0).args[1].enabled).to.equal(true)
+    })
+  })
+
   it('submits a guestbook with single line and multiple line custom questions', () => {
     mountCreateGuestbook()
 
@@ -82,7 +94,7 @@ describe('CreateGuestbook', () => {
 
     expectGuestbookCreatedWith({
       name: 'Research Use Guestbook',
-      enabled: false,
+      enabled: true,
       nameRequired: false,
       emailRequired: false,
       institutionRequired: false,
@@ -130,7 +142,7 @@ describe('CreateGuestbook', () => {
 
     expectGuestbookCreatedWith({
       name: 'Research Use Guestbook',
-      enabled: false,
+      enabled: true,
       nameRequired: true,
       emailRequired: false,
       institutionRequired: true,
