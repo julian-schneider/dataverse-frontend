@@ -185,6 +185,56 @@ describe('FileEmbeddedExternalTool', () => {
       .should('have.attr', 'src', filePreviewToolResolved.toolUrlResolved)
   })
 
+  it('allows reopening the terms dialog after canceling it', () => {
+    const fileWithCustomTerms = FileMother.createRealistic({
+      permissions: FilePermissionsMother.create({
+        canDownloadFile: true,
+        canEditOwnerDataset: false,
+        canManageFilePermissions: false
+      }),
+      datasetCustomTerms: CustomTermsMother.create({
+        termsOfUse: 'Preview requires accepting these custom terms.'
+      })
+    })
+    externalToolsRepository.getFileExternalToolResolved = cy
+      .stub()
+      .as('getFileExternalToolResolved')
+      .resolves(filePreviewToolResolved)
+    accessRepository.submitGuestbookForDatasetDownload = cy.stub().resolves('signed-url-dataset')
+    accessRepository.submitGuestbookForDatafileDownload = cy
+      .stub()
+      .as('submitGuestbookForDatafileDownload')
+      .resolves('signed-url-datafile')
+    accessRepository.submitGuestbookForDatafilesDownload = cy
+      .stub()
+      .resolves('signed-url-datafiles')
+
+    cy.customMount(
+      <AccessRepositoryProvider repository={accessRepository}>
+        <FileEmbeddedExternalTool
+          file={fileWithCustomTerms}
+          isInView
+          applicableTools={[filePreviewTool]}
+          externalToolsRepository={externalToolsRepository}
+          toolTypeSelectedQueryParam={undefined}
+        />
+      </AccessRepositoryProvider>
+    )
+
+    cy.findByRole('dialog').should('exist')
+    cy.findByRole('button', { name: 'Cancel' }).click()
+
+    cy.findByRole('dialog').should('not.exist')
+    cy.findByRole('button', { name: 'Accept the dataset terms or guestbooks' }).should('exist')
+    cy.findByText('before previewing this file.').should('exist')
+    cy.findByRole('button', { name: 'Accept the dataset terms or guestbooks' }).click()
+
+    cy.findByRole('dialog').should('exist')
+    cy.findByText('Preview requires accepting these custom terms.').should('exist')
+    cy.get('@getFileExternalToolResolved').should('not.have.been.called')
+    cy.findByTestId('external-tool-iframe').should('not.exist')
+  })
+
   describe('error handling', () => {
     it('shows js dataverse error message if fetching the tool URL fails with a JSDataverseError', () => {
       externalToolsRepository.getFileExternalToolResolved = cy

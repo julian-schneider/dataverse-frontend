@@ -2,7 +2,13 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cn from 'classnames'
 import { WriteError } from '@iqss/dataverse-client-javascript'
-import { Alert, DropdownButton, DropdownButtonItem, Spinner } from '@iqss/dataverse-design-system'
+import {
+  Alert,
+  Button,
+  DropdownButton,
+  DropdownButtonItem,
+  Spinner
+} from '@iqss/dataverse-design-system'
 import { BoxArrowUpRight } from 'react-bootstrap-icons'
 import { ExternalTool } from '@/externalTools/domain/models/ExternalTool'
 import { ExternalToolsRepository } from '@/externalTools/domain/repositories/ExternalToolsRepository'
@@ -178,7 +184,14 @@ export const FileEmbeddedExternalTool = ({
         )}
         {isWaitingForTermsAndGuestbook && !showTermsAndGuestbookModal && (
           <Alert variant="info" dismissible={false}>
-            {t('termsRequired')}
+            <Button
+              variant="link"
+              size="sm"
+              onClick={() => setShowTermsAndGuestbookModal(true)}
+              style={{ padding: 0, verticalAlign: 'baseline' }}>
+              {t('acceptTermsAndGuestbooks')}
+            </Button>
+            <span> {t('termsRequired')}</span>
           </Alert>
         )}
         {/* Show error message if fetching the tool URL fails or the iframe somehow fails. */}
