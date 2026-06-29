@@ -561,6 +561,44 @@ describe('DownloadWithTermsAndGuestbookModal', () => {
     cy.findByLabelText(/^Email/).should('be.disabled')
   })
 
+  it('prefills and locks all account fields for authenticated users', () => {
+    getGuestbookImpl = () =>
+      Promise.resolve({
+        ...guestbook,
+        institutionRequired: true,
+        positionRequired: true
+      })
+
+    cy.mountAuthenticated(
+      withRepositories(
+        <DownloadWithTermsAndGuestbookModal
+          show
+          handleClose={cy.stub().as('handleClose')}
+          guestbookId={10}
+          fileId={10}
+        />
+      ),
+      undefined,
+      {
+        displayName: 'Authenticated User',
+        email: 'authenticated.user@example.com',
+        affiliation: 'Example Institute',
+        position: 'Data Curator'
+      }
+    )
+
+    cy.findByLabelText(/^Name/).should('be.disabled').and('have.value', 'Authenticated User')
+    cy.findByLabelText(/^Email/)
+      .should('be.disabled')
+      .and('have.value', 'authenticated.user@example.com')
+    cy.findByLabelText(/^Institution/)
+      .should('not.be.disabled')
+      .and('have.value', 'Example Institute')
+    cy.findByLabelText(/^Position/)
+      .should('not.be.disabled')
+      .and('have.value', 'Data Curator')
+  })
+
   it('submits filled form and accepts for multiple files', () => {
     const handleClose = cy.stub().as('handleClose')
 
@@ -948,7 +986,7 @@ describe('DownloadWithTermsAndGuestbookModal', () => {
     cy.findByText(/Something went wrong downloading the file. Try again later./i).should('exist')
   })
 
-  describe.only('GuestbookCollectForm', () => {
+  describe('GuestbookCollectForm', () => {
     it('builds custom question field names and validates email addresses', () => {
       expect(
         getGuestbookCustomQuestionFieldName(guestbookCollectFormCustomQuestions[1], 0)

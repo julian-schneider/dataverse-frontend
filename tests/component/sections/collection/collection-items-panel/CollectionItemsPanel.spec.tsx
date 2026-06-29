@@ -5,6 +5,8 @@ import { CollectionRepository } from '@/collection/domain/repositories/Collectio
 import { CollectionItemsMother } from '@tests/component/collection/domain/models/CollectionItemsMother'
 import { CollectionItemType } from '@/collection/domain/models/CollectionItemType'
 import { WithRepositories } from '@tests/component/WithRepositories'
+import { useLocation } from 'react-router-dom'
+import { FilterQuery } from '@/collection/domain/models/CollectionSearchCriteria'
 
 const ROOT_COLLECTION_ALIAS = 'root'
 const collectionRepository: CollectionRepository = {} as CollectionRepository
@@ -37,6 +39,12 @@ function CollectionItemsPanel({
       <BaseCollectionItemsPanel {...props} />
     </WithRepositories>
   )
+}
+
+function LocationDisplay() {
+  const location = useLocation()
+
+  return <div data-testid="location-display">{`${location.pathname}${location.search}`}</div>
 }
 
 describe('CollectionItemsPanel', () => {
@@ -492,6 +500,96 @@ describe('CollectionItemsPanel', () => {
       cy.findAllByRole('button', { name: /Admin, Dataverse/ })
         .first()
         .click()
+    })
+
+    it('adds a facet filter to the URL', () => {
+      cy.customMount(
+        <>
+          <CollectionItemsPanel
+            collectionId={ROOT_COLLECTION_ALIAS}
+            collectionRepository={collectionRepository}
+            collectionQueryParams={{
+              pageQuery: 1,
+              searchQuery: undefined,
+              typesQuery: undefined,
+              filtersQuery: undefined
+            }}
+            addDataSlot={null}
+          />
+          <LocationDisplay />
+        </>
+      )
+
+      cy.findByRole('button', { name: /Add Department facet filter/ }).click()
+      cy.findByTestId('location-display').should('contain', 'fqs=dvCategory%3ADepartment')
+    })
+
+    it('removes the last selected facet from the URL', () => {
+      cy.customMount(
+        <>
+          <CollectionItemsPanel
+            collectionId={ROOT_COLLECTION_ALIAS}
+            collectionRepository={collectionRepository}
+            collectionQueryParams={{
+              pageQuery: 1,
+              searchQuery: undefined,
+              typesQuery: undefined,
+              filtersQuery: ['dvCategory:Department']
+            }}
+            addDataSlot={null}
+          />
+          <LocationDisplay />
+        </>,
+        ['/collections/root?fqs=dvCategory%3ADepartment']
+      )
+
+      cy.findAllByRole('button', { name: /Remove Department facet filter/ })
+        .first()
+        .click()
+      cy.findByTestId('location-display').should('not.contain', 'fqs=')
+    })
+
+    it('ignores invalid filter queries when building advanced search links', () => {
+      cy.customMount(
+        <CollectionItemsPanel
+          collectionId={ROOT_COLLECTION_ALIAS}
+          collectionRepository={collectionRepository}
+          collectionQueryParams={{
+            pageQuery: 1,
+            searchQuery: undefined,
+            typesQuery: undefined,
+            filtersQuery: ['invalid-filter-query' as FilterQuery, 'dvCategory:Department']
+          }}
+          addDataSlot={null}
+        />
+      )
+
+      cy.findByRole('link', { name: 'Advanced Search' })
+        .should('have.attr', 'href')
+        .and('include', '/collections/root/search?fqs=dvCategory%3ADepartment')
+        .and('not.include', 'invalid-filter-query')
+    })
+
+    it('removes invalid selected facets without keeping empty filter query params', () => {
+      cy.customMount(
+        <>
+          <CollectionItemsPanel
+            collectionId={ROOT_COLLECTION_ALIAS}
+            collectionRepository={collectionRepository}
+            collectionQueryParams={{
+              pageQuery: 1,
+              searchQuery: undefined,
+              typesQuery: undefined,
+              filtersQuery: ['invalid-filter-query' as FilterQuery]
+            }}
+            addDataSlot={null}
+          />
+          <LocationDisplay />
+        </>
+      )
+
+      cy.findByRole('button', { name: /Remove Unknown facet filter/ }).click()
+      cy.findByTestId('location-display').should('not.contain', 'fqs=')
     })
 
     it('it calls the loadItemsOnBackAndForwardNavigation on pop state event when navigating back and forward', () => {

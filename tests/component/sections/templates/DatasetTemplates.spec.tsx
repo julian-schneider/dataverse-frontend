@@ -9,6 +9,8 @@ import { NotImplementedModalProvider } from '../../../../src/sections/not-implem
 import { MetadataBlockInfoMother } from '../../metadata-block-info/domain/models/MetadataBlockInfoMother'
 import { CitationMetadataBlockInfoMother } from '../../metadata-block-info/domain/models/CitationMetadataBlockInfoMother'
 import { UpwardHierarchyNodeMother } from '../../shared/hierarchy/domain/models/UpwardHierarchyNodeMother'
+import { useLocation } from 'react-router-dom'
+import { Template } from '@/templates/domain/models/Template'
 
 const collectionRepository: CollectionRepository = {} as CollectionRepository
 const templateRepository: TemplateRepository = {} as TemplateRepository
@@ -34,6 +36,13 @@ const template = TemplateMother.create({
   name: 'Template',
   isDefault: false
 })
+
+function LocationDisplay() {
+  const location = useLocation()
+
+  return <div data-testid="location-display">{`${location.pathname}${location.search}`}</div>
+}
+
 describe('Dataset Templates', () => {
   beforeEach(() => {
     collectionRepository.getById = cy.stub().resolves(collection)
@@ -58,6 +67,19 @@ describe('Dataset Templates', () => {
           metadataBlockInfoRepository={metadataBlockInfoRepository}
           collectionId="root"
         />
+      </NotImplementedModalProvider>
+    )
+
+  const mountDatasetTemplatesWithLocation = () =>
+    cy.customMount(
+      <NotImplementedModalProvider>
+        <DatasetTemplates
+          collectionRepository={collectionRepository}
+          templateRepository={templateRepository}
+          metadataBlockInfoRepository={metadataBlockInfoRepository}
+          collectionId="root"
+        />
+        <LocationDisplay />
       </NotImplementedModalProvider>
     )
 
@@ -115,6 +137,14 @@ describe('Dataset Templates', () => {
       cy.findByText('Usage').should('exist')
       cy.findByText('Action').should('exist')
     })
+  })
+
+  it('navigates to the create template page', () => {
+    mountDatasetTemplatesWithLocation()
+
+    cy.findByRole('button', { name: 'Create Dataset Template' }).click()
+
+    cy.findByTestId('location-display').should('have.text', '/create')
   })
 
   it('shows Default as disabled and hides Make Default for the default template', () => {
@@ -240,6 +270,9 @@ describe('Dataset Templates', () => {
 
     cy.findByRole('button', { name: 'Template Name' }).click()
     getTableNames().should('deep.equal', ['Gamma', 'Beta', 'Alpha'])
+
+    cy.findByRole('button', { name: 'Template Name' }).click()
+    getTableNames().should('deep.equal', ['Alpha', 'Beta', 'Gamma'])
   })
 
   it('resets sorting direction when selecting a different column', () => {
@@ -567,6 +600,68 @@ describe('Dataset Templates', () => {
 
       cy.findByText(/Something went wrong copying the template. Try again later./i).should('exist')
       cy.wrap(templateRepository.createTemplate).should('have.been.calledOnce')
+      cy.wrap(templateRepository.getTemplatesByCollectionId).should('have.been.calledOnce')
+    })
+
+    it('copies a template without metadata blocks', () => {
+      const templateWithoutMetadataBlocks = {
+        ...TemplateMother.create({
+          id: 12,
+          name: 'Template Without Metadata Blocks',
+          collectionAlias: 'root',
+          isDefault: false
+        }),
+        datasetMetadataBlocks: undefined
+      } as unknown as Template
+
+      templateRepository.getTemplatesByCollectionId = cy
+        .stub()
+        .resolves([templateWithoutMetadataBlocks])
+      templateRepository.getTemplate = cy.stub().resolves(templateWithoutMetadataBlocks)
+      templateRepository.createTemplate = cy.stub().resolves()
+      metadataBlockInfoRepository.getByCollectionId = cy.stub().resolves([
+        {
+          ...CitationMetadataBlockInfoMother.get(),
+          metadataFields: undefined
+        }
+      ])
+
+      mountDatasetTemplates()
+
+      cy.findByRole('button', { name: 'Copy' }).click({ force: true })
+
+      cy.findByText('Template copied.').should('exist')
+      cy.wrap(templateRepository.createTemplate).should(
+        'have.been.calledWith',
+        {
+          name: 'copy Template Without Metadata Blocks',
+          isDefault: false,
+          fields: [],
+          instructions: templateWithoutMetadataBlocks.instructions
+        },
+        'root'
+      )
+    })
+
+    it('shows the generic copy error when copying fails with an unknown error', () => {
+      const templateWithMetadata = TemplateMother.create({
+        id: 13,
+        name: 'Template Copy Unknown Error',
+        collectionAlias: 'root'
+      })
+
+      templateRepository.getTemplatesByCollectionId = cy.stub().resolves([templateWithMetadata])
+      templateRepository.getTemplate = cy.stub().resolves(templateWithMetadata)
+      templateRepository.createTemplate = cy.stub().rejects('unknown failure')
+      metadataBlockInfoRepository.getByCollectionId = cy
+        .stub()
+        .resolves([CitationMetadataBlockInfoMother.get()])
+
+      mountDatasetTemplates()
+
+      cy.findByRole('button', { name: 'Copy' }).click({ force: true })
+
+      cy.findByText(/Something went wrong copying the template. Try again later./i).should('exist')
       cy.wrap(templateRepository.getTemplatesByCollectionId).should('have.been.calledOnce')
     })
   })
