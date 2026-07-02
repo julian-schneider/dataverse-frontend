@@ -174,7 +174,6 @@ export class DatasetJSDataverseRepository implements DatasetRepository {
       ]) => {
         return {
           jsDataset,
-          datasetType: (jsDataset as { datasetType?: string }).datasetType,
           summaryFieldsNames,
           citation,
           jsDatasetPermissions,
