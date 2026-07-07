@@ -13,6 +13,8 @@ This changelog follows the principles of [Keep a Changelog](https://keepachangel
 
 ### Changed
 
+- Hide "Export Metadata" on file pages that are not for the latest released dataset version.
+
 ### Fixed
 
 ### Removed

@@ -11,6 +11,8 @@ import {
 import { FilePermissionsMother } from '../../../files/domain/models/FilePermissionsMother'
 import { DataverseInfoMockRepository } from '@/stories/shared-mock-repositories/info/DataverseInfoMockRepository'
 import { requireAppConfig } from '@/config'
+import { DatasetVersionMother } from '@tests/component/dataset/domain/models/DatasetMother'
+import { DatasetMetadataExportFormatsMother } from '@tests/component/info/domain/models/DatasetMetadataExportFormatsMother'
 
 const appConfig = requireAppConfig()
 
@@ -29,6 +31,47 @@ describe('FileMetadata', () => {
     )
 
     cy.findByRole('button', { name: 'File Metadata' }).should('exist')
+  })
+
+  it('renders export metadata when the file is on the latest dataset version', () => {
+    const dataverseInfoRepository = new DataverseInfoMockRepository()
+    cy.stub(dataverseInfoRepository, 'getAvailableDatasetMetadataExportFormats').resolves(
+      DatasetMetadataExportFormatsMother.create()
+    )
+
+    cy.customMount(
+      <FileMetadata
+        name={file.name}
+        metadata={file.metadata}
+        permissions={file.permissions}
+        datasetPersistentId={file.datasetPersistentId}
+        datasetVersion={DatasetVersionMother.createRealistic()}
+        dataverseInfoRepository={dataverseInfoRepository}
+      />
+    )
+
+    cy.findByRole('button', { name: 'Export Metadata' }).should('exist')
+  })
+
+  it('does not render export metadata when the file is not on the latest dataset version', () => {
+    const dataverseInfoRepository = new DataverseInfoMockRepository()
+    const getAvailableDatasetMetadataExportFormats = cy
+      .stub(dataverseInfoRepository, 'getAvailableDatasetMetadataExportFormats')
+      .resolves(DatasetMetadataExportFormatsMother.create())
+
+    cy.customMount(
+      <FileMetadata
+        name={file.name}
+        metadata={file.metadata}
+        permissions={file.permissions}
+        datasetPersistentId={file.datasetPersistentId}
+        datasetVersion={DatasetVersionMother.createReleased({ isLatest: false })}
+        dataverseInfoRepository={dataverseInfoRepository}
+      />
+    )
+
+    cy.findByRole('button', { name: 'Export Metadata' }).should('not.exist')
+    cy.wrap(getAvailableDatasetMetadataExportFormats).should('not.have.been.called')
   })
 
   it('renders the file preview', () => {

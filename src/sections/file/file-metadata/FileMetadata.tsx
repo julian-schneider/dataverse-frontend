@@ -41,18 +41,20 @@ export function FileMetadata({
 
   return (
     <>
-      <div className="d-flex justify-content-end mb-3">
-        <ExportMetadataDropdown
-          datasetPersistentId={datasetPersistentId}
-          anonymizedView={false}
-          datasetIsReleased={datasetVersion.someDatasetVersionHasBeenReleased}
-          datasetIsDeaccessioned={
-            datasetVersion.publishingStatus === DatasetPublishingStatus.DEACCESSIONED
-          }
-          canUpdateDataset={permissions.canEditOwnerDataset}
-          dataverseInfoRepository={dataverseInfoRepository}
-        />
-      </div>
+      {datasetVersion.isLatest && (
+        <div className="d-flex justify-content-end mb-3">
+          <ExportMetadataDropdown
+            datasetPersistentId={datasetPersistentId}
+            anonymizedView={false}
+            datasetIsReleased={datasetVersion.someDatasetVersionHasBeenReleased}
+            datasetIsDeaccessioned={
+              datasetVersion.publishingStatus === DatasetPublishingStatus.DEACCESSIONED
+            }
+            canUpdateDataset={permissions.canEditOwnerDataset}
+            dataverseInfoRepository={dataverseInfoRepository}
+          />
+        </div>
+      )}
       <Accordion defaultActiveKey="0">
         <Accordion.Item eventKey="0">
           <Accordion.Header>{t('metadata.title')}</Accordion.Header>

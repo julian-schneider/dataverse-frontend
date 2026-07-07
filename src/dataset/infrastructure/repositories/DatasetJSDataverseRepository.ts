@@ -3,6 +3,7 @@ import {
   Dataset,
   DatasetLock,
   DatasetNonNumericVersion,
+  DatasetNonNumericVersionSearchParam,
   TermsOfAccess
 } from '../../domain/models/Dataset'
 import { DatasetVersionDiff } from '../../domain/models/DatasetVersionDiff'
@@ -86,6 +87,43 @@ interface IDatasetDetails {
 export class DatasetJSDataverseRepository implements DatasetRepository {
   static get DATAVERSE_BACKEND_URL(): string {
     return requireAppConfig().backendUrl
+  }
+
+  static isLatestReleasedVersion(
+    datasetId: number | string,
+    datasetVersionNumber?: string
+  ): Promise<boolean> {
+    if (datasetVersionNumber === undefined) {
+      return Promise.resolve(true)
+    }
+
+    return getDatasetVersionsSummaries
+      .execute(datasetId, 2, 0)
+      .then((datasetVersionSummarySubset) => {
+        const latestReleasedDatasetVersion = datasetVersionSummarySubset.summaries.find(
+          (summary) =>
+            summary.versionNumber !== DatasetNonNumericVersion.DRAFT &&
+            summary.versionNumber !== DatasetNonNumericVersionSearchParam.DRAFT
+        )?.versionNumber
+
+        return (
+          latestReleasedDatasetVersion !== undefined &&
+          latestReleasedDatasetVersion ===
+            DatasetJSDataverseRepository.toVersionSummaryVersion(datasetVersionNumber)
+        )
+      })
+      .catch(() => false)
+  }
+
+  private static toVersionSummaryVersion(datasetVersionNumber: string): string {
+    if (
+      datasetVersionNumber === DatasetNonNumericVersion.DRAFT ||
+      datasetVersionNumber === DatasetNonNumericVersionSearchParam.DRAFT
+    ) {
+      return DatasetNonNumericVersionSearchParam.DRAFT
+    }
+
+    return datasetVersionNumber
   }
 
   getAllWithCount(
