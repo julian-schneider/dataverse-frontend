@@ -518,6 +518,70 @@ describe('EditDatasetTerms', () => {
         '/datasets?persistentId=some-persistent-id&version=DRAFT'
       )
     })
+
+    it('navigates to the draft dataset version after saving custom terms edits', () => {
+      const dataset = DatasetMother.create({
+        persistentId: 'some-persistent-id',
+        version: DatasetVersionMother.createReleased(),
+        license: mockLicenses[0],
+        termsOfUse: TermsOfUseMother.withoutCustomTerms()
+      })
+      datasetRepository.updateDatasetLicense = cy.stub().resolves()
+
+      cy.customMount(
+        withProviders(
+          <>
+            <EditDatasetTerms
+              defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
+              licenseRepository={licenseRepository}
+              guestbookRepository={guestbookRepository}
+            />
+            <LocationDisplay />
+          </>,
+          dataset
+        )
+      )
+
+      cy.get('select').select('Custom Dataset Terms')
+      cy.findByTestId('customTerms.termsOfUse').type('Updated custom terms')
+      cy.findByRole('button', { name: 'Save Changes' }).click()
+
+      cy.wrap(datasetRepository.updateDatasetLicense).should('have.been.called')
+      cy.findByTestId('current-location').should(
+        'have.text',
+        '/datasets?persistentId=some-persistent-id&version=DRAFT'
+      )
+    })
+
+    it('navigates to the current dataset version after canceling license edits', () => {
+      const dataset = DatasetMother.create({
+        persistentId: 'some-persistent-id',
+        version: DatasetVersionMother.createReleased(),
+        license: mockLicenses[0],
+        termsOfUse: TermsOfUseMother.withoutCustomTerms()
+      })
+
+      cy.customMount(
+        withProviders(
+          <>
+            <EditDatasetTerms
+              defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
+              licenseRepository={licenseRepository}
+              guestbookRepository={guestbookRepository}
+            />
+            <LocationDisplay />
+          </>,
+          dataset
+        )
+      )
+
+      cy.findByRole('button', { name: 'Cancel' }).click()
+
+      cy.findByTestId('current-location').should(
+        'have.text',
+        '/datasets?persistentId=some-persistent-id&version=1.0'
+      )
+    })
   })
 
   describe('Restricted Files Tab Integration', () => {
@@ -639,6 +703,43 @@ describe('EditDatasetTerms', () => {
         '/datasets?persistentId=some-persistent-id&version=DRAFT'
       )
     })
+
+    it('navigates to the current dataset version after canceling restricted file terms edits', () => {
+      const dataset = DatasetMother.create({
+        persistentId: 'some-persistent-id',
+        version: DatasetVersionMother.createReleased(),
+        license: mockLicenses[0],
+        termsOfUse: TermsOfUseMother.withoutCustomTerms({
+          termsOfAccess: TermsOfAccessMother.create({
+            fileAccessRequest: true,
+            termsOfAccessForRestrictedFiles: 'Existing access terms'
+          })
+        })
+      })
+
+      cy.customMount(
+        withProviders(
+          <>
+            <EditDatasetTerms
+              defaultActiveTabKey={
+                EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.restrictedFilesTerms
+              }
+              licenseRepository={licenseRepository}
+              guestbookRepository={guestbookRepository}
+            />
+            <LocationDisplay />
+          </>,
+          dataset
+        )
+      )
+
+      cy.findByRole('button', { name: 'Cancel' }).click()
+
+      cy.findByTestId('current-location').should(
+        'have.text',
+        '/datasets?persistentId=some-persistent-id&version=1.0'
+      )
+    })
   })
 
   describe('Guestbook Tab Integration', () => {
@@ -743,6 +844,68 @@ describe('EditDatasetTerms', () => {
       cy.findByRole('button', { name: 'Save Changes' }).click()
 
       cy.wrap(guestbookRepository.assignDatasetGuestbook).should('have.been.called')
+      cy.findByTestId('current-location').should(
+        'have.text',
+        '/datasets?persistentId=some-persistent-id&version=DRAFT'
+      )
+    })
+
+    it('navigates to the draft dataset version after removing a guestbook', () => {
+      const dataset = DatasetMother.create({
+        persistentId: 'some-persistent-id',
+        version: DatasetVersionMother.createReleased(),
+        license: mockLicenses[0],
+        guestbookId: mockGuestbooks[0].id
+      })
+
+      cy.customMount(
+        withProviders(
+          <>
+            <EditDatasetTerms
+              defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
+              licenseRepository={licenseRepository}
+              guestbookRepository={guestbookRepository}
+            />
+            <LocationDisplay />
+          </>,
+          dataset
+        )
+      )
+
+      cy.findByRole('button', { name: 'Clear Selection' }).click()
+      cy.findByRole('button', { name: 'Save Changes' }).click()
+
+      cy.wrap(guestbookRepository.removeDatasetGuestbook).should('have.been.called')
+      cy.findByTestId('current-location').should(
+        'have.text',
+        '/datasets?persistentId=some-persistent-id&version=DRAFT'
+      )
+    })
+
+    it('navigates to the current draft dataset version after canceling guestbook edits', () => {
+      const dataset = DatasetMother.create({
+        persistentId: 'some-persistent-id',
+        version: DatasetVersionMother.createDraftAsLatestVersion(),
+        license: mockLicenses[0],
+        guestbookId: mockGuestbooks[0].id
+      })
+
+      cy.customMount(
+        withProviders(
+          <>
+            <EditDatasetTerms
+              defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
+              licenseRepository={licenseRepository}
+              guestbookRepository={guestbookRepository}
+            />
+            <LocationDisplay />
+          </>,
+          dataset
+        )
+      )
+
+      cy.findByRole('button', { name: 'Cancel' }).click()
+
       cy.findByTestId('current-location').should(
         'have.text',
         '/datasets?persistentId=some-persistent-id&version=DRAFT'
