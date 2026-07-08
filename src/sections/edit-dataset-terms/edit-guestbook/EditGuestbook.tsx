@@ -5,16 +5,15 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Guestbook } from '@/guestbooks/domain/models/Guestbook'
 import { GuestbookRepository } from '@/guestbooks/domain/repositories/GuestbookRepository'
-import {
-  DatasetNonNumericVersionSearchParam,
-  DatasetPublishingStatus
-} from '@/dataset/domain/models/Dataset'
 import { useGetGuestbooksByCollectionId } from '@/sections/guestbooks/useGetGuestbooksByCollectionId'
-import { QueryParamKey, Route } from '@/sections/Route.enum'
 import { useAssignDatasetGuestbook } from './useAssignDatasetGuestbook'
 import { useRemoveDatasetGuestbook } from './useRemoveDatasetGuestbook'
 import { useDataset } from '../../dataset/DatasetContext'
 import { PreviewGuestbookModal } from '@/sections/guestbooks/preview-modal/PreviewGuestbookModal'
+import {
+  EditDatasetTermsDatasetPageVersion,
+  EditDatasetTermsHelper
+} from '../EditDatasetTermsHelper'
 import styles from './EditGuestbook.module.scss'
 
 interface EditGuestbookProps {
@@ -37,20 +36,14 @@ export function EditGuestbook({
   const collectionIdOrAlias = dataset?.parentCollectionNode?.id
   const collectionName = dataset?.parentCollectionNode?.name ?? ''
 
-  const navigateToDatasetView = useCallback(() => {
-    if (!dataset) return
+  const navigateToDatasetView = useCallback(
+    (version?: EditDatasetTermsDatasetPageVersion) => {
+      if (!dataset) return
 
-    const searchParams = new URLSearchParams()
-    searchParams.set(QueryParamKey.PERSISTENT_ID, dataset.persistentId)
-
-    if (dataset.version.publishingStatus === DatasetPublishingStatus.DRAFT) {
-      searchParams.set(QueryParamKey.VERSION, DatasetNonNumericVersionSearchParam.DRAFT)
-    } else {
-      searchParams.set(QueryParamKey.VERSION, dataset.version.number.toString())
-    }
-
-    navigate(`${Route.DATASETS}?${searchParams.toString()}`)
-  }, [dataset, navigate])
+      navigate(EditDatasetTermsHelper.buildDatasetPageUrl(dataset, version))
+    },
+    [dataset, navigate]
+  )
 
   const handleCancel = () => {
     navigateToDatasetView()
@@ -70,7 +63,7 @@ export function EditGuestbook({
     onSuccessfulAssignDatasetGuestbook: () => {
       toast.success(t('alerts.termsUpdated.alertText'))
       refreshDataset()
-      navigateToDatasetView()
+      navigateToDatasetView('draft')
     }
   })
   const {
@@ -82,7 +75,7 @@ export function EditGuestbook({
     onSuccessfulRemoveDatasetGuestbook: () => {
       toast.success(t('alerts.termsUpdated.alertText'))
       refreshDataset()
-      navigateToDatasetView()
+      navigateToDatasetView('draft')
     }
   })
 

@@ -1,3 +1,10 @@
+import {
+  DatasetNonNumericVersionSearchParam,
+  DatasetPublishingStatus
+} from '@/dataset/domain/models/Dataset'
+import type { Dataset } from '@/dataset/domain/models/Dataset'
+import { QueryParamKey, Route } from '@/sections/Route.enum'
+
 export class EditDatasetTermsHelper {
   static EDIT_DATASET_TERMS_TABS_KEYS = {
     datasetTerms: 'datasetTerms',
@@ -16,7 +23,25 @@ export class EditDatasetTermsHelper {
       ] ?? this.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms
     )
   }
+
+  public static buildDatasetPageUrl(
+    dataset: Dataset,
+    version: EditDatasetTermsDatasetPageVersion = 'current'
+  ): string {
+    const searchParams = new URLSearchParams()
+    searchParams.set(QueryParamKey.PERSISTENT_ID, dataset.persistentId)
+
+    if (version === 'draft' || dataset.version.publishingStatus === DatasetPublishingStatus.DRAFT) {
+      searchParams.set(QueryParamKey.VERSION, DatasetNonNumericVersionSearchParam.DRAFT)
+    } else {
+      searchParams.set(QueryParamKey.VERSION, dataset.version.number.toString())
+    }
+
+    return `${Route.DATASETS}?${searchParams.toString()}`
+  }
 }
 
 export type EditDatasetTermsTabKey =
   (typeof EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS)[keyof typeof EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS]
+
+export type EditDatasetTermsDatasetPageVersion = 'current' | 'draft'
