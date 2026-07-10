@@ -48,8 +48,7 @@ export class JSFileMapper {
     downloadsCount: number,
     permissions: FilePermissions,
     thumbnail?: string,
-    tabularData?: FileTabularData,
-    isLatestDatasetVersion = true
+    tabularData?: FileTabularData
   ): File {
     const datasetVersion = JSDatasetVersionMapper.toVersion(
       jsDataset.versionId,
@@ -58,9 +57,7 @@ export class JSFileMapper {
       datasetCitation,
       jsDataset.versionInfo.lastUpdateTime,
       jsDataset.publicationDate,
-      jsDataset.termsOfUse?.termsOfAccess,
-      undefined,
-      isLatestDatasetVersion
+      jsDataset.termsOfUse?.termsOfAccess
     )
     return {
       id: this.toFileId(jsFile.id),

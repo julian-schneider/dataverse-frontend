@@ -30,7 +30,6 @@ import { ContactRepository } from '@/contact/domain/repositories/ContactReposito
 import { DatasetMetrics } from './dataset-metrics/DatasetMetrics'
 import { DatasetPublishingStatus } from '@/dataset/domain/models/Dataset'
 import { DataverseInfoRepository } from '@/info/domain/repositories/DataverseInfoRepository'
-import { useAnonymized } from './anonymized/AnonymizedContext'
 import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
 import { DatasetReviews } from './dataset-reviews/DatasetReviews'
 
@@ -63,7 +62,6 @@ export function Dataset({
   const publishCompleted = useCheckPublishCompleted(publishInProgress, dataset, datasetRepository)
   const [activeTab, setActiveTab] = useState<string>(tab)
   const termsTabRef = useRef<HTMLDivElement>(null)
-  const { anonymizedView } = useAnonymized()
   useUpdateDatasetAlerts({
     dataset,
     publishInProgress
@@ -195,7 +193,6 @@ export function Dataset({
                 <div className={styles['tab-container']}>
                   <DatasetMetadata
                     dataset={dataset}
-                    anonymizedView={anonymizedView}
                     metadataBlockInfoRepository={metadataBlockInfoRepository}
                     dataverseInfoRepository={dataverseInfoRepository}
                   />

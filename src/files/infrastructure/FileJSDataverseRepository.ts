@@ -31,7 +31,6 @@ import { FileCriteria } from '../domain/models/FileCriteria'
 import { DomainFileMapper } from './mappers/DomainFileMapper'
 import { JSFileMapper } from './mappers/JSFileMapper'
 import { DatasetVersion, DatasetVersionNumber } from '../../dataset/domain/models/Dataset'
-import { DatasetJSDataverseRepository } from '@/dataset/infrastructure/repositories/DatasetJSDataverseRepository'
 import { File } from '../domain/models/File'
 import { FilePaginationInfo } from '../domain/models/FilePaginationInfo'
 import { requireAppConfig } from '../../config'
@@ -294,11 +293,7 @@ export class FileJSDataverseRepository implements FileRepository {
               FileJSDataverseRepository.getDownloadCountById(jsFile.id, jsFile.publicationDate),
               Promise.resolve(resolvedPermissions),
               FileJSDataverseRepository.getThumbnailById(jsFile.id),
-              FileJSDataverseRepository.getTabularDataById(jsFile.id, jsFile.tabularData),
-              DatasetJSDataverseRepository.isLatestReleasedVersion(
-                jsDataset.id,
-                datasetVersionNumber
-              )
+              FileJSDataverseRepository.getTabularDataById(jsFile.id, jsFile.tabularData)
             ])
           })
       })
@@ -311,8 +306,7 @@ export class FileJSDataverseRepository implements FileRepository {
           downloadsCount,
           permissions,
           thumbnail,
-          tabularData,
-          isLatestDatasetVersion
+          tabularData
         ]) =>
           JSFileMapper.toFile(
             jsFile,
@@ -322,8 +316,7 @@ export class FileJSDataverseRepository implements FileRepository {
             downloadsCount,
             permissions,
             thumbnail,
-            tabularData,
-            isLatestDatasetVersion
+            tabularData
           )
       )
       .catch((error: ReadError) => {

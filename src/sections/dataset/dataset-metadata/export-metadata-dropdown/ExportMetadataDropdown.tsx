@@ -1,36 +1,56 @@
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BoxArrowUpRight } from 'react-bootstrap-icons'
 import { DropdownButton, DropdownButtonItem } from '@iqss/dataverse-design-system'
+import { toast } from 'react-toastify'
 import { useGetAvailableDatasetMetadataExportFormats } from '@/info/domain/hooks/useGetAvailableDatasetMetadataExportFormats'
 import { DataverseInfoRepository } from '@/info/domain/repositories/DataverseInfoRepository'
-import { QueryParamKey } from '@/sections/Route.enum'
-import { requireAppConfig } from '@/config'
+import { exportDatasetMetadata } from '@/dataset/domain/useCases/exportDatasetMetadata'
+import { DatasetPublishingStatus, DatasetVersion } from '@/dataset/domain/models/Dataset'
+import { DatasetNotNumberedVersion } from '@iqss/dataverse-client-javascript'
+import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
+import { DatasetHelper } from '@/sections/dataset/DatasetHelper'
 
 interface ExportMetadataDropdownProps {
   datasetPersistentId: string
-  datasetIsReleased: boolean
-  datasetIsDeaccessioned: boolean
+  datasetVersion: DatasetVersion
   canUpdateDataset: boolean
-  anonymizedView: boolean
   dataverseInfoRepository: DataverseInfoRepository
 }
 
 export const ExportMetadataDropdown = ({
   datasetPersistentId,
-  datasetIsReleased,
-  datasetIsDeaccessioned,
+  datasetVersion,
   canUpdateDataset,
-  anonymizedView,
   dataverseInfoRepository
 }: ExportMetadataDropdownProps) => {
-  const appConfig = requireAppConfig()
-
+  const { datasetRepository } = useDatasetRepositories()
   const { t } = useTranslation('shared')
+  const [shouldRender, setShouldRender] = useState(false)
   const { datasetMetadataExportFormats, isLoadingExportFormats, errorGetExportFormats } =
     useGetAvailableDatasetMetadataExportFormats({ dataverseInfoRepository })
 
-  const shouldRender =
-    datasetIsReleased && (!datasetIsDeaccessioned || canUpdateDataset) && !anonymizedView
+  const datasetIsDraft = datasetVersion.publishingStatus === DatasetPublishingStatus.DRAFT
+
+  useEffect(() => {
+    let isMounted = true
+    setShouldRender(false)
+
+    void DatasetHelper.canExportMetadata(
+      datasetRepository,
+      datasetPersistentId,
+      datasetVersion,
+      canUpdateDataset
+    ).then((canExportMetadata) => {
+      if (isMounted) {
+        setShouldRender(canExportMetadata)
+      }
+    })
+
+    return () => {
+      isMounted = false
+    }
+  }, [datasetRepository, datasetPersistentId, datasetVersion, canUpdateDataset])
 
   if (!shouldRender) return null
 
@@ -43,6 +63,35 @@ export const ExportMetadataDropdown = ({
     return null
   }
 
+  const handleExportMetadata = async (exporter: string) => {
+    const newWindow = window.open('', '_blank')
+
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+      return
+    }
+
+    try {
+      newWindow.document.title = t('exportMetadata')
+
+      const version = datasetIsDraft ? DatasetNotNumberedVersion.DRAFT : undefined
+      const metadata = await exportDatasetMetadata(
+        datasetRepository,
+        datasetPersistentId,
+        exporter,
+        version
+      )
+
+      const blob = new Blob([metadata.content], { type: metadata.contentType })
+      const url = URL.createObjectURL(blob)
+      newWindow.location.href = url
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000)
+    } catch {
+      if (!newWindow.closed) newWindow.close()
+      toast.error(t('exportMetadataError'))
+    }
+  }
+
   return (
     <DropdownButton
       id="export-metadata-dropdown"
@@ -52,12 +101,12 @@ export const ExportMetadataDropdown = ({
       {Object.entries(datasetMetadataExportFormats).map(([key, exportFormat]) => {
         if (!exportFormat.isVisibleInUserInterface) return null
 
-        const href = `${appConfig.backendUrl}/api/datasets/export?exporter=${key}&${
-          QueryParamKey.PERSISTENT_ID
-        }=${encodeURIComponent(datasetPersistentId)}`
-
         return (
-          <DropdownButtonItem as="a" href={href} target="_blank" key={key}>
+          <DropdownButtonItem
+            as="button"
+            type="button"
+            onClick={() => handleExportMetadata(key)}
+            key={key}>
             {exportFormat.displayName}
           </DropdownButtonItem>
         )
