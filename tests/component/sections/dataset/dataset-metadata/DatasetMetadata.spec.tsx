@@ -217,6 +217,7 @@ describe('DatasetMetadata', () => {
       <WithRepositories datasetRepository={new DatasetMockRepository()}>
         <DatasetMetadata
           dataset={mockDataset}
+          anonymizedView={false}
           metadataBlockInfoRepository={metadataBlockInfoRepository}
           dataverseInfoRepository={dataverseInfoRepository}
           {...props}
@@ -332,6 +333,7 @@ describe('DatasetMetadata', () => {
         <AnonymizedContext.Provider value={{ anonymizedView: true, setAnonymizedView }}>
           <DatasetMetadata
             dataset={mockDataset}
+            anonymizedView
             metadataBlockInfoRepository={metadataBlockInfoRepository}
             dataverseInfoRepository={dataverseInfoRepository}
           />

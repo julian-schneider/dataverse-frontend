@@ -7,12 +7,14 @@ import { ExportMetadataDropdown } from './export-metadata-dropdown/ExportMetadat
 
 interface DatasetMetadataProps {
   dataset: Dataset
+  anonymizedView: boolean
   metadataBlockInfoRepository: MetadataBlockInfoRepository
   dataverseInfoRepository: DataverseInfoRepository
 }
 
 export function DatasetMetadata({
   dataset,
+  anonymizedView,
   metadataBlockInfoRepository,
   dataverseInfoRepository
 }: DatasetMetadataProps) {
@@ -23,6 +25,7 @@ export function DatasetMetadata({
           datasetPersistentId={dataset.persistentId}
           datasetVersion={dataset.version}
           canUpdateDataset={dataset.permissions?.canUpdateDataset}
+          anonymizedView={anonymizedView}
           dataverseInfoRepository={dataverseInfoRepository}
         />
       </div>

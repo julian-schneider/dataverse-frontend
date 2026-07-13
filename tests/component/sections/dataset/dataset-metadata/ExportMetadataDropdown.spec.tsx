@@ -69,6 +69,7 @@ describe('ExportMetadataDropdown', () => {
           datasetPersistentId={testDatasetPersistentId}
           datasetVersion={DatasetVersionMother.createReleased()}
           canUpdateDataset={false}
+          anonymizedView={false}
           dataverseInfoRepository={dataverseInfoRepository}
           {...props}
         />
@@ -96,6 +97,13 @@ describe('ExportMetadataDropdown', () => {
     mountExportMetadataDropdown({ canUpdateDataset: false })
 
     cy.findByRole('button', { name: 'Export Metadata' }).should('exist')
+  })
+
+  it('should not render in anonymized view', () => {
+    mountExportMetadataDropdown({ anonymizedView: true })
+
+    cy.findByRole('button', { name: 'Export Metadata' }).should('not.exist')
+    cy.get('@getDatasetVersionsSummaries').should('not.have.been.called')
   })
 
   it('should render latest published metadata export for an admin or owner when a draft exists', () => {

@@ -22,6 +22,7 @@ export const Default: Story = {
   render: () => (
     <DatasetMetadata
       dataset={datasetMock}
+      anonymizedView={false}
       metadataBlockInfoRepository={new MetadataBlockInfoMockRepository()}
       dataverseInfoRepository={new DataverseInfoMockRepository()}
     />
@@ -33,6 +34,7 @@ export const AnonymizedView: Story = {
   render: () => (
     <DatasetMetadata
       dataset={datasetMockAnonymized}
+      anonymizedView
       metadataBlockInfoRepository={new MetadataBlockInfoMockRepository()}
       dataverseInfoRepository={new DataverseInfoMockRepository()}
     />

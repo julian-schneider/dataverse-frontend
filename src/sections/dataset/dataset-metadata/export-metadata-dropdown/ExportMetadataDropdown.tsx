@@ -15,6 +15,7 @@ interface ExportMetadataDropdownProps {
   datasetPersistentId: string
   datasetVersion: DatasetVersion
   canUpdateDataset: boolean
+  anonymizedView: boolean
   dataverseInfoRepository: DataverseInfoRepository
 }
 
@@ -22,6 +23,7 @@ export const ExportMetadataDropdown = ({
   datasetPersistentId,
   datasetVersion,
   canUpdateDataset,
+  anonymizedView,
   dataverseInfoRepository
 }: ExportMetadataDropdownProps) => {
   const { datasetRepository } = useDatasetRepositories()
@@ -35,6 +37,12 @@ export const ExportMetadataDropdown = ({
   useEffect(() => {
     let isMounted = true
     setShouldRender(false)
+
+    if (anonymizedView) {
+      return () => {
+        isMounted = false
+      }
+    }
 
     void DatasetHelper.canExportMetadata(
       datasetRepository,
@@ -50,7 +58,7 @@ export const ExportMetadataDropdown = ({
     return () => {
       isMounted = false
     }
-  }, [datasetRepository, datasetPersistentId, datasetVersion, canUpdateDataset])
+  }, [datasetRepository, datasetPersistentId, datasetVersion, canUpdateDataset, anonymizedView])
 
   if (!shouldRender) return null
 
