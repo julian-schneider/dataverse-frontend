@@ -8,11 +8,8 @@ import { TermsOfAccess } from '@/dataset/domain/models/Dataset'
 import { useDataset } from '../../dataset/DatasetContext'
 import { useUpdateTermsOfAccess } from './useUpdateTermsOfAccess'
 import { useNavigate } from 'react-router-dom'
+import { buildDatasetDraftReturnUrl, buildDatasetTermsReturnUrl } from '../datasetTermsNavigation'
 import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
-import {
-  EditDatasetTermsDatasetPageVersion,
-  EditDatasetTermsHelper
-} from '../EditDatasetTermsHelper'
 
 interface EditTermsOfAccessProps {
   onFormStateChange?: (isDirty: boolean) => void
@@ -39,22 +36,18 @@ export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps)
   const initialTermsOfAccess =
     (dataset?.termsOfUse.termsOfAccess as TermsOfAccess) ?? defaultTermsOfAccess
   const formContainerRef = useRef<HTMLDivElement>(null)
+  const navigateToDatasetDraftView = useCallback(() => {
+    if (!dataset) return
 
-  const navigateToDatasetView = useCallback(
-    (version?: EditDatasetTermsDatasetPageVersion) => {
-      if (!dataset) return
-
-      navigate(EditDatasetTermsHelper.buildDatasetPageUrl(dataset, version))
-    },
-    [dataset, navigate]
-  )
+    navigate(buildDatasetDraftReturnUrl(dataset))
+  }, [dataset, navigate])
 
   const { handleUpdateTermsOfAccess, isLoading, error } = useUpdateTermsOfAccess({
     datasetRepository,
     onSuccessfulUpdateTermsOfAccess: () => {
       toast.success(t('alerts.termsUpdated.alertText'))
       refreshDataset()
-      navigateToDatasetView('draft')
+      navigateToDatasetDraftView()
     }
   })
 
@@ -126,7 +119,9 @@ export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps)
   }, [initialTermsOfAccess, isRequestAccessEnabled, t])
 
   const handleCancel = () => {
-    navigateToDatasetView()
+    if (!dataset) return
+
+    navigate(buildDatasetTermsReturnUrl(dataset))
   }
 
   return (

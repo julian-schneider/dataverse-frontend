@@ -9,6 +9,10 @@ import {
   EditDatasetTermsTabKey
 } from '@/sections/edit-dataset-terms/EditDatasetTermsHelper'
 import {
+  buildDatasetDraftReturnUrl,
+  buildDatasetTermsReturnUrl
+} from '@/sections/edit-dataset-terms/datasetTermsNavigation'
+import {
   DatasetMother,
   DatasetVersionMother
 } from '@tests/component/dataset/domain/models/DatasetMother'
@@ -149,44 +153,41 @@ describe('EditDatasetTerms', () => {
       )
     })
 
-    it('builds a dataset page URL for the current dataset version', () => {
+    it('builds a dataset terms return URL for the current dataset version', () => {
       const dataset = DatasetMother.create({
         persistentId: 'some-persistent-id',
         version: DatasetVersionMother.createReleased()
       })
 
-      expect(EditDatasetTermsHelper.buildDatasetPageUrl(dataset)).to.equal(
+      expect(buildDatasetTermsReturnUrl(dataset)).to.equal(
         '/datasets?persistentId=some-persistent-id&version=1.0'
       )
     })
 
-    it('builds a dataset page URL for the draft dataset version', () => {
+    it('builds a dataset draft return URL', () => {
       const dataset = DatasetMother.create({
         persistentId: 'some-persistent-id',
         version: DatasetVersionMother.createReleased()
       })
 
-      expect(EditDatasetTermsHelper.buildDatasetPageUrl(dataset, 'draft')).to.equal(
+      expect(buildDatasetDraftReturnUrl(dataset)).to.equal(
         '/datasets?persistentId=some-persistent-id&version=DRAFT'
       )
     })
 
-    it('keeps draft datasets on the draft version when building current dataset page URLs', () => {
+    it('keeps draft datasets on the draft version when building terms return URLs', () => {
       const dataset = DatasetMother.create({
         persistentId: 'some-persistent-id',
         version: DatasetVersionMother.createDraftAsLatestVersion()
       })
 
-      expect(EditDatasetTermsHelper.buildDatasetPageUrl(dataset)).to.equal(
+      expect(buildDatasetTermsReturnUrl(dataset)).to.equal(
         '/datasets?persistentId=some-persistent-id&version=DRAFT'
       )
     })
   })
 
   it('renders NotFoundPage when dataset is missing', () => {
-    datasetRepository.getByPersistentId = cy.stub().resolves(undefined)
-    datasetRepository.getByPrivateUrlToken = cy.stub().resolves(undefined)
-    const dataset = DatasetMother.createEmpty()
     cy.customMount(
       withProviders(
         <EditDatasetTerms
@@ -194,7 +195,7 @@ describe('EditDatasetTerms', () => {
           licenseRepository={licenseRepository}
           guestbookRepository={guestbookRepository}
         />,
-        dataset
+        undefined
       )
     )
 

@@ -331,7 +331,7 @@ describe('EditGuestbook', () => {
     )
   })
 
-  it('navigates with Draft param after successful submit for non-draft datasets', () => {
+  it('navigates with DRAFT version query param after successful submit for non-draft datasets', () => {
     ;(guestbookRepository.assignDatasetGuestbook as Cypress.Agent<sinon.SinonStub>).resolves(
       undefined
     )

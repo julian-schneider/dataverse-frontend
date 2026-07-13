@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import { AuthContext } from 'react-oauth2-code-pkce'
 import { ReadError } from '@iqss/dataverse-client-javascript'
 import { UserRepository } from '@/users/domain/repositories/UserRepository'
@@ -34,6 +34,12 @@ describe('SessionProvider', () => {
     )
   }
 
+  const LocationDisplay = () => {
+    const location = useLocation()
+
+    return <p data-testid="location">{`${location.pathname}${location.search}`}</p>
+  }
+
   const renderComponent = ({
     loginInProgress,
     withTokenPresent
@@ -57,7 +63,16 @@ describe('SessionProvider', () => {
         <Routes>
           <Route element={<SessionProvider repository={userRepository} />}>
             <Route index element={<ComponentUsingContext />} />
-            <Route path="sign-up" element={<div>Sign up</div>} />
+            <Route
+              path="sign-up"
+              element={
+                <>
+                  <ComponentUsingContext />
+                  <LocationDisplay />
+                  <div>Sign up</div>
+                </>
+              }
+            />
           </Route>
         </Routes>
       </AuthContext.Provider>
@@ -166,6 +181,8 @@ describe('SessionProvider', () => {
     })
 
     cy.findByText('Sign up').should('exist')
+    cy.findByText(BEARER_TOKEN_IS_VALID_BUT_NOT_LINKED_MESSAGE).should('exist')
+    cy.findByTestId('location').should('have.text', '/sign-up?validTokenButNotLinkedAccount=true')
   })
 
   it('should detect any other ReadError instances', () => {

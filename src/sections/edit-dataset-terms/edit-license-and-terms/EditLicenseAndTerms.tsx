@@ -9,11 +9,8 @@ import { LicenseRepository } from '../../../licenses/domain/repositories/License
 import { useGetLicenses } from './useGetLicenses'
 import { useDataset } from '../../dataset/DatasetContext'
 import { useUpdateDatasetLicense } from './useUpdateDatasetLicense'
+import { buildDatasetDraftReturnUrl, buildDatasetTermsReturnUrl } from '../datasetTermsNavigation'
 import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
-import {
-  EditDatasetTermsDatasetPageVersion,
-  EditDatasetTermsHelper
-} from '../EditDatasetTermsHelper'
 import styles from './EditLicenseAndTerms.module.scss'
 
 const CUSTOM_LICENSE_VALUE = 'CUSTOM' as const
@@ -45,21 +42,24 @@ export function EditLicenseAndTerms({
     autoFetch: true
   })
 
-  const navigateToDatasetView = useCallback(
-    (version?: EditDatasetTermsDatasetPageVersion) => {
-      if (!dataset) return
+  const navigateToDatasetView = useCallback(() => {
+    if (!dataset) return
 
-      navigate(EditDatasetTermsHelper.buildDatasetPageUrl(dataset, version))
-    },
-    [dataset, navigate]
-  )
+    navigate(buildDatasetTermsReturnUrl(dataset))
+  }, [dataset, navigate])
+
+  const navigateToDatasetDraftView = useCallback(() => {
+    if (!dataset) return
+
+    navigate(buildDatasetDraftReturnUrl(dataset))
+  }, [dataset, navigate])
 
   const { handleUpdateLicense, isLoading, error } = useUpdateDatasetLicense({
     datasetRepository,
     onSuccessfulUpdateLicense: () => {
       toast.success(t('alerts.licenseUpdated.alertText'))
       refreshDataset()
-      navigateToDatasetView('draft')
+      navigateToDatasetDraftView()
     }
   })
 
