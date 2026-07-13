@@ -4,10 +4,21 @@ import { BoxArrowUpRight } from 'react-bootstrap-icons'
 import { DropdownButton, DropdownButtonItem } from '@iqss/dataverse-design-system'
 import { useGetAvailableDatasetMetadataExportFormats } from '@/info/domain/hooks/useGetAvailableDatasetMetadataExportFormats'
 import { DataverseInfoRepository } from '@/info/domain/repositories/DataverseInfoRepository'
-import { DatasetVersion } from '@/dataset/domain/models/Dataset'
+import {
+  DatasetNonNumericVersion,
+  DatasetNonNumericVersionSearchParam,
+  DatasetPublishingStatus,
+  DatasetVersion
+} from '@/dataset/domain/models/Dataset'
 import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
-import { DatasetHelper } from '@/sections/dataset/DatasetHelper'
 import { useExportMetadata } from '@/sections/dataset/dataset-metadata/export-metadata-dropdown/useExportMetadata'
+import { DatasetRepository } from '@/dataset/domain/repositories/DatasetRepository'
+import { getDatasetVersionsSummaries } from '@/dataset/domain/useCases/getDatasetVersionsSummaries'
+import { DatasetVersionPaginationInfo } from '@/dataset/domain/models/DatasetVersionPaginationInfo'
+import {
+  DatasetVersionSummaryInfo,
+  DatasetVersionSummaryStringValues
+} from '@/dataset/domain/models/DatasetVersionSummaryInfo'
 
 interface ExportMetadataDropdownProps {
   datasetPersistentId: string
@@ -45,14 +56,14 @@ export const ExportMetadataDropdown = ({
       }
     }
 
-    void DatasetHelper.canExportMetadata(
+    void canExportMetadata(
       datasetRepository,
       datasetPersistentId,
       datasetVersion,
       canUpdateDataset
-    ).then((canExportMetadata) => {
+    ).then((canExportMetadataResult) => {
       if (isMounted) {
-        setShouldRender(canExportMetadata)
+        setShouldRender(canExportMetadataResult)
       }
     })
 
@@ -92,5 +103,51 @@ export const ExportMetadataDropdown = ({
         )
       })}
     </DropdownButton>
+  )
+}
+
+async function canExportMetadata(
+  datasetRepository: DatasetRepository,
+  datasetId: number | string,
+  datasetVersion: DatasetVersion,
+  canUpdateDataset: boolean
+): Promise<boolean> {
+  if (datasetVersion.publishingStatus === DatasetPublishingStatus.DRAFT) {
+    return canUpdateDataset
+  }
+
+  if (datasetVersion.publishingStatus !== DatasetPublishingStatus.RELEASED) {
+    return false
+  }
+
+  return isLatestPublishedVersion(datasetRepository, datasetId, datasetVersion.number.toString())
+}
+
+async function isLatestPublishedVersion(
+  datasetRepository: DatasetRepository,
+  datasetId: number | string,
+  datasetVersionNumber: string
+): Promise<boolean> {
+  try {
+    const versionSummaries = await getDatasetVersionsSummaries(
+      datasetRepository,
+      datasetId,
+      new DatasetVersionPaginationInfo(1, 10)
+    )
+    const latestPublishedVersion = versionSummaries.summaries.find((summary) =>
+      isPublishedVersionSummary(summary)
+    )
+
+    return latestPublishedVersion?.versionNumber === datasetVersionNumber
+  } catch {
+    return false
+  }
+}
+
+function isPublishedVersionSummary(summary: DatasetVersionSummaryInfo): boolean {
+  return (
+    summary.versionNumber !== DatasetNonNumericVersion.DRAFT &&
+    summary.versionNumber !== DatasetNonNumericVersionSearchParam.DRAFT &&
+    summary.summary !== DatasetVersionSummaryStringValues.versionDeaccessioned
   )
 }
