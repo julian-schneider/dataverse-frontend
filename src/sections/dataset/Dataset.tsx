@@ -31,6 +31,7 @@ import { DatasetPublishingStatus } from '@/dataset/domain/models/Dataset'
 import { DataverseInfoRepository } from '@/info/domain/repositories/DataverseInfoRepository'
 import { useAnonymized } from './anonymized/AnonymizedContext'
 import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
+import { DatasetReviews } from './dataset-reviews/DatasetReviews'
 
 interface DatasetProps {
   metadataBlockInfoRepository: MetadataBlockInfoRepository
@@ -145,6 +146,7 @@ export function Dataset({
               {(!isCurrentVersionDeaccessioned || canUpdateDataset) && (
                 <DatasetMetrics data-testid="dataset-metrics" datasetId={dataset.persistentId} />
               )}
+              <DatasetReviews datasetId={dataset.persistentId} />
             </Col>
           </Row>
 
