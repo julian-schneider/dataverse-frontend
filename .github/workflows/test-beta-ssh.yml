@@ -16,3 +16,16 @@ jobs:
       - name: Check SSH port
         run: |
           nc -vz -w 10 "${{ secrets.BETA_PAYARA_INSTANCE_HOST }}" 22
+
+      - name: Test SSH login and writable target
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.BETA_PAYARA_INSTANCE_HOST }}
+          username: ${{ secrets.BETA_PAYARA_INSTANCE_USERNAME }}
+          key: ${{ secrets.BETA_PAYARA_INSTANCE_SSH_PRIVATE_KEY }}
+          script: |
+            whoami
+            pwd
+            mkdir -p ~/github-actions-upload-test
+            echo ok > ~/github-actions-upload-test/probe.txt
+            ls -l ~/github-actions-upload-test/probe.txt
