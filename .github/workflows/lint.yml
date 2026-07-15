@@ -6,6 +6,14 @@ on:
     types: [opened, reopened]
 
 jobs:
+  test-beta-ssh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check SSH port
+        run: |
+          nc -vz -w 10 "${{ secrets.BETA_PAYARA_INSTANCE_HOST }}" 22
+
   lint:
     runs-on: ubuntu-latest
 
