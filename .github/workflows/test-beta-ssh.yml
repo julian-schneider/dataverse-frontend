@@ -29,3 +29,15 @@ jobs:
             mkdir -p ~/github-actions-upload-test
             echo ok > ~/github-actions-upload-test/probe.txt
             ls -l ~/github-actions-upload-test/probe.txt
+
+      - name: Test Payara asadmin path
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.BETA_PAYARA_INSTANCE_HOST }}
+          username: ${{ secrets.BETA_PAYARA_INSTANCE_USERNAME }}
+          key: ${{ secrets.BETA_PAYARA_INSTANCE_SSH_PRIVATE_KEY }}
+          script: |
+            ASADMIN='/usr/local/payara7/bin/asadmin --user admin'
+            test -x /usr/local/payara7/bin/asadmin
+            $ASADMIN version
+            $ASADMIN list-applications
