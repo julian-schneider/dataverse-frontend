@@ -13,7 +13,7 @@ This changelog follows the principles of [Keep a Changelog](https://keepachangel
 
 ### Changed
 
-- Avoided prop-drilling for file, guestbook, user and external tool repository, so used context to share epository instances.
+- Avoided prop-drilling for file, guestbook, user and external tool repository, so used context to share repository instances.
 
 ### Fixed
 
