@@ -6,10 +6,7 @@ import { DatasetNotNumberedVersion } from '@iqss/dataverse-client-javascript'
 import { WithRepositories } from '@tests/component/WithRepositories'
 import { type ComponentProps } from 'react'
 import { DatasetVersionMother } from '@tests/component/dataset/domain/models/DatasetMother'
-import {
-  DatasetNonNumericVersion,
-  DatasetVersionNumber
-} from '@/dataset/domain/models/Dataset'
+import { DatasetNonNumericVersion, DatasetVersionNumber } from '@/dataset/domain/models/Dataset'
 import { DatasetVersionsSummariesMother } from '@tests/component/dataset/domain/models/DatasetVersionsSummariesMother'
 
 const dataverseInfoRepository: DataverseInfoRepository = {} as DataverseInfoRepository
