@@ -13,7 +13,7 @@ This changelog follows the principles of [Keep a Changelog](https://keepachangel
 
 ### Changed
 
-- Hide "Export Metadata" on dataset and file pages that are not for the latest released dataset version.
+- Hide "Export Metadata" on dataset and file pages that are not for the latest published dataset version.
 - Show "Export Metadata" on dataset and file pages for draft version.
 - Avoided prop-drilling for file, guestbook, user and external tool repository, so used context to share repository instances.
 
