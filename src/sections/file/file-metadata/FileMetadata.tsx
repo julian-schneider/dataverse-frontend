@@ -45,7 +45,6 @@ export function FileMetadata({
           <ExportMetadataDropdown
             datasetPersistentId={datasetPersistentId}
             datasetVersion={datasetVersion}
-            canUpdateDataset={permissions.canEditOwnerDataset}
             anonymizedView={false}
             dataverseInfoRepository={dataverseInfoRepository}
           />

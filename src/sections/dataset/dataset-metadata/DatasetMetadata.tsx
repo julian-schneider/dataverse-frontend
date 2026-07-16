@@ -24,7 +24,6 @@ export function DatasetMetadata({
         <ExportMetadataDropdown
           datasetPersistentId={dataset.persistentId}
           datasetVersion={dataset.version}
-          canUpdateDataset={dataset.permissions?.canUpdateDataset}
           anonymizedView={anonymizedView}
           dataverseInfoRepository={dataverseInfoRepository}
         />

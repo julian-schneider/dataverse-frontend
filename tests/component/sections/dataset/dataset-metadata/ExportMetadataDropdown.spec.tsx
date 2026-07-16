@@ -69,7 +69,6 @@ describe('ExportMetadataDropdown', () => {
         <ExportMetadataDropdown
           datasetPersistentId={testDatasetPersistentId}
           datasetVersion={DatasetVersionMother.createReleased()}
-          canUpdateDataset={false}
           anonymizedView={false}
           dataverseInfoRepository={dataverseInfoRepository}
           {...props}
@@ -95,7 +94,7 @@ describe('ExportMetadataDropdown', () => {
   })
 
   it('should render latest published metadata export for a guest user', () => {
-    mountExportMetadataDropdown({ canUpdateDataset: false })
+    mountExportMetadataDropdown()
 
     cy.findByRole('button', { name: 'Export Metadata' }).should('exist')
   })
@@ -124,8 +123,7 @@ describe('ExportMetadataDropdown', () => {
       })
 
     mountExportMetadataDropdown({
-      datasetVersion: DatasetVersionMother.createReleasedWithLatestVersionIsADraft(),
-      canUpdateDataset: true
+      datasetVersion: DatasetVersionMother.createReleasedWithLatestVersionIsADraft()
     })
 
     cy.findByRole('button', { name: 'Export Metadata' }).should('exist')
@@ -175,8 +173,7 @@ describe('ExportMetadataDropdown', () => {
 
   it('should render and export draft metadata when dataset version is draft', () => {
     mountExportMetadataDropdown({
-      datasetVersion: DatasetVersionMother.createDraft(),
-      canUpdateDataset: true
+      datasetVersion: DatasetVersionMother.createDraft()
     })
 
     cy.findByRole('button', { name: 'Export Metadata' }).click()
@@ -219,27 +216,17 @@ describe('ExportMetadataDropdown', () => {
     cy.findByRole('button', { name: 'Export Metadata' }).should('exist')
   })
 
-  it('should not render if dataset version is draft and user cannot update dataset', () => {
+  it('should render if dataset version is draft, since seeing the draft page at all implies permission to export it', () => {
     mountExportMetadataDropdown({
-      datasetVersion: DatasetVersionMother.createDraft(),
-      canUpdateDataset: false
+      datasetVersion: DatasetVersionMother.createDraft()
     })
 
-    cy.findByRole('button', { name: 'Export Metadata' }).should('not.exist')
+    cy.findByRole('button', { name: 'Export Metadata' }).should('exist')
   })
 
-  it('should not render if dataset is deaccessioned and user cannot update dataset', () => {
+  it('should not render if dataset is deaccessioned', () => {
     mountExportMetadataDropdown({
       datasetVersion: DatasetVersionMother.createDeaccessioned()
-    })
-
-    cy.findByRole('button', { name: 'Export Metadata' }).should('not.exist')
-  })
-
-  it('should not render if dataset is deaccessioned and user can update dataset', () => {
-    mountExportMetadataDropdown({
-      datasetVersion: DatasetVersionMother.createDeaccessioned(),
-      canUpdateDataset: true
     })
 
     cy.findByRole('button', { name: 'Export Metadata' }).should('not.exist')

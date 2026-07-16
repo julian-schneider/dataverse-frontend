@@ -23,7 +23,6 @@ import {
 interface ExportMetadataDropdownProps {
   datasetPersistentId: string
   datasetVersion: DatasetVersion
-  canUpdateDataset: boolean
   anonymizedView: boolean
   dataverseInfoRepository: DataverseInfoRepository
 }
@@ -31,7 +30,6 @@ interface ExportMetadataDropdownProps {
 export const ExportMetadataDropdown = ({
   datasetPersistentId,
   datasetVersion,
-  canUpdateDataset,
   anonymizedView,
   dataverseInfoRepository
 }: ExportMetadataDropdownProps) => {
@@ -55,21 +53,18 @@ export const ExportMetadataDropdown = ({
       }
     }
 
-    void canExportMetadata(
-      datasetRepository,
-      datasetPersistentId,
-      datasetVersion,
-      canUpdateDataset
-    ).then((canExportMetadataResult) => {
-      if (isMounted) {
-        setShouldRender(canExportMetadataResult)
+    void canExportMetadata(datasetRepository, datasetPersistentId, datasetVersion).then(
+      (canExportMetadataResult) => {
+        if (isMounted) {
+          setShouldRender(canExportMetadataResult)
+        }
       }
-    })
+    )
 
     return () => {
       isMounted = false
     }
-  }, [datasetRepository, datasetPersistentId, datasetVersion, canUpdateDataset, anonymizedView])
+  }, [datasetRepository, datasetPersistentId, datasetVersion, anonymizedView])
 
   if (!shouldRender) return null
 
@@ -108,11 +103,13 @@ export const ExportMetadataDropdown = ({
 async function canExportMetadata(
   datasetRepository: DatasetRepository,
   datasetId: number | string,
-  datasetVersion: DatasetVersion,
-  canUpdateDataset: boolean
+  datasetVersion: DatasetVersion
 ): Promise<boolean> {
+  // Anyone who can load a draft dataset page already has the backend's implicit permission to
+  // view it (unauthorized users get a 404 before this component ever renders), so exporting its
+  // metadata should be available to everyone who can see the draft, not just editors.
   if (datasetVersion.publishingStatus === DatasetPublishingStatus.DRAFT) {
-    return canUpdateDataset
+    return true
   }
 
   if (datasetVersion.publishingStatus !== DatasetPublishingStatus.RELEASED) {
