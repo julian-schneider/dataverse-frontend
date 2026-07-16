@@ -13,7 +13,7 @@ import { FakerHelper } from '@tests/component/shared/FakerHelper'
 import { ExternalToolsMother } from '@tests/component/externalTools/domain/models/ExternalToolsMother'
 import { DataverseInfoMockRepository } from '../shared-mock-repositories/info/DataverseInfoMockRepository'
 import { ContactMockRepository } from '../shared-mock-repositories/contact/ContactMockRepository'
-import { RepositoriesStoryProvider, WithRepositories } from '../WithRepositories'
+import { WithRepositories } from '../WithRepositories'
 
 const meta: Meta<typeof File> = {
   title: 'Pages/File',
@@ -89,17 +89,15 @@ export const FileNotFound: Story = {
 
 export const WithMultipleExternalTools: Story = {
   render: () => (
-    <RepositoriesStoryProvider externalToolsRepository={new ExternalToolsMockRepository()}>
-      <ExternalToolsProvider>
-        <File
-          repository={new FileMockRepository(FileMother.createRealistic())}
-          dataverseInfoRepository={new DataverseInfoMockRepository()}
-          contactRepository={new ContactMockRepository()}
-          id={56}
-          toolTypeSelectedQueryParam="preview"
-        />
-      </ExternalToolsProvider>
-    </RepositoriesStoryProvider>
+    <ExternalToolsProvider externalToolsRepository={new ExternalToolsMockRepository()}>
+      <File
+        repository={new FileMockRepository(FileMother.createRealistic())}
+        dataverseInfoRepository={new DataverseInfoMockRepository()}
+        contactRepository={new ContactMockRepository()}
+        id={56}
+        toolTypeSelectedQueryParam="preview"
+      />
+    </ExternalToolsProvider>
   )
 }
 
@@ -114,17 +112,15 @@ externalToolsRepositoryOnlyPreviewTool.getExternalTools = () => {
 
 export const WithOnlyOnePreviewExternalTool: Story = {
   render: () => (
-    <RepositoriesStoryProvider externalToolsRepository={externalToolsRepositoryOnlyPreviewTool}>
-      <ExternalToolsProvider>
-        <File
-          repository={new FileMockRepository(FileMother.createRealistic())}
-          dataverseInfoRepository={new DataverseInfoMockRepository()}
-          contactRepository={new ContactMockRepository()}
-          id={56}
-          toolTypeSelectedQueryParam="preview"
-        />
-      </ExternalToolsProvider>
-    </RepositoriesStoryProvider>
+    <ExternalToolsProvider externalToolsRepository={externalToolsRepositoryOnlyPreviewTool}>
+      <File
+        repository={new FileMockRepository(FileMother.createRealistic())}
+        dataverseInfoRepository={new DataverseInfoMockRepository()}
+        contactRepository={new ContactMockRepository()}
+        id={56}
+        toolTypeSelectedQueryParam="preview"
+      />
+    </ExternalToolsProvider>
   )
 }
 
@@ -139,16 +135,14 @@ externalToolsRepositoryOnlyQueryTool.getExternalTools = () => {
 
 export const WithOnlyOneQueryExternalTool: Story = {
   render: () => (
-    <RepositoriesStoryProvider externalToolsRepository={externalToolsRepositoryOnlyQueryTool}>
-      <ExternalToolsProvider>
-        <File
-          repository={new FileMockRepository(FileMother.createRealistic())}
-          dataverseInfoRepository={new DataverseInfoMockRepository()}
-          contactRepository={new ContactMockRepository()}
-          id={56}
-          toolTypeSelectedQueryParam="query"
-        />
-      </ExternalToolsProvider>
-    </RepositoriesStoryProvider>
+    <ExternalToolsProvider externalToolsRepository={externalToolsRepositoryOnlyQueryTool}>
+      <File
+        repository={new FileMockRepository(FileMother.createRealistic())}
+        dataverseInfoRepository={new DataverseInfoMockRepository()}
+        contactRepository={new ContactMockRepository()}
+        id={56}
+        toolTypeSelectedQueryParam="query"
+      />
+    </ExternalToolsProvider>
   )
 }

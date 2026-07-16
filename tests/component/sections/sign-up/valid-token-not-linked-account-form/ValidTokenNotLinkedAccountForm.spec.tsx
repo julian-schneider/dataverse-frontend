@@ -7,8 +7,6 @@ import { JSTermsOfUseMapper } from '@/info/infrastructure/mappers/JSTermsOfUseMa
 import { ValidTokenNotLinkedAccountForm } from '@/sections/sign-up/valid-token-not-linked-account-form/ValidTokenNotLinkedAccountForm'
 import { AuthContextMother } from '@tests/component/auth/AuthContextMother'
 import { TermsOfUseMother } from '@tests/component/info/domain/models/TermsOfUseMother'
-import { WithRepositories } from '@tests/component/WithRepositories'
-import { ComponentProps } from 'react'
 
 const userRepository: UserRepository = {} as UserRepository
 const dataverseInfoRepository: DataverseInfoRepository = {} as DataverseInfoRepository
@@ -20,14 +18,6 @@ const mockUserName = 'mockUserName'
 const mockFirstName = 'mockFirstName'
 const mockLastName = 'mockLastName'
 const mockEmail = 'mockEmail@email.com'
-
-const ValidTokenNotLinkedAccountFormWithRepositories = (
-  props: ComponentProps<typeof ValidTokenNotLinkedAccountForm>
-) => (
-  <WithRepositories userRepository={userRepository}>
-    <ValidTokenNotLinkedAccountForm {...props} />
-  </WithRepositories>
-)
 
 describe('ValidTokenNotLinkedAccountForm', () => {
   beforeEach(() => {
@@ -57,7 +47,8 @@ describe('ValidTokenNotLinkedAccountForm', () => {
             error: null,
             login: () => {} // 👈 deprecated
           }}>
-          <ValidTokenNotLinkedAccountFormWithRepositories
+          <ValidTokenNotLinkedAccountForm
+            userRepository={userRepository}
             dataverseInfoRepository={dataverseInfoRepository}
           />
         </AuthContext.Provider>
@@ -84,7 +75,8 @@ describe('ValidTokenNotLinkedAccountForm', () => {
             error: null,
             login: () => {} // 👈 deprecated
           }}>
-          <ValidTokenNotLinkedAccountFormWithRepositories
+          <ValidTokenNotLinkedAccountForm
+            userRepository={userRepository}
             dataverseInfoRepository={dataverseInfoRepository}
           />
         </AuthContext.Provider>
@@ -123,7 +115,8 @@ describe('ValidTokenNotLinkedAccountForm', () => {
             error: null,
             login: () => {} // 👈 deprecated
           }}>
-          <ValidTokenNotLinkedAccountFormWithRepositories
+          <ValidTokenNotLinkedAccountForm
+            userRepository={userRepository}
             dataverseInfoRepository={dataverseInfoRepository}
           />
         </AuthContext.Provider>
@@ -163,7 +156,8 @@ describe('ValidTokenNotLinkedAccountForm', () => {
             error: null,
             login: () => {} // 👈 deprecated
           }}>
-          <ValidTokenNotLinkedAccountFormWithRepositories
+          <ValidTokenNotLinkedAccountForm
+            userRepository={userRepository}
             dataverseInfoRepository={dataverseInfoRepository}
           />
         </AuthContext.Provider>
@@ -252,7 +246,8 @@ describe('ValidTokenNotLinkedAccountForm', () => {
           error: null,
           login: () => {} // 👈 deprecated
         }}>
-        <ValidTokenNotLinkedAccountFormWithRepositories
+        <ValidTokenNotLinkedAccountForm
+          userRepository={userRepository}
           dataverseInfoRepository={dataverseInfoRepository}
         />
       </AuthContext.Provider>
@@ -279,7 +274,8 @@ describe('ValidTokenNotLinkedAccountForm', () => {
           error: null,
           login: () => {} // 👈 deprecated
         }}>
-        <ValidTokenNotLinkedAccountFormWithRepositories
+        <ValidTokenNotLinkedAccountForm
+          userRepository={userRepository}
           dataverseInfoRepository={dataverseInfoRepository}
         />
       </AuthContext.Provider>
@@ -306,7 +302,8 @@ describe('ValidTokenNotLinkedAccountForm', () => {
           error: null,
           login: () => {} // 👈 deprecated
         }}>
-        <ValidTokenNotLinkedAccountFormWithRepositories
+        <ValidTokenNotLinkedAccountForm
+          userRepository={userRepository}
           dataverseInfoRepository={dataverseInfoRepository}
         />
       </AuthContext.Provider>
@@ -344,7 +341,8 @@ describe('ValidTokenNotLinkedAccountForm', () => {
           error: null,
           login: () => {} // 👈 deprecated
         }}>
-        <ValidTokenNotLinkedAccountFormWithRepositories
+        <ValidTokenNotLinkedAccountForm
+          userRepository={userRepository}
           dataverseInfoRepository={dataverseInfoRepository}
         />
       </AuthContext.Provider>

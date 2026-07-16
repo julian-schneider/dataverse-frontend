@@ -10,7 +10,7 @@ import {
   GuestbookResponseDTO
 } from '@/access/domain/repositories/AccessRepository'
 import { AccessRepositoryProvider } from '@/sections/access/AccessRepositoryProvider'
-import { RepositoriesStoryProvider } from '@/stories/WithRepositories'
+import { GuestbookRepositoryProvider } from '@/sections/guestbooks/GuestbookRepositoryProvider'
 
 const accessRepository: AccessRepository = {
   submitGuestbookForDatasetDownload: (
@@ -32,7 +32,7 @@ const meta: Meta<typeof DownloadWithTermsAndGuestbookModal> = {
     WithI18next,
     WithLoggedInUser,
     (Story) => (
-      <RepositoriesStoryProvider guestbookRepository={guestbookRepository}>
+      <GuestbookRepositoryProvider repository={guestbookRepository}>
         <AccessRepositoryProvider repository={accessRepository}>
           <DatasetContext.Provider
             value={{
@@ -43,7 +43,7 @@ const meta: Meta<typeof DownloadWithTermsAndGuestbookModal> = {
             <Story />
           </DatasetContext.Provider>
         </AccessRepositoryProvider>
-      </RepositoriesStoryProvider>
+      </GuestbookRepositoryProvider>
     )
   ]
 }

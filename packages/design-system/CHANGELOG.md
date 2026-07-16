@@ -5,12 +5,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # Non Published Changes
 
-### Added
-
-- **SelectAdvanced:**
-  - Add support for grouping options via an optional `group` field on each option; renders a header above each group in the unfiltered menu (hidden while a search is active).
-  - Add `hidePlaceholderOption` prop to omit the "Select..." placeholder row, for selects that must always resolve to a real option.
-
 # [2.2.0](https://github.com/IQSS/dataverse-frontend/compare/@iqss/dataverse-design-system@2.1.0...@iqss/dataverse-design-system@2.2.0) (2026-04-24)
 
 ### Fixed

@@ -3,21 +3,25 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { DropdownButtonItem } from '@iqss/dataverse-design-system'
+import { FileRepository } from '@/files/domain/repositories/FileRepository'
 import { QueryParamKey, Route } from '@/sections/Route.enum'
 import { DatasetNonNumericVersionSearchParam } from '@/dataset/domain/models/Dataset'
 import { ConfirmDeleteFileModal } from '@/sections/file/file-action-buttons/edit-file-menu/delete-file-button/confirm-delete-file-modal/ConfirmDeleteFileModal'
 import { useDeleteFile } from '@/sections/file/file-action-buttons/edit-file-menu/delete-file-button/useDeleteFile'
 import { useFilesContext } from '@/sections/file/FilesContext'
 import { EditFilesMenuDatasetInfo } from './EditFilesOptions'
-import { useFileRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
 
 interface DatasetDeleteFileButtonProps {
   fileId: number
+  fileRepository: FileRepository
   datasetInfo: EditFilesMenuDatasetInfo
 }
 
-export const DatasetDeleteFileButton = ({ fileId, datasetInfo }: DatasetDeleteFileButtonProps) => {
-  const { fileRepository } = useFileRepositories()
+export const DatasetDeleteFileButton = ({
+  fileId,
+  fileRepository,
+  datasetInfo
+}: DatasetDeleteFileButtonProps) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const navigate = useNavigate()
   const { t } = useTranslation('file')

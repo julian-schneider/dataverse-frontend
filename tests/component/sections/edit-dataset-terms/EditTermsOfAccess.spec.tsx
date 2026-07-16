@@ -38,10 +38,6 @@ const mockDataset = DatasetMother.create({
 })
 
 describe('EditTermsOfAccess', () => {
-  beforeEach(() => {
-    datasetRepository.updateTermsOfAccess = cy.stub().resolves()
-  })
-
   const withProviders = (component: ReactNode, dataset: Dataset) => {
     datasetRepository.getByPersistentId = cy.stub().resolves(dataset)
     datasetRepository.getByPrivateUrlToken = cy.stub().resolves(dataset)

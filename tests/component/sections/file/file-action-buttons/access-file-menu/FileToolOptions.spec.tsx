@@ -7,7 +7,6 @@ import {
 import { ExternalToolsProvider } from '@/shared/contexts/external-tools/ExternalToolsProvider'
 import { ExternalToolsMother } from '@tests/component/externalTools/domain/models/ExternalToolsMother'
 import { FileExternalToolResolvedMother } from '@tests/component/externalTools/domain/models/FileExternalToolResolvedMother'
-import { WithRepositories } from '@tests/component/WithRepositories'
 
 const testExternalToolsRepository: ExternalToolsRepository = {} as ExternalToolsRepository
 const testFileExploreTool = ExternalToolsMother.createFileExploreTool()
@@ -24,11 +23,9 @@ describe('FileToolOptions', () => {
   describe('FileExploreToolsOptions', () => {
     it('renders the tool options if file explore tools are available and compatible with the type', () => {
       cy.customMount(
-        <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-          <ExternalToolsProvider>
-            <FileExploreToolsOptions fileId={1} fileType="text/plain" />
-          </ExternalToolsProvider>
-        </WithRepositories>
+        <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+          <FileExploreToolsOptions fileId={1} fileType="text/plain" />
+        </ExternalToolsProvider>
       )
 
       cy.findByText('Query Options').should('not.exist')
@@ -39,11 +36,9 @@ describe('FileToolOptions', () => {
 
     it('does not render the tool options if there are not applicable tools for the file type', () => {
       cy.customMount(
-        <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-          <ExternalToolsProvider>
-            <FileExploreToolsOptions fileId={1} fileType="application/pdf" />
-          </ExternalToolsProvider>
-        </WithRepositories>
+        <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+          <FileExploreToolsOptions fileId={1} fileType="application/pdf" />
+        </ExternalToolsProvider>
       )
 
       cy.findByText('Explore Options').should('not.exist')
@@ -54,11 +49,9 @@ describe('FileToolOptions', () => {
   describe('FileQueryToolsOptions', () => {
     it('renders the tool options if file query tools are available and compatible with the type', () => {
       cy.customMount(
-        <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-          <ExternalToolsProvider>
-            <FileQueryToolsOptions fileId={1} fileType="text/plain" />
-          </ExternalToolsProvider>
-        </WithRepositories>
+        <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+          <FileQueryToolsOptions fileId={1} fileType="text/plain" />
+        </ExternalToolsProvider>
       )
 
       cy.findByText('Explore Options').should('not.exist')
@@ -69,11 +62,9 @@ describe('FileToolOptions', () => {
 
     it('does not render the tool options if there are not applicable tools for the file type', () => {
       cy.customMount(
-        <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-          <ExternalToolsProvider>
-            <FileQueryToolsOptions fileId={1} fileType="application/pdf" />
-          </ExternalToolsProvider>
-        </WithRepositories>
+        <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+          <FileQueryToolsOptions fileId={1} fileType="application/pdf" />
+        </ExternalToolsProvider>
       )
 
       cy.findByText('Explore Options').should('not.exist')
@@ -84,11 +75,9 @@ describe('FileToolOptions', () => {
   describe('FileConfigureToolsOptions', () => {
     it('renders the tool options if file configure tools are available and compatible with the type', () => {
       cy.customMount(
-        <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-          <ExternalToolsProvider>
-            <FileConfigureToolsOptions fileId={1} fileType="text/plain" />
-          </ExternalToolsProvider>
-        </WithRepositories>
+        <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+          <FileConfigureToolsOptions fileId={1} fileType="text/plain" />
+        </ExternalToolsProvider>
       )
 
       cy.findByText('Explore Options').should('not.exist')
@@ -99,11 +88,9 @@ describe('FileToolOptions', () => {
 
     it('does not render the tool options if there are not applicable tools for the file type', () => {
       cy.customMount(
-        <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-          <ExternalToolsProvider>
-            <FileConfigureToolsOptions fileId={1} fileType="application/pdf" />
-          </ExternalToolsProvider>
-        </WithRepositories>
+        <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+          <FileConfigureToolsOptions fileId={1} fileType="application/pdf" />
+        </ExternalToolsProvider>
       )
 
       cy.findByText('Explore Options').should('not.exist')
@@ -132,11 +119,9 @@ describe('FileToolOptions', () => {
     })
 
     cy.customMount(
-      <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-        <ExternalToolsProvider>
-          <FileExploreToolsOptions fileId={1} fileType="text/plain" />
-        </ExternalToolsProvider>
-      </WithRepositories>
+      <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+        <FileExploreToolsOptions fileId={1} fileType="text/plain" />
+      </ExternalToolsProvider>
     )
 
     cy.findByText('File Explore Tool').should('exist').click()
@@ -167,11 +152,9 @@ describe('FileToolOptions', () => {
     })
 
     cy.customMount(
-      <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-        <ExternalToolsProvider>
-          <FileExploreToolsOptions fileId={1} fileType="text/plain" />
-        </ExternalToolsProvider>
-      </WithRepositories>
+      <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+        <FileExploreToolsOptions fileId={1} fileType="text/plain" />
+      </ExternalToolsProvider>
     )
 
     cy.findByText('File Explore Tool').should('exist').click()
@@ -216,11 +199,9 @@ describe('FileToolOptions', () => {
     })
 
     cy.customMount(
-      <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-        <ExternalToolsProvider>
-          <FileExploreToolsOptions fileId={1} fileType="text/plain" />
-        </ExternalToolsProvider>
-      </WithRepositories>
+      <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+        <FileExploreToolsOptions fileId={1} fileType="text/plain" />
+      </ExternalToolsProvider>
     )
 
     cy.findByText('File Explore Tool').should('exist').as('toolButton')
@@ -243,11 +224,9 @@ describe('FileToolOptions', () => {
       })
 
       cy.customMount(
-        <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-          <ExternalToolsProvider>
-            <FileExploreToolsOptions fileId={1} fileType="text/plain" />
-          </ExternalToolsProvider>
-        </WithRepositories>
+        <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+          <FileExploreToolsOptions fileId={1} fileType="text/plain" />
+        </ExternalToolsProvider>
       )
 
       cy.findByText('File Explore Tool').should('exist').click()
@@ -273,11 +252,9 @@ describe('FileToolOptions', () => {
       })
 
       cy.customMount(
-        <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-          <ExternalToolsProvider>
-            <FileExploreToolsOptions fileId={1} fileType="text/plain" />
-          </ExternalToolsProvider>
-        </WithRepositories>
+        <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+          <FileExploreToolsOptions fileId={1} fileType="text/plain" />
+        </ExternalToolsProvider>
       )
 
       cy.findByText('File Explore Tool').should('exist').click()
@@ -303,11 +280,9 @@ describe('FileToolOptions', () => {
       })
 
       cy.customMount(
-        <WithRepositories externalToolsRepository={testExternalToolsRepository}>
-          <ExternalToolsProvider>
-            <FileExploreToolsOptions fileId={1} fileType="text/plain" />
-          </ExternalToolsProvider>
-        </WithRepositories>
+        <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
+          <FileExploreToolsOptions fileId={1} fileType="text/plain" />
+        </ExternalToolsProvider>
       )
 
       cy.findByText('File Explore Tool').should('exist').click()

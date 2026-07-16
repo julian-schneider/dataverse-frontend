@@ -7,14 +7,16 @@ import { useTranslation } from 'react-i18next'
 import { useDataset } from '../../../../DatasetContext'
 import { FileSelection } from '../../row-selection/useFileSelection'
 import { useMediaQuery } from '../../../../../../shared/hooks/useMediaQuery'
+import { FileRepository } from '@/files/domain/repositories/FileRepository'
 import styles from './EditFilesMenu.module.scss'
 
 interface EditFilesMenuProps {
   files: FilePreview[]
   fileSelection: FileSelection
+  fileRepository: FileRepository
 }
 const MINIMUM_FILES_COUNT_TO_SHOW_EDIT_FILES_BUTTON = 1
-export function EditFilesMenu({ files, fileSelection }: EditFilesMenuProps) {
+export function EditFilesMenu({ files, fileSelection, fileRepository }: EditFilesMenuProps) {
   const { t } = useTranslation('files')
   const { user } = useSession()
   const { dataset } = useDataset()
@@ -38,7 +40,12 @@ export function EditFilesMenu({ files, fileSelection }: EditFilesMenuProps) {
       disabled={
         dataset.checkIsLockedFromEdits(user.persistentId) || !dataset.hasValidTermsOfAccess
       }>
-      <EditFilesOptions files={files} fileSelection={fileSelection} isHeader={true} />
+      <EditFilesOptions
+        files={files}
+        fileSelection={fileSelection}
+        fileRepository={fileRepository}
+        isHeader={true}
+      />
     </DropdownButton>
   )
 }

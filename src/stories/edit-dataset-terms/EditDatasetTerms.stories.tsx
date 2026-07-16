@@ -20,12 +20,7 @@ const guestbookRepository: GuestbookRepository =
 const meta: Meta<typeof EditDatasetTerms> = {
   title: 'Pages/EditDatasetTerms',
   component: EditDatasetTerms,
-  decorators: [
-    WithI18next,
-    WithLayout,
-    WithDataset,
-    WithRepositories({ datasetRepository, guestbookRepository })
-  ],
+  decorators: [WithI18next, WithLayout, WithDataset, WithRepositories({ datasetRepository })],
   parameters: {
     chromatic: { delay: 15000, pauseAnimationAtEnd: true }
   }
@@ -39,6 +34,7 @@ export const EditLicenseAndTermsTab: Story = {
     <EditDatasetTerms
       defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
       licenseRepository={licenseRepository}
+      guestbookRepository={guestbookRepository}
     />
   )
 }
@@ -48,6 +44,7 @@ export const EditTermsOfAccessTab: Story = {
     <EditDatasetTerms
       defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.restrictedFilesTerms}
       licenseRepository={licenseRepository}
+      guestbookRepository={guestbookRepository}
     />
   )
 }
@@ -57,6 +54,7 @@ export const EditGuestbookTab: Story = {
     <EditDatasetTerms
       defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
       licenseRepository={licenseRepository}
+      guestbookRepository={guestbookRepository}
     />
   )
 }

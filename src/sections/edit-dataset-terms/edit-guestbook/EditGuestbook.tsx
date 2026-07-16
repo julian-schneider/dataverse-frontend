@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Guestbook } from '@/guestbooks/domain/models/Guestbook'
+import { GuestbookRepository } from '@/guestbooks/domain/repositories/GuestbookRepository'
 import {
   DatasetNonNumericVersionSearchParam,
   DatasetPublishingStatus
@@ -14,16 +15,19 @@ import { useAssignDatasetGuestbook } from './useAssignDatasetGuestbook'
 import { useRemoveDatasetGuestbook } from './useRemoveDatasetGuestbook'
 import { useDataset } from '../../dataset/DatasetContext'
 import { PreviewGuestbookModal } from '@/sections/guestbooks/preview-modal/PreviewGuestbookModal'
-import { useGuestbookRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
 import styles from './EditGuestbook.module.scss'
 
 interface EditGuestbookProps {
+  guestbookRepository: GuestbookRepository
   onPreview?: () => void
   onFormStateChange?: (isDirty: boolean) => void
 }
 
-export function EditGuestbook({ onPreview, onFormStateChange }: EditGuestbookProps) {
-  const { guestbookRepository } = useGuestbookRepositories()
+export function EditGuestbook({
+  guestbookRepository,
+  onPreview,
+  onFormStateChange
+}: EditGuestbookProps) {
   const { t } = useTranslation('dataset')
   const { t: tShared } = useTranslation('shared')
   const [selectedGuestbookId, setSelectedGuestbookId] = useState<number | undefined>(undefined)

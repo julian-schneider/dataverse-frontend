@@ -25,7 +25,7 @@ describe('FileOptionsMenu', () => {
     datasetRepository.getByPrivateUrlToken = cy.stub().resolves(dataset)
 
     return (
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
+      <WithRepositories datasetRepository={datasetRepository}>
         <DatasetProvider
           repository={datasetRepository}
           searchParams={{ persistentId: 'some-persistent-id', version: 'some-version' }}>
@@ -37,14 +37,20 @@ describe('FileOptionsMenu', () => {
 
   it('renders the FileOptionsMenu', () => {
     cy.mountAuthenticated(
-      withDataset(<FileOptionsMenu file={file} />, datasetWithUpdatePermissions)
+      withDataset(
+        <FileOptionsMenu file={file} fileRepository={fileRepository} />,
+        datasetWithUpdatePermissions
+      )
     )
     cy.findByRole('button', { name: 'File Options' }).should('exist')
   })
 
   it('renders the file options menu with tooltip', () => {
     cy.mountAuthenticated(
-      withDataset(<FileOptionsMenu file={file} />, datasetWithUpdatePermissions)
+      withDataset(
+        <FileOptionsMenu file={file} fileRepository={fileRepository} />,
+        datasetWithUpdatePermissions
+      )
     )
 
     cy.findByRole('button', { name: 'File Options' }).trigger('mouseover')
@@ -53,7 +59,10 @@ describe('FileOptionsMenu', () => {
 
   it('renders the dropdown header', () => {
     cy.mountAuthenticated(
-      withDataset(<FileOptionsMenu file={file} />, datasetWithUpdatePermissions)
+      withDataset(
+        <FileOptionsMenu file={file} fileRepository={fileRepository} />,
+        datasetWithUpdatePermissions
+      )
     )
 
     cy.findByRole('button', { name: 'File Options' }).should('exist').click()
@@ -61,7 +70,12 @@ describe('FileOptionsMenu', () => {
   })
 
   it('does not render is the user is not authenticated', () => {
-    cy.customMount(withDataset(<FileOptionsMenu file={file} />, datasetWithUpdatePermissions))
+    cy.customMount(
+      withDataset(
+        <FileOptionsMenu file={file} fileRepository={fileRepository} />,
+        datasetWithUpdatePermissions
+      )
+    )
 
     cy.findByRole('button', { name: 'File Options' }).should('not.exist')
   })
@@ -71,7 +85,10 @@ describe('FileOptionsMenu', () => {
       permissions: DatasetPermissionsMother.createWithUpdateDatasetNotAllowed()
     })
     cy.mountAuthenticated(
-      withDataset(<FileOptionsMenu file={file} />, datasetWithNoUpdatePermissions)
+      withDataset(
+        <FileOptionsMenu file={file} fileRepository={fileRepository} />,
+        datasetWithNoUpdatePermissions
+      )
     )
     cy.findByRole('button', { name: 'File Options' }).should('not.exist')
   })
@@ -80,7 +97,12 @@ describe('FileOptionsMenu', () => {
     const datasetWithNoTermsOfAccess = DatasetMother.create({
       hasValidTermsOfAccess: false
     })
-    cy.mountAuthenticated(withDataset(<FileOptionsMenu file={file} />, datasetWithNoTermsOfAccess))
+    cy.mountAuthenticated(
+      withDataset(
+        <FileOptionsMenu file={file} fileRepository={fileRepository} />,
+        datasetWithNoTermsOfAccess
+      )
+    )
     cy.findByRole('button', { name: 'File Options' }).should('not.exist')
   })
 
@@ -90,7 +112,12 @@ describe('FileOptionsMenu', () => {
       locks: [DatasetLockMother.createLockedInEditInProgress()],
       hasValidTermsOfAccess: true
     })
-    cy.mountAuthenticated(withDataset(<FileOptionsMenu file={file} />, datasetLockedFromEdits))
+    cy.mountAuthenticated(
+      withDataset(
+        <FileOptionsMenu file={file} fileRepository={fileRepository} />,
+        datasetLockedFromEdits
+      )
+    )
 
     cy.findByRole('button', { name: 'File Options' }).should('exist').should('be.disabled')
   })
@@ -99,7 +126,10 @@ describe('FileOptionsMenu', () => {
     const file = FilePreviewMother.createDeleted()
 
     cy.mountAuthenticated(
-      withDataset(<FileOptionsMenu file={file} />, datasetWithUpdatePermissions)
+      withDataset(
+        <FileOptionsMenu file={file} fileRepository={fileRepository} />,
+        datasetWithUpdatePermissions
+      )
     )
     cy.findByRole('button', { name: 'File Options' }).should('exist').click()
 
@@ -113,7 +143,10 @@ describe('FileOptionsMenu', () => {
 
   it('renders the menu options', () => {
     cy.mountAuthenticated(
-      withDataset(<FileOptionsMenu file={file} />, datasetWithUpdatePermissions)
+      withDataset(
+        <FileOptionsMenu file={file} fileRepository={fileRepository} />,
+        datasetWithUpdatePermissions
+      )
     )
     cy.findByRole('button', { name: 'File Options' }).click()
     cy.findByRole('button', { name: 'Restrict' }).should('exist')

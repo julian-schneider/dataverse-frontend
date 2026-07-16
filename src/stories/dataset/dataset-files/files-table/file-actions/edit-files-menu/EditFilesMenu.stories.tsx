@@ -17,10 +17,7 @@ const meta: Meta<typeof EditFilesMenu> = {
     WithSettings,
     WithLoggedInUser,
     WithDatasetAllPermissionsGranted,
-    WithRepositories({
-      datasetRepository: new DatasetMockRepository(),
-      fileRepository: new FileMockRepository()
-    })
+    WithRepositories({ datasetRepository: new DatasetMockRepository() })
   ]
 }
 
@@ -28,5 +25,11 @@ export default meta
 type Story = StoryObj<typeof EditFilesMenu>
 
 export const Default: Story = {
-  render: () => <EditFilesMenu files={FilePreviewMother.createMany(2)} fileSelection={{}} />
+  render: () => (
+    <EditFilesMenu
+      files={FilePreviewMother.createMany(2)}
+      fileSelection={{}}
+      fileRepository={new FileMockRepository()}
+    />
+  )
 }

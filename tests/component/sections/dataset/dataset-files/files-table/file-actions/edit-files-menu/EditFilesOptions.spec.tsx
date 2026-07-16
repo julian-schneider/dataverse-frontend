@@ -21,8 +21,13 @@ const datasetInfo = {
 describe('EditFilesOptions', () => {
   it('renders the EditFilesOptions', () => {
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions files={files} fileSelection={{}} isHeader={true} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          files={files}
+          fileSelection={{}}
+          fileRepository={fileRepository}
+          isHeader={true}
+        />
       </WithRepositories>
     )
 
@@ -36,8 +41,13 @@ describe('EditFilesOptions', () => {
   it('renders the restrict option if some file is unrestricted', () => {
     const fileUnrestricted = FilePreviewMother.createDefault()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions files={[fileUnrestricted]} fileSelection={{}} isHeader={true} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          files={[fileUnrestricted]}
+          fileSelection={{}}
+          fileRepository={fileRepository}
+          isHeader={true}
+        />
       </WithRepositories>
     )
 
@@ -49,8 +59,13 @@ describe('EditFilesOptions', () => {
   it('renders the unrestrict option if some file is restricted', () => {
     const fileRestricted = FilePreviewMother.createRestricted()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions files={[fileRestricted]} fileSelection={{}} isHeader={true} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          files={[fileRestricted]}
+          fileSelection={{}}
+          fileRepository={fileRepository}
+          isHeader={true}
+        />
       </WithRepositories>
     )
 
@@ -61,8 +76,13 @@ describe('EditFilesOptions', () => {
 
   it.skip('renders the embargo option if the embargo is allowed by settings', () => {
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions files={files} fileSelection={{}} isHeader={true} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          files={files}
+          fileSelection={{}}
+          fileRepository={fileRepository}
+          isHeader={true}
+        />
       </WithRepositories>
     )
 
@@ -73,8 +93,13 @@ describe('EditFilesOptions', () => {
 
   it.skip('renders provenance option if provenance is enabled in config', () => {
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions files={files} fileSelection={{}} isHeader={true} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          files={files}
+          fileSelection={{}}
+          fileRepository={fileRepository}
+          isHeader={true}
+        />
       </WithRepositories>
     )
 
@@ -85,8 +110,13 @@ describe('EditFilesOptions', () => {
 
   it('shows the No Selected Files message when no files are selected and one option is clicked', () => {
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions files={files} fileSelection={{}} isHeader={true} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          files={files}
+          fileSelection={{}}
+          fileRepository={fileRepository}
+          isHeader={true}
+        />
       </WithRepositories>
     )
 
@@ -101,10 +131,11 @@ describe('EditFilesOptions', () => {
 
   it('does not show the No Selected Files message when files are selected and one option is clicked', () => {
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
+      <WithRepositories datasetRepository={datasetRepository}>
         <EditFilesOptions
           files={files}
           fileSelection={{ 'some-file-id': FilePreviewMother.create() }}
+          fileRepository={fileRepository}
           isHeader={true}
         />
       </WithRepositories>
@@ -122,8 +153,13 @@ describe('EditFilesOptions for a single file', () => {
   it('renders the EditFilesOptions', () => {
     const fileUnrestricted = FilePreviewMother.createDefault()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileUnrestricted} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileUnrestricted}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -146,8 +182,13 @@ describe('EditFilesOptions for a single file', () => {
   it('renders the restrict option if some file is unrestricted', () => {
     const fileUnrestricted = FilePreviewMother.createDefault()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileUnrestricted} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileUnrestricted}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -161,8 +202,13 @@ describe('EditFilesOptions for a single file', () => {
   it('renders the unrestrict option if file is restricted', () => {
     const fileRestricted = FilePreviewMother.createRestricted()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileRestricted} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileRestricted}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -177,8 +223,13 @@ describe('EditFilesOptions for a single file', () => {
   it('renders delete modal', () => {
     const fileUnrestricted = FilePreviewMother.createDefault()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileUnrestricted} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileUnrestricted}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -192,9 +243,10 @@ describe('EditFilesOptions for a single file', () => {
   it('should delete file if delete button clicked', () => {
     fileRepository.delete = cy.stub().resolves()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
+      <WithRepositories datasetRepository={datasetRepository}>
         <EditFilesOptions
           file={FilePreviewMother.createDefault()}
+          fileRepository={fileRepository}
           datasetInfo={datasetInfo}
           isHeader={false}
         />
@@ -211,8 +263,13 @@ describe('EditFilesOptions for a single file', () => {
   it('should reset the modal if cancel is clicked in delete modal', () => {
     const fileUnrestricted = FilePreviewMother.createDefault()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileUnrestricted} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileUnrestricted}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -235,8 +292,13 @@ describe('EditFilesOptions for a single file', () => {
     const fileToDelete = FilePreviewMother.createDefault()
 
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileToDelete} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileToDelete}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>,
       [
         `${Route.DATASETS}?${QueryParamKey.PERSISTENT_ID}=${datasetInfo.persistentId}&${QueryParamKey.VERSION}=DRAFT`
@@ -262,9 +324,10 @@ describe('EditFilesOptions for a single file', () => {
   it('should restrict file if restrict button clicked', () => {
     fileRepository.restrict = cy.stub().resolves()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
+      <WithRepositories datasetRepository={datasetRepository}>
         <EditFilesOptions
           file={FilePreviewMother.createDefault()}
+          fileRepository={fileRepository}
           datasetInfo={datasetInfo}
           isHeader={false}
         />
@@ -283,8 +346,13 @@ describe('EditFilesOptions for a single file', () => {
     const fileRestricted = FilePreviewMother.createRestricted()
 
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileRestricted} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileRestricted}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -299,9 +367,10 @@ describe('EditFilesOptions for a single file', () => {
   it('should restrict file and call refreshFiles if restrict button clicked in draft version', () => {
     fileRepository.restrict = cy.stub().resolves()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
+      <WithRepositories datasetRepository={datasetRepository}>
         <EditFilesOptions
           file={FilePreviewMother.createDefault()}
+          fileRepository={fileRepository}
           datasetInfo={datasetInfo}
           isHeader={false}
         />
@@ -321,8 +390,13 @@ describe('EditFilesOptions for a single file', () => {
   it('should reset the modal if cancel is clicked in restrict modal', () => {
     const fileUnrestricted = FilePreviewMother.createDefault()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileUnrestricted} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileUnrestricted}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -339,8 +413,13 @@ describe('EditFilesOptions for a single file', () => {
   it('opens and closes the edit file tags modal', () => {
     const fileUnrestricted = FilePreviewMother.createDefault()
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileUnrestricted} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileUnrestricted}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -355,8 +434,13 @@ describe('EditFilesOptions for a single file', () => {
     const fileWithTags = FilePreviewMother.createWithLabels()
 
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileWithTags} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileWithTags}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -376,8 +460,13 @@ describe('EditFilesOptions for a single file', () => {
     const fileUnrestricted = FilePreviewMother.createDefault()
 
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileUnrestricted} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileUnrestricted}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -393,8 +482,13 @@ describe('EditFilesOptions for a single file', () => {
     const fileRestricted = FilePreviewMother.createRestricted()
 
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileRestricted} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileRestricted}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -410,8 +504,13 @@ describe('EditFilesOptions for a single file', () => {
     const fileToDelete = FilePreviewMother.createDefault()
 
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileToDelete} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileToDelete}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 
@@ -429,8 +528,13 @@ describe('EditFilesOptions for a single file', () => {
     fileRepository.updateCategories = cy.stub().resolves()
 
     cy.customMount(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
-        <EditFilesOptions file={fileWithTags} datasetInfo={datasetInfo} isHeader={false} />
+      <WithRepositories datasetRepository={datasetRepository}>
+        <EditFilesOptions
+          file={fileWithTags}
+          fileRepository={fileRepository}
+          datasetInfo={datasetInfo}
+          isHeader={false}
+        />
       </WithRepositories>
     )
 

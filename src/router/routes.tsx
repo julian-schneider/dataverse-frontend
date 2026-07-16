@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, RouteObject } from 'react-router-dom'
+import { UserJSDataverseRepository } from '@/users/infrastructure/repositories/UserJSDataverseRepository'
 import { Route } from '@/sections/Route.enum'
 import { Layout } from '@/sections/layout/Layout'
 import { ErrorPage } from '@/sections/error-page/ErrorPage'
@@ -7,6 +8,8 @@ import { AppLoader } from '@/sections/shared/layout/app-loader/AppLoader'
 import { AuthCallback } from '@/sections/auth-callback/AuthCallback'
 import { SessionProvider } from '@/sections/session/SessionProvider'
 import { ProtectedRoute } from './ProtectedRoute'
+
+const userRepository = new UserJSDataverseRepository()
 
 const Homepage = lazy(() =>
   import('../sections/homepage/HomepageFactory').then(({ HomepageFactory }) => ({
@@ -152,7 +155,7 @@ const AdvancedSearchPage = lazy(() =>
 
 export const routes: RouteObject[] = [
   {
-    element: <SessionProvider />,
+    element: <SessionProvider repository={userRepository} />,
     children: [
       {
         path: '/',

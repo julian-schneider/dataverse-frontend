@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 import { Tabs } from '@iqss/dataverse-design-system'
 import { AccountHelper, AccountPanelTabKey } from './AccountHelper'
+import { UserJSDataverseRepository } from '@/users/infrastructure/repositories/UserJSDataverseRepository'
 import { NotificationRepository } from '@/notifications/domain/repositories/NotificationRepository'
 import { ApiTokenSection } from './api-token-section/ApiTokenSection'
 import { AccountInfoSection } from './account-info-section/AccountInfoSection'
@@ -16,12 +17,14 @@ const tabsKeys = AccountHelper.ACCOUNT_PANEL_TABS_KEYS
 
 interface AccountProps {
   defaultActiveTabKey: AccountPanelTabKey
+  userRepository: UserJSDataverseRepository
   roleRepository: RoleJSDataverseRepository
   notificationRepository: NotificationRepository
 }
 
 export const Account = ({
   defaultActiveTabKey,
+  userRepository,
   roleRepository,
   notificationRepository
 }: AccountProps) => {
@@ -63,7 +66,7 @@ export const Account = ({
         </Tabs.Tab>
         <Tabs.Tab eventKey={tabsKeys.apiToken} title={t('tabs.apiToken')}>
           <div className={styles['tab-container']}>
-            <ApiTokenSection />
+            <ApiTokenSection repository={userRepository} />
           </div>
         </Tabs.Tab>
       </Tabs>

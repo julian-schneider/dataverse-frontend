@@ -42,9 +42,6 @@ export default defineConfig({
       }
     })
   ],
-  optimizeDeps: {
-    include: ['react-dom/client']
-  },
   preview: {
     port: 5173
   },

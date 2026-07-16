@@ -1,7 +1,6 @@
 import { ApiTokenSection } from '../../../../src/sections/account/api-token-section/ApiTokenSection'
 import { DateHelper } from '@/shared/helpers/DateHelper'
 import { UserRepository } from '@/users/domain/repositories/UserRepository'
-import { WithRepositories } from '@tests/component/WithRepositories'
 
 describe('ApiTokenSection', () => {
   const mockApiTokenInfo = {
@@ -15,12 +14,6 @@ describe('ApiTokenSection', () => {
 
   let userRepository: UserRepository
 
-  const ApiTokenSectionWithRepositories = () => (
-    <WithRepositories userRepository={userRepository}>
-      <ApiTokenSection />
-    </WithRepositories>
-  )
-
   beforeEach(() => {
     userRepository = {
       getCurrentApiToken: cy.stub().resolves(mockApiTokenInfo),
@@ -30,7 +23,7 @@ describe('ApiTokenSection', () => {
       register: cy.stub().resolves()
     }
 
-    cy.mountAuthenticated(<ApiTokenSectionWithRepositories />)
+    cy.mountAuthenticated(<ApiTokenSection repository={userRepository} />)
   })
 
   it('should show the loading skeleton while fetching the token', () => {
@@ -38,7 +31,7 @@ describe('ApiTokenSection', () => {
       return Cypress.Promise.delay(500).then(() => mockApiTokenInfo)
     })
 
-    cy.mount(<ApiTokenSectionWithRepositories />)
+    cy.mount(<ApiTokenSection repository={userRepository} />)
     cy.get('[data-testid="loadingSkeleton"]').should('exist')
 
     cy.wait(500)
@@ -88,7 +81,7 @@ describe('ApiTokenSection', () => {
   it('should show error message when failing to fetch the current API token', () => {
     userRepository.getCurrentApiToken = cy.stub().rejects(new Error('Failed to fetch API token'))
 
-    cy.mountAuthenticated(<ApiTokenSectionWithRepositories />)
+    cy.mountAuthenticated(<ApiTokenSection repository={userRepository} />)
 
     cy.findByText(/Failed to fetch API token/).should('exist')
   })

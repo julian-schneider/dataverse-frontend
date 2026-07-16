@@ -9,9 +9,9 @@ import {
   GuestbookResponseDTO
 } from '@/access/domain/repositories/AccessRepository'
 import { AccessRepositoryProvider } from '@/sections/access/AccessRepositoryProvider'
+import { GuestbookRepositoryProvider } from '@/sections/guestbooks/GuestbookRepositoryProvider'
 import { SessionContext } from '@/sections/session/SessionContext'
 import { DatasetMother } from '@tests/component/dataset/domain/models/DatasetMother'
-import { WithRepositories } from '@tests/component/WithRepositories'
 
 const guestbook: Guestbook = {
   id: 10,
@@ -113,11 +113,11 @@ describe('DownloadWithTermsAndGuestbookModal', () => {
         isLoading: false,
         refreshDataset: () => {}
       }}>
-      <WithRepositories guestbookRepository={guestbookRepository}>
+      <GuestbookRepositoryProvider repository={guestbookRepository}>
         <AccessRepositoryProvider repository={accessRepository}>
           {component}
         </AccessRepositoryProvider>
-      </WithRepositories>
+      </GuestbookRepositoryProvider>
     </DatasetContext.Provider>
   )
 

@@ -20,11 +20,11 @@ describe('FileActionsHeader', () => {
     datasetRepository.getByPersistentId = cy.stub().resolves(datasetWithUpdatePermissions)
     const files = FilePreviewMother.createMany(2)
     cy.mountAuthenticated(
-      <WithRepositories datasetRepository={datasetRepository} fileRepository={fileRepository}>
+      <WithRepositories datasetRepository={datasetRepository}>
         <DatasetProvider
           repository={datasetRepository}
           searchParams={{ persistentId: 'some-persistent-id', version: 'some-version' }}>
-          <FileActionsHeader files={files} fileSelection={{}} />
+          <FileActionsHeader files={files} fileSelection={{}} fileRepository={fileRepository} />
         </DatasetProvider>
       </WithRepositories>
     )

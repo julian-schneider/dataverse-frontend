@@ -7,7 +7,6 @@ import { UserMockRepository } from '../shared-mock-repositories/user/UserMockRep
 import { DataverseInfoMockRepository } from '../shared-mock-repositories/info/DataverseInfoMockRepository'
 import { DataverseInfoMockLoadingRepository } from '../shared-mock-repositories/info/DataverseInfoMockLoadingkRepository'
 import { DataverseInfoMockErrorRepository } from '../shared-mock-repositories/info/DataverseInfoMockErrorRepository'
-import { RepositoriesStoryProvider } from '@/stories/WithRepositories'
 
 const meta: Meta<typeof SignUp> = {
   title: 'Pages/Sign Up',
@@ -23,33 +22,30 @@ type Story = StoryObj<typeof SignUp>
 
 export const ValidTokenWithNotLinkedAccount: Story = {
   render: () => (
-    <RepositoriesStoryProvider userRepository={new UserMockRepository()}>
-      <SignUp
-        dataverseInfoRepository={new DataverseInfoMockRepository()}
-        hasValidTokenButNotLinkedAccount
-      />
-    </RepositoriesStoryProvider>
+    <SignUp
+      userRepository={new UserMockRepository()}
+      dataverseInfoRepository={new DataverseInfoMockRepository()}
+      hasValidTokenButNotLinkedAccount
+    />
   )
 }
 
 export const LoadingTermsOfUse: Story = {
   render: () => (
-    <RepositoriesStoryProvider userRepository={new UserMockRepository()}>
-      <SignUp
-        dataverseInfoRepository={new DataverseInfoMockLoadingRepository()}
-        hasValidTokenButNotLinkedAccount
-      />
-    </RepositoriesStoryProvider>
+    <SignUp
+      userRepository={new UserMockRepository()}
+      dataverseInfoRepository={new DataverseInfoMockLoadingRepository()}
+      hasValidTokenButNotLinkedAccount
+    />
   )
 }
 
 export const FailedToFetchTermsOfUse: Story = {
   render: () => (
-    <RepositoriesStoryProvider userRepository={new UserMockRepository()}>
-      <SignUp
-        dataverseInfoRepository={new DataverseInfoMockErrorRepository()}
-        hasValidTokenButNotLinkedAccount
-      />
-    </RepositoriesStoryProvider>
+    <SignUp
+      userRepository={new UserMockRepository()}
+      dataverseInfoRepository={new DataverseInfoMockErrorRepository()}
+      hasValidTokenButNotLinkedAccount
+    />
   )
 }

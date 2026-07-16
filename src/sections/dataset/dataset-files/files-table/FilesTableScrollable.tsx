@@ -11,6 +11,8 @@ import { ZipDownloadLimitMessage } from './zip-download-limit-message/ZipDownloa
 import { FilePaginationInfo } from '../../../../files/domain/models/FilePaginationInfo'
 import { type SentryRef } from '../DatasetFilesScrollable'
 import styles from './FilesTable.module.scss'
+import { FileRepository } from '@/files/domain/repositories/FileRepository'
+import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
 
 interface FilesTableScrollableProps {
   files: FilePreview[]
@@ -21,6 +23,7 @@ interface FilesTableScrollableProps {
   sentryRef: SentryRef
   showSentryRef: boolean
   isEmptyFiles: boolean
+  fileRepository: FileRepository
   accumulatedCount: number
 }
 
@@ -33,10 +36,18 @@ export const FilesTableScrollable = ({
   sentryRef,
   showSentryRef,
   isEmptyFiles,
+  fileRepository,
   accumulatedCount
 }: FilesTableScrollableProps) => {
+  const { datasetRepository } = useDatasetRepositories()
   const { table, fileSelection, selectAllPossibleRows, clearRowsSelection } =
-    useFilesTableScrollable(files, paginationInfo, accumulatedCount)
+    useFilesTableScrollable(
+      files,
+      paginationInfo,
+      accumulatedCount,
+      fileRepository,
+      datasetRepository
+    )
 
   const [previousCriteria, setPreviousCriteria] = useState<FileCriteria>(criteria)
 

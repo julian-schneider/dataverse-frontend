@@ -4,12 +4,19 @@ import { getCoreRowModel, Row, useReactTable } from '@tanstack/react-table'
 import { createColumnsDefinition } from './FilesTableColumnsDefinition'
 import { useFileSelection } from './row-selection/useFileSelection'
 import { FilePaginationInfo } from '../../../../files/domain/models/FilePaginationInfo'
+import { FileRepository } from '@/files/domain/repositories/FileRepository'
+import { DatasetRepository } from '@/dataset/domain/repositories/DatasetRepository'
 
 export type RowSelection = {
   [key: string]: boolean
 }
 
-export function useFilesTable(files: FilePreview[], paginationInfo: FilePaginationInfo) {
+export function useFilesTable(
+  files: FilePreview[],
+  paginationInfo: FilePaginationInfo,
+  fileRepository: FileRepository,
+  datasetRepository: DatasetRepository
+) {
   const [currentPageRowSelection, setCurrentPageRowSelection] = useState<RowSelection>({})
   const [currentPageSelectedRowModel, setCurrentPageSelectedRowModel] = useState<
     Record<string, Row<FilePreview>>
@@ -21,7 +28,12 @@ export function useFilesTable(files: FilePreview[], paginationInfo: FilePaginati
   )
   const table = useReactTable({
     data: files,
-    columns: createColumnsDefinition(paginationInfo, fileSelection),
+    columns: createColumnsDefinition(
+      paginationInfo,
+      fileSelection,
+      fileRepository,
+      datasetRepository
+    ),
     state: {
       rowSelection: currentPageRowSelection
     },

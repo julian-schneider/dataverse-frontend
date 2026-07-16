@@ -18,30 +18,34 @@ export function PaginationControls<T extends PaginationInfo<T>>({
 }: PaginationProps<T>) {
   const [paginationInfo, setPaginationInfo] = useState<T>(initialPaginationInfo)
   const goToPage = (newPage: number) => {
-    const updatedPaginationInfo = paginationInfo.goToPage(newPage)
-    setPaginationInfo(updatedPaginationInfo)
-    onPaginationInfoChange(updatedPaginationInfo)
+    setPaginationInfo(paginationInfo.goToPage(newPage))
   }
   const goToPreviousPage = () => {
-    const updatedPaginationInfo = paginationInfo.goToPreviousPage()
-    setPaginationInfo(updatedPaginationInfo)
-    onPaginationInfoChange(updatedPaginationInfo)
+    setPaginationInfo(paginationInfo.goToPreviousPage())
   }
   const goToNextPage = () => {
-    const updatedPaginationInfo = paginationInfo.goToNextPage()
-    setPaginationInfo(updatedPaginationInfo)
-    onPaginationInfoChange(updatedPaginationInfo)
+    setPaginationInfo(paginationInfo.goToNextPage())
   }
   const setPageSize = (newPageSize: number) => {
-    const updatedPaginationInfo = paginationInfo.withPageSize(newPageSize)
-    setPaginationInfo(updatedPaginationInfo)
-    onPaginationInfoChange(updatedPaginationInfo)
+    setPaginationInfo(paginationInfo.withPageSize(newPageSize))
   }
 
   useEffect(() => {
-    setPaginationInfo((currentPaginationInfo) =>
-      currentPaginationInfo.withTotal(initialPaginationInfo.totalItems)
-    )
+    onPaginationInfoChange(paginationInfo)
+    // TODO: Not a priority as not used for inifinite scroll is used but the eslint disable should be removed and the dependency should be added
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paginationInfo.pageSize])
+
+  useEffect(() => {
+    onPaginationInfoChange(paginationInfo)
+    // TODO: Not a priority as not used for inifinite scroll is used but the eslint disable should be removed and the dependency should be added
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paginationInfo.page])
+
+  useEffect(() => {
+    setPaginationInfo(paginationInfo.withTotal(initialPaginationInfo.totalItems))
+    // TODO: Not a priority as not used for inifinite scroll is used but the eslint disable should be removed and the dependency should be added
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialPaginationInfo.totalItems])
 
   if (paginationInfo.totalPages < MINIMUM_NUMBER_OF_PAGES_TO_DISPLAY_PAGINATION) {
