@@ -3,11 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import { DatasetNotNumberedVersion } from '@iqss/dataverse-client-javascript'
 import { DatasetPublishingStatus, DatasetVersion } from '@/dataset/domain/models/Dataset'
-import { DatasetRepository } from '@/dataset/domain/repositories/DatasetRepository'
 import { exportDatasetMetadata } from '@/dataset/domain/useCases/exportDatasetMetadata'
+import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
 
 interface UseExportMetadataParams {
-  datasetRepository: DatasetRepository
   datasetPersistentId: string
   datasetVersion: DatasetVersion
 }
@@ -17,10 +16,10 @@ interface UseExportMetadataReturn {
 }
 
 export const useExportMetadata = ({
-  datasetRepository,
   datasetPersistentId,
   datasetVersion
 }: UseExportMetadataParams): UseExportMetadataReturn => {
+  const { datasetRepository } = useDatasetRepositories()
   const { t } = useTranslation('shared')
 
   const handleExportMetadata = useCallback(

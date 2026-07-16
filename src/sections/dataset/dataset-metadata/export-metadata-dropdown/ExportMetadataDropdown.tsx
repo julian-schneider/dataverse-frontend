@@ -41,7 +41,6 @@ export const ExportMetadataDropdown = ({
   const { datasetMetadataExportFormats, isLoadingExportFormats, errorGetExportFormats } =
     useGetAvailableDatasetMetadataExportFormats({ dataverseInfoRepository })
   const { handleExportMetadata } = useExportMetadata({
-    datasetRepository,
     datasetPersistentId,
     datasetVersion
   })

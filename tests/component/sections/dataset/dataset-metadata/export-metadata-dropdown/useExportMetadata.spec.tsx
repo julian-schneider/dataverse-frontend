@@ -7,15 +7,17 @@ import i18next from '@/i18n'
 import { DatasetRepository } from '@/dataset/domain/repositories/DatasetRepository'
 import { useExportMetadata } from '@/sections/dataset/dataset-metadata/export-metadata-dropdown/useExportMetadata'
 import { DatasetVersionMother } from '@tests/component/dataset/domain/models/DatasetMother'
+import { WithRepositories } from '@tests/component/WithRepositories'
 
 const testDatasetPersistentId = 'doi:10.70122/FK2/XXXXXX'
 
-const wrapper = ({ children }: { children: ReactNode }) => (
-  <I18nextProvider i18n={i18next}>{children}</I18nextProvider>
-)
-
 describe('useExportMetadata', () => {
   const datasetRepository: DatasetRepository = {} as DatasetRepository
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <I18nextProvider i18n={i18next}>
+      <WithRepositories datasetRepository={datasetRepository}>{children}</WithRepositories>
+    </I18nextProvider>
+  )
   let openedWindow: {
     closed: boolean
     document: { title: string }
@@ -50,7 +52,6 @@ describe('useExportMetadata', () => {
     const { result } = renderHook(
       () =>
         useExportMetadata({
-          datasetRepository,
           datasetPersistentId: testDatasetPersistentId,
           datasetVersion: DatasetVersionMother.createReleased()
         }),
@@ -82,7 +83,6 @@ describe('useExportMetadata', () => {
     const { result } = renderHook(
       () =>
         useExportMetadata({
-          datasetRepository,
           datasetPersistentId: testDatasetPersistentId,
           datasetVersion: DatasetVersionMother.createDraft()
         }),
@@ -113,7 +113,6 @@ describe('useExportMetadata', () => {
     const { result } = renderHook(
       () =>
         useExportMetadata({
-          datasetRepository,
           datasetPersistentId: testDatasetPersistentId,
           datasetVersion: DatasetVersionMother.createReleased()
         }),
@@ -141,7 +140,6 @@ describe('useExportMetadata', () => {
     const { result } = renderHook(
       () =>
         useExportMetadata({
-          datasetRepository,
           datasetPersistentId: testDatasetPersistentId,
           datasetVersion: DatasetVersionMother.createReleased()
         }),

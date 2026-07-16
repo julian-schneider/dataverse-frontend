@@ -5,9 +5,8 @@ import { FileMetadataMother } from '../../../../tests/component/files/domain/mod
 import { FilePermissionsMother } from '../../../../tests/component/files/domain/models/FilePermissionsMother'
 import { DatasetVersionMother } from '@tests/component/dataset/domain/models/DatasetMother'
 import { DataverseInfoMockRepository } from '@/stories/shared-mock-repositories/info/DataverseInfoMockRepository'
-import { RepositoriesProvider } from '@/shared/contexts/repositories/RepositoriesProvider'
 import { DatasetMockRepository } from '@/stories/dataset/DatasetMockRepository'
-import { CollectionMockRepository } from '@/stories/collection/CollectionMockRepository'
+import { RepositoriesStoryProvider } from '@/stories/WithRepositories'
 
 const meta: Meta<typeof FileMetadata> = {
   title: 'Sections/File Page/FileMetadata',
@@ -20,9 +19,7 @@ type Story = StoryObj<typeof FileMetadata>
 
 export const Default: Story = {
   render: () => (
-    <RepositoriesProvider
-      collectionRepository={new CollectionMockRepository()}
-      datasetRepository={new DatasetMockRepository()}>
+    <RepositoriesStoryProvider datasetRepository={new DatasetMockRepository()}>
       <FileMetadata
         name="File Title"
         metadata={FileMetadataMother.createDefault()}
@@ -31,6 +28,6 @@ export const Default: Story = {
         datasetVersion={DatasetVersionMother.create()}
         dataverseInfoRepository={new DataverseInfoMockRepository()}
       />
-    </RepositoriesProvider>
+    </RepositoriesStoryProvider>
   )
 }
