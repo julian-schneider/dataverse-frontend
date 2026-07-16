@@ -6,7 +6,11 @@ import { DatasetNotNumberedVersion } from '@iqss/dataverse-client-javascript'
 import { WithRepositories } from '@tests/component/WithRepositories'
 import { type ComponentProps } from 'react'
 import { DatasetVersionMother } from '@tests/component/dataset/domain/models/DatasetMother'
-import { DatasetNonNumericVersion } from '@/dataset/domain/models/Dataset'
+import {
+  DatasetNonNumericVersion,
+  DatasetVersionNumber
+} from '@/dataset/domain/models/Dataset'
+import { DatasetVersionsSummariesMother } from '@tests/component/dataset/domain/models/DatasetVersionsSummariesMother'
 
 const dataverseInfoRepository: DataverseInfoRepository = {} as DataverseInfoRepository
 const datasetRepository: DatasetRepository = {} as DatasetRepository
@@ -201,6 +205,21 @@ describe('ExportMetadataDropdown', () => {
     mountExportMetadataDropdown()
 
     cy.findByRole('button', { name: 'Export Metadata' }).should('not.exist')
+  })
+
+  it('should render for the latest non-deaccessioned published version', () => {
+    datasetRepository.getDatasetVersionsSummaries = cy
+      .stub()
+      .as('getDatasetVersionsSummaries')
+      .resolves(DatasetVersionsSummariesMother.createDeaccessioned())
+
+    mountExportMetadataDropdown({
+      datasetVersion: DatasetVersionMother.createReleased({
+        number: new DatasetVersionNumber(3, 0)
+      })
+    })
+
+    cy.findByRole('button', { name: 'Export Metadata' }).should('exist')
   })
 
   it('should not render if dataset version is draft and user cannot update dataset', () => {

@@ -147,6 +147,15 @@ function isPublishedVersionSummary(summary: DatasetVersionSummaryInfo): boolean 
   return (
     summary.versionNumber !== DatasetNonNumericVersion.DRAFT &&
     summary.versionNumber !== DatasetNonNumericVersionSearchParam.DRAFT &&
-    summary.summary !== DatasetVersionSummaryStringValues.versionDeaccessioned
+    !isDeaccessionedVersionSummary(summary)
+  )
+}
+
+function isDeaccessionedVersionSummary(summary: DatasetVersionSummaryInfo): boolean {
+  return (
+    summary.summary === DatasetVersionSummaryStringValues.versionDeaccessioned ||
+    (typeof summary.summary === 'object' &&
+      summary.summary !== null &&
+      'deaccessioned' in summary.summary)
   )
 }
