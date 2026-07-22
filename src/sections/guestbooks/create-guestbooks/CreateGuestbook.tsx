@@ -11,7 +11,7 @@ import { useCollection } from '@/sections/collection/useCollection'
 import { NotFoundPage } from '@/sections/not-found-page/NotFoundPage'
 import { BreadcrumbsGenerator } from '@/sections/shared/hierarchy/BreadcrumbsGenerator'
 import { useLoading } from '@/shared/contexts/loading/LoadingContext'
-import { useGuestbookRepository } from '../GuestbookRepositoryContext'
+import { useGuestbookRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
 import { GuestbookSkeleton } from '../GuestbookSkeleton'
 import { useCreateGuestbook } from './useCreateGuestbook'
 import styles from './CreateGuestbook.module.scss'
@@ -32,7 +32,7 @@ interface CustomQuestionDraft {
 export const CreateGuestbook = ({ collectionId, collectionRepository }: CreateGuestbookProps) => {
   const { t } = useTranslation('guestbooks')
   const navigate: NavigateFunction = useNavigate()
-  const guestbookRepository = useGuestbookRepository()
+  const { guestbookRepository } = useGuestbookRepositories()
   const { setIsLoading } = useLoading()
   const { collection, isLoading } = useCollection(collectionRepository, collectionId)
   const [guestbookName, setGuestbookName] = useState('')
