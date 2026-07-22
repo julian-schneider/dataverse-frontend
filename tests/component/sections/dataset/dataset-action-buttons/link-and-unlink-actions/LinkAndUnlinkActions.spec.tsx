@@ -29,8 +29,10 @@ const linkableCollection = CollectionSummaryMother.create({
 
 const mountAuthenticatedLinkAndUnlinkActions = () =>
   cy.mountAuthenticated(
-    <WithRepositories collectionRepository={collectionRepository}>
-      <LinkAndUnlinkActions dataset={dataset} datasetRepository={datasetRepository} />
+    <WithRepositories
+      collectionRepository={collectionRepository}
+      datasetRepository={datasetRepository}>
+      <LinkAndUnlinkActions dataset={dataset} />
     </WithRepositories>
   )
 
