@@ -2,11 +2,11 @@ import { act, renderHook } from '@testing-library/react'
 import { type CreateGuestbookDTO, WriteError } from '@iqss/dataverse-client-javascript'
 import { CreateGuestbook } from '@/sections/guestbooks/create-guestbooks/CreateGuestbook'
 import { useCreateGuestbook } from '@/sections/guestbooks/create-guestbooks/useCreateGuestbook'
-import { GuestbookRepositoryProvider } from '@/sections/guestbooks/GuestbookRepositoryProvider'
 import { CollectionRepository } from '@/collection/domain/repositories/CollectionRepository'
 import { GuestbookRepository } from '@/guestbooks/domain/repositories/GuestbookRepository'
 import { CollectionMother } from '@tests/component/collection/domain/models/CollectionMother'
 import { createGuestbookRepositoryStub } from '../createGuestbookRepositoryStub'
+import { WithRepositories } from '@tests/component/WithRepositories'
 
 type CreateGuestbookStub = sinon.SinonStub<
   [collectionIdOrAlias: number | string, guestbook: CreateGuestbookDTO],
@@ -50,9 +50,9 @@ describe('CreateGuestbook', () => {
 
   const mountCreateGuestbook = () =>
     cy.customMount(
-      <GuestbookRepositoryProvider repository={guestbookRepository}>
+      <WithRepositories guestbookRepository={guestbookRepository}>
         <CreateGuestbook collectionId="root" collectionRepository={collectionRepository} />
-      </GuestbookRepositoryProvider>
+      </WithRepositories>
     )
 
   const expectGuestbookCreatedWith = (expectedGuestbook: CreateGuestbookDTO) => {
