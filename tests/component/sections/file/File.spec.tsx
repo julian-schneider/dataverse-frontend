@@ -172,8 +172,10 @@ describe('File', () => {
 
     it('renders the External Tools tab with "Preview" title if only one tool applicable and is a preview tool', () => {
       cy.customMount(
-        <WithRepositories datasetRepository={new DatasetMockRepository()}>
-          <ExternalToolsProvider externalToolsRepository={externalToolsRepository}>
+        <WithRepositories
+          datasetRepository={new DatasetMockRepository()}
+          externalToolsRepository={externalToolsRepository}>
+          <ExternalToolsProvider>
             <File
               repository={fileRepository}
               id={19}
@@ -193,8 +195,10 @@ describe('File', () => {
         .resolves([ExternalToolsMother.createFileQueryTool()])
 
       cy.customMount(
-        <WithRepositories datasetRepository={new DatasetMockRepository()}>
-          <ExternalToolsProvider externalToolsRepository={externalToolsRepository}>
+        <WithRepositories
+          datasetRepository={new DatasetMockRepository()}
+          externalToolsRepository={externalToolsRepository}>
+          <ExternalToolsProvider>
             <File
               repository={fileRepository}
               id={19}
@@ -217,8 +221,10 @@ describe('File', () => {
         ])
 
       cy.customMount(
-        <WithRepositories datasetRepository={new DatasetMockRepository()}>
-          <ExternalToolsProvider externalToolsRepository={externalToolsRepository}>
+        <WithRepositories
+          datasetRepository={new DatasetMockRepository()}
+          externalToolsRepository={externalToolsRepository}>
+          <ExternalToolsProvider>
             <File
               repository={fileRepository}
               id={19}
@@ -236,8 +242,10 @@ describe('File', () => {
       externalToolsRepository.getExternalTools = cy.stub().resolves([])
 
       cy.customMount(
-        <WithRepositories datasetRepository={new DatasetMockRepository()}>
-          <ExternalToolsProvider externalToolsRepository={externalToolsRepository}>
+        <WithRepositories
+          datasetRepository={new DatasetMockRepository()}
+          externalToolsRepository={externalToolsRepository}>
+          <ExternalToolsProvider>
             <File
               repository={fileRepository}
               id={19}
@@ -258,8 +266,10 @@ describe('File', () => {
       fileRepository.getById = cy.stub().resolves(testFile)
 
       cy.customMount(
-        <WithRepositories datasetRepository={new DatasetMockRepository()}>
-          <ExternalToolsProvider externalToolsRepository={externalToolsRepository}>
+        <WithRepositories
+          datasetRepository={new DatasetMockRepository()}
+          externalToolsRepository={externalToolsRepository}>
+          <ExternalToolsProvider>
             <File
               repository={fileRepository}
               id={19}
