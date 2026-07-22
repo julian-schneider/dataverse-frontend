@@ -6,6 +6,7 @@ import { ExternalToolsMother } from '@tests/component/externalTools/domain/model
 import { FileMetadataMother } from '@tests/component/files/domain/models/FileMetadataMother'
 import { FilePreviewMother } from '@tests/component/files/domain/models/FilePreviewMother'
 import { ToolScope, ToolType } from '@/externalTools/domain/models/ExternalTool'
+import { WithRepositories } from '@tests/component/WithRepositories'
 
 const testFilePreview = FilePreviewMother.createDefault() // text/plain file
 const testExternalToolsRepository: ExternalToolsRepository = {} as ExternalToolsRepository
@@ -31,9 +32,11 @@ describe('FileTools', () => {
       ])
 
     cy.customMount(
-      <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
-        <FileTools file={testFilePreview} canDownloadFile={true} />
-      </ExternalToolsProvider>
+      <WithRepositories externalToolsRepository={testExternalToolsRepository}>
+        <ExternalToolsProvider>
+          <FileTools file={testFilePreview} canDownloadFile={true} />
+        </ExternalToolsProvider>
+      </WithRepositories>
     )
 
     cy.findByRole('link', { name: `Preview ${testFilePreview.name}` })
@@ -61,9 +64,11 @@ describe('FileTools', () => {
 
   it('does not render external tool buttons when user cannot download the file', () => {
     cy.customMount(
-      <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
-        <FileTools file={testFilePreview} canDownloadFile={false} />
-      </ExternalToolsProvider>
+      <WithRepositories externalToolsRepository={testExternalToolsRepository}>
+        <ExternalToolsProvider>
+          <FileTools file={testFilePreview} canDownloadFile={false} />
+        </ExternalToolsProvider>
+      </WithRepositories>
     )
 
     cy.findByRole('link', { name: `Preview ${testFilePreview.name}` }).should('not.exist')
@@ -78,9 +83,11 @@ describe('FileTools', () => {
     })
 
     cy.customMount(
-      <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
-        <FileTools file={fileWithoutApplicableTools} canDownloadFile={true} />
-      </ExternalToolsProvider>
+      <WithRepositories externalToolsRepository={testExternalToolsRepository}>
+        <ExternalToolsProvider>
+          <FileTools file={fileWithoutApplicableTools} canDownloadFile={true} />
+        </ExternalToolsProvider>
+      </WithRepositories>
     )
 
     cy.findByRole('link', { name: `Preview ${fileWithoutApplicableTools.name}` }).should(
@@ -105,9 +112,11 @@ describe('FileTools', () => {
     ])
 
     cy.customMount(
-      <ExternalToolsProvider externalToolsRepository={testExternalToolsRepository}>
-        <FileTools file={testFilePreview} canDownloadFile={true} />
-      </ExternalToolsProvider>
+      <WithRepositories externalToolsRepository={testExternalToolsRepository}>
+        <ExternalToolsProvider>
+          <FileTools file={testFilePreview} canDownloadFile={true} />
+        </ExternalToolsProvider>
+      </WithRepositories>
     )
 
     cy.findByRole('link', { name: `Preview ${testFilePreview.name}` }).should('not.exist')

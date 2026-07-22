@@ -9,6 +9,7 @@ import {
   SessionProvider
 } from '@/sections/session/SessionProvider'
 import { useSession } from '@/sections/session/SessionContext'
+import { WithRepositories } from '@tests/component/WithRepositories'
 
 const userRepository: UserRepository = {} as UserRepository
 const testUser = UserMother.create()
@@ -60,21 +61,23 @@ describe('SessionProvider', () => {
           error: null,
           login: () => {} // 👈 deprecated
         }}>
-        <Routes>
-          <Route element={<SessionProvider repository={userRepository} />}>
-            <Route index element={<ComponentUsingContext />} />
-            <Route
-              path="sign-up"
-              element={
-                <>
-                  <ComponentUsingContext />
-                  <LocationDisplay />
-                  <div>Sign up</div>
-                </>
-              }
-            />
-          </Route>
-        </Routes>
+        <WithRepositories userRepository={userRepository}>
+          <Routes>
+            <Route element={<SessionProvider />}>
+              <Route index element={<ComponentUsingContext />} />
+              <Route
+                path="sign-up"
+                element={
+                  <>
+                    <ComponentUsingContext />
+                    <LocationDisplay />
+                    <div>Sign up</div>
+                  </>
+                }
+              />{' '}
+            </Route>
+          </Routes>
+        </WithRepositories>
       </AuthContext.Provider>
     )
   }
