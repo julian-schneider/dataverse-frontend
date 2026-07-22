@@ -103,11 +103,13 @@ const LocationDisplay = () => {
 }
 
 describe('EditDatasetTerms', () => {
-  const withProviders = (component: ReactNode, dataset: Dataset | undefined) => {
+  const withProviders = (component: ReactNode, dataset: Dataset) => {
     datasetRepository.getByPersistentId = cy.stub().resolves(dataset)
     datasetRepository.getByPrivateUrlToken = cy.stub().resolves(dataset)
     return (
-      <WithRepositories datasetRepository={datasetRepository}>
+      <WithRepositories
+        datasetRepository={datasetRepository}
+        guestbookRepository={guestbookRepository}>
         <DatasetProvider
           searchParams={{ persistentId: 'some-persistent-id', version: 'some-version' }}
           repository={datasetRepository}>
@@ -193,9 +195,8 @@ describe('EditDatasetTerms', () => {
         <EditDatasetTerms
           defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
           licenseRepository={licenseRepository}
-          guestbookRepository={guestbookRepository}
         />,
-        undefined
+        undefined as unknown as Dataset
       )
     )
 
@@ -214,7 +215,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -236,7 +236,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -269,7 +268,6 @@ describe('EditDatasetTerms', () => {
               EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.restrictedFilesTerms
             }
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -294,7 +292,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -313,7 +310,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -352,7 +348,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -386,7 +381,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -409,7 +403,6 @@ describe('EditDatasetTerms', () => {
             // Force an invalid key to hit the default branch in getCurrentFormDirtyState
             defaultActiveTabKey={'unknown-tab' as unknown as EditDatasetTermsTabKey}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -431,7 +424,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -455,7 +447,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -476,7 +467,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -502,7 +492,6 @@ describe('EditDatasetTerms', () => {
             <EditDatasetTerms
               defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
               licenseRepository={licenseRepository}
-              guestbookRepository={guestbookRepository}
             />
             <LocationDisplay />
           </>,
@@ -535,7 +524,6 @@ describe('EditDatasetTerms', () => {
             <EditDatasetTerms
               defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
               licenseRepository={licenseRepository}
-              guestbookRepository={guestbookRepository}
             />
             <LocationDisplay />
           </>,
@@ -568,7 +556,6 @@ describe('EditDatasetTerms', () => {
             <EditDatasetTerms
               defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
               licenseRepository={licenseRepository}
-              guestbookRepository={guestbookRepository}
             />
             <LocationDisplay />
           </>,
@@ -603,7 +590,6 @@ describe('EditDatasetTerms', () => {
               EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.restrictedFilesTerms
             }
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -632,7 +618,6 @@ describe('EditDatasetTerms', () => {
               EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.restrictedFilesTerms
             }
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -685,7 +670,6 @@ describe('EditDatasetTerms', () => {
                 EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.restrictedFilesTerms
               }
               licenseRepository={licenseRepository}
-              guestbookRepository={guestbookRepository}
             />
             <LocationDisplay />
           </>,
@@ -726,7 +710,6 @@ describe('EditDatasetTerms', () => {
                 EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.restrictedFilesTerms
               }
               licenseRepository={licenseRepository}
-              guestbookRepository={guestbookRepository}
             />
             <LocationDisplay />
           </>,
@@ -755,7 +738,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -779,7 +761,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -801,7 +782,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -833,7 +813,6 @@ describe('EditDatasetTerms', () => {
             <EditDatasetTerms
               defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
               licenseRepository={licenseRepository}
-              guestbookRepository={guestbookRepository}
             />
             <LocationDisplay />
           </>,
@@ -865,7 +844,6 @@ describe('EditDatasetTerms', () => {
             <EditDatasetTerms
               defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
               licenseRepository={licenseRepository}
-              guestbookRepository={guestbookRepository}
             />
             <LocationDisplay />
           </>,
@@ -897,7 +875,6 @@ describe('EditDatasetTerms', () => {
             <EditDatasetTerms
               defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
               licenseRepository={licenseRepository}
-              guestbookRepository={guestbookRepository}
             />
             <LocationDisplay />
           </>,
@@ -919,7 +896,9 @@ describe('EditDatasetTerms', () => {
       datasetRepository.getByPersistentId = cy.stub().resolves(dataset)
       datasetRepository.getByPrivateUrlToken = cy.stub().resolves(dataset)
       return (
-        <WithRepositories datasetRepository={datasetRepository}>
+        <WithRepositories
+          datasetRepository={datasetRepository}
+          guestbookRepository={guestbookRepository}>
           <DatasetProvider
             searchParams={{ persistentId: 'some-persistent-id', version: 'some-version' }}
             repository={datasetRepository}>
@@ -935,7 +914,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           undefined
         )
@@ -953,7 +931,6 @@ describe('EditDatasetTerms', () => {
               EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.restrictedFilesTerms
             }
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -975,7 +952,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -993,7 +969,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.guestbook}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -1012,7 +987,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={'unknown-tab-key' as unknown as never}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -1034,7 +1008,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -1059,7 +1032,6 @@ describe('EditDatasetTerms', () => {
           <EditDatasetTerms
             defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
             licenseRepository={licenseRepository}
-            guestbookRepository={guestbookRepository}
           />,
           dataset
         )
@@ -1075,7 +1047,9 @@ describe('EditDatasetTerms Mobile View', () => {
     datasetRepository.getByPersistentId = cy.stub().resolves(dataset)
     datasetRepository.getByPrivateUrlToken = cy.stub().resolves(dataset)
     return (
-      <WithRepositories datasetRepository={datasetRepository}>
+      <WithRepositories
+        datasetRepository={datasetRepository}
+        guestbookRepository={guestbookRepository}>
         <DatasetProvider
           searchParams={{ persistentId: 'some-persistent-id', version: 'some-version' }}
           repository={datasetRepository}>
@@ -1097,7 +1071,6 @@ describe('EditDatasetTerms Mobile View', () => {
         <EditDatasetTerms
           defaultActiveTabKey={EditDatasetTermsHelper.EDIT_DATASET_TERMS_TABS_KEYS.datasetTerms}
           licenseRepository={licenseRepository}
-          guestbookRepository={guestbookRepository}
         />,
         dataset
       )
