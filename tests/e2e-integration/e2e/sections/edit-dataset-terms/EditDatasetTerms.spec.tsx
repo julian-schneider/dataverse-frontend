@@ -117,6 +117,8 @@ describe('Edit Dataset Terms', () => {
         cy.findByLabelText('Size of Collection').type('500 MB')
 
         cy.findByRole('button', { name: 'Save Changes' }).click()
+        cy.findByText(/The terms for this dataset have been updated./i).should('exist')
+
         cy.findByRole('tab', { name: /^Terms(?: and Guestbook)?$/ }).click()
         cy.findByText(/Data can be accessed through the university data center/i).should('exist')
         cy.findByText(/dataowner@university.edu/i).should('exist')

@@ -19,6 +19,8 @@ This changelog follows the principles of [Keep a Changelog](https://keepachangel
 
 ### Fixed
 
+- Edit Dataset Terms: navigate to the draft version of the dataset after saving changes to the terms, instead of the latest published version.
+
 ### Removed
 
 ---
