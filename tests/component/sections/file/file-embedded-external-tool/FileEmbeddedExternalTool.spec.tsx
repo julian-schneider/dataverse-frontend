@@ -168,11 +168,10 @@ describe('FileEmbeddedExternalTool', () => {
 
     cy.customMount(
       <AccessRepositoryProvider repository={accessRepository}>
-        <FileEmbeddedExternalTool
+        <FileEmbeddedExternalToolWithRepositories
           file={fileWithCustomTerms}
           isInView
           applicableTools={[filePreviewTool]}
-          externalToolsRepository={externalToolsRepository}
           toolTypeSelectedQueryParam={undefined}
         />
       </AccessRepositoryProvider>
@@ -218,11 +217,10 @@ describe('FileEmbeddedExternalTool', () => {
 
     cy.customMount(
       <AccessRepositoryProvider repository={accessRepository}>
-        <FileEmbeddedExternalTool
+        <FileEmbeddedExternalToolWithRepositories
           file={fileWithCustomTerms}
           isInView
           applicableTools={[filePreviewTool]}
-          externalToolsRepository={externalToolsRepository}
           toolTypeSelectedQueryParam={undefined}
         />
       </AccessRepositoryProvider>
