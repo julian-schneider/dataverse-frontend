@@ -13,6 +13,7 @@ This changelog follows the principles of [Keep a Changelog](https://keepachangel
 
 ### Changed
 
+- File pages now include a "Cite Data File" dropdown for downloading file citations in EndNote XML, RIS, and BibTeX formats.
 - Hide "Export Metadata" on dataset and file pages that are not for the latest published dataset version.
 - Show "Export Metadata" on dataset and file pages for draft version.
 - Avoided prop-drilling for file, guestbook, user and external tool repository, so used context to share repository instances.
