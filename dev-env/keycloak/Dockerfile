@@ -1,4 +1,4 @@
-FROM quay.io/keycloak/keycloak:26.6.4
+FROM quay.io/keycloak/keycloak:26.7.0
 
 # Add the Oracle JDBC jars
 ARG ORACLE_JDBC_VERSION=23.8.0.25.04
