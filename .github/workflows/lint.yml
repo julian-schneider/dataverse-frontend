@@ -7,37 +7,37 @@ on:
 
 jobs:
   lint:
-  runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  steps:
-    - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 22
-        cache: 'npm'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 22
+          cache: 'npm'
 
-    - name: Create .npmrc
-      run: |
-        cp .npmrc.example .npmrc
-        sed -i -e 's/<YOUR_GITHUB_AUTH_TOKEN>/${{ secrets.GITHUB_TOKEN }}/g' .npmrc
-        sed -i -e 's/<YOUR_NPM_AUTH_TOKEN>/${{ secrets.NPM_AUTH_TOKEN }}/g' .npmrc
+      - name: Create .npmrc
+        run: |
+          cp .npmrc.example .npmrc
+          sed -i -e 's/<YOUR_GITHUB_AUTH_TOKEN>/${{ secrets.GITHUB_TOKEN }}/g' .npmrc
+          sed -i -e 's/<YOUR_NPM_AUTH_TOKEN>/${{ secrets.NPM_AUTH_TOKEN }}/g' .npmrc
 
-    - name: Install Dependencies
-      run: npm install
+      - name: Install Dependencies
+        run: npm install
 
-    - name: Build Dataverse UI Library
-      working-directory: packages/design-system
-      run: npm run build
+      - name: Build Dataverse UI Library
+        working-directory: packages/design-system
+        run: npm run build
 
-    - name: Type check
-      run: tsc --noEmit
+      - name: Type check
+        run: tsc --noEmit
 
-    - name: ESLint
-      run: npm run lint:eslint
+      - name: ESLint
+        run: npm run lint:eslint
 
-    - name: Stylelint
-      run: npm run lint:stylelint
+      - name: Stylelint
+        run: npm run lint:stylelint
 
-    - name: Prettier
-      run: npm run lint:prettier
+      - name: Prettier
+        run: npm run lint:prettier
