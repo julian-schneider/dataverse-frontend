@@ -8,10 +8,10 @@ Install [Keycloak](https://www.keycloak.org/downloads.html) from the official we
 
 ### Download Required Oracle JDBC Libraries
 
-Download the following JAR files from the URLs below, and place them in the `keycloak-26.X.X/providers` directory:
+Download the following JAR files from the URLs below, and place them in the `keycloak-26.7.0/providers` directory:
 
-- [ojdbc11-23.7.0.25.01.jar](https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.7.0.25.01/ojdbc11-23.7.0.25.01.jar)
-- [orai18n-23.7.0.25.01.jar](https://repo1.maven.org/maven2/com/oracle/database/nls/orai18n/23.7.0.25.01/orai18n-23.7.0.25.01.jar)
+- [ojdbc11-23.8.0.25.04.jar](https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04.jar)
+- [orai18n-23.8.0.25.04.jar](https://repo1.maven.org/maven2/com/oracle/database/nls/orai18n/23.8.0.25.04/orai18n-23.8.0.25.04.jar)
 
 The `ojdbc11` JAR provides the actual JDBC driver required for database connectivity. The `orai18n` JAR provides additional character-set and localization support required by the driver in certain environments.
 
@@ -37,26 +37,59 @@ npm run build-keycloak-theme
 
 Copy the generated `dv-spa-kc-theme.jar` file to your Keycloak instance’s `keycloak-26.X.X/providers` directory.
 
-### Create quarkus.properties
+### Create keycloak.conf
 
-Inside the `keycloak-26.X.X/conf` directory, create the following file, replacing the bracketed variables with the corresponding values for the Dataverse database that the SPI will access.
+Inside the `keycloak-26.X.X/conf` directory, create a `keycloak.conf` file with the following database configuration, replacing the bracketed variables with the corresponding values for your environment.
+
+The first database block configures Keycloak's own database, which stores realm, client, session, and server state. The `user-store` named datasource block configures the Dataverse database connection used by the Builtin Users SPI.
 
 ```properties
-quarkus.datasource.user-store.db-kind=postgresql
-quarkus.datasource.user-store.jdbc.url=jdbc:postgresql://<SERVER_IP>:<SERVER_PORT>/<DB_NAME>
-quarkus.datasource.user-store.username=<DB_USERNAME>
-quarkus.datasource.user-store.password=<DB_PASSWORD>
+# Keycloak server database.
+db=postgres
+db-url-full=jdbc:postgresql://<KEYCLOAK_DB_SERVER_IP>:<KEYCLOAK_DB_SERVER_PORT>/<KEYCLOAK_DB_NAME>
+db-username=<KEYCLOAK_DB_USERNAME>
+db-password=<KEYCLOAK_DB_PASSWORD>
 
-quarkus.datasource.user-store.jdbc.driver=org.postgresql.Driver
-quarkus.datasource.user-store.jdbc.transactions=disabled
+# Dataverse Builtin Users SPI datasource.
+db-kind-user-store=postgres
+db-url-full-user-store=jdbc:postgresql://<DATAVERSE_DB_SERVER_IP>:<DATAVERSE_DB_SERVER_PORT>/<DATAVERSE_DB_NAME>
+db-username-user-store=<DATAVERSE_DB_USERNAME>
+db-password-user-store=<DATAVERSE_DB_PASSWORD>
+db-driver-user-store=org.postgresql.Driver
+transaction-xa-enabled-user-store=false
+```
+
+### Production Database Setup
+
+Keycloak includes an embedded H2 database driver for development purposes only. Do not use H2 for production, and do not rely on the development-mode database files for a deployed Keycloak instance.
+
+For production, create a dedicated relational database for Keycloak before starting the server. This database is separate from the Dataverse database used by the Builtin Users SPI.
+
+For PostgreSQL, the setup is typically:
+
+```sql
+CREATE DATABASE keycloak;
+CREATE USER keycloak WITH PASSWORD '<KEYCLOAK_DB_PASSWORD>';
+GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak;
+\c keycloak
+GRANT ALL ON SCHEMA public TO keycloak;
+```
+
+Then configure the Keycloak database connection in `keycloak.conf`:
+
+```properties
+db=postgres
+db-url-full=jdbc:postgresql://<KEYCLOAK_DB_SERVER_IP>:<KEYCLOAK_DB_SERVER_PORT>/keycloak
+db-username=keycloak
+db-password=<KEYCLOAK_DB_PASSWORD>
+```
+
+### Create quarkus.properties
+
+Inside the `keycloak-26.X.X/conf` directory, create a `quarkus.properties` file with the following transaction-manager setting.
+
+```properties
 quarkus.transaction-manager.unsafe-multiple-last-resources=allow
-
-quarkus.datasource.user-store.jdbc.recovery.username=<DB_USERNAME>
-quarkus.datasource.user-store.jdbc.recovery.password=<DB_PASSWORD>
-
-quarkus.datasource.user-store.jdbc.xa-properties.serverName=<SERVER_IP>
-quarkus.datasource.user-store.jdbc.xa-properties.portNumber=<SERVER_PORT>
-quarkus.datasource.user-store.jdbc.xa-properties.databaseName=<DB_NAME>
 ```
 
 ### SSL configuration
@@ -81,10 +114,16 @@ Once the certificate and key have been uploaded to the instance, you need to con
 
 ### Running Keycloak
 
+For a production deployment, build the optimized Keycloak server after the configuration files and provider JARs are in place:
+
+```bash
+./bin/kc.sh build
+```
+
 Run Keycloak for the first time on the instance using the following command.
 
 ```bash
-nohup ./bin/kc.sh start --bootstrap-admin-username tmpadm --bootstrap-admin-password pass --hostname https://<KEYCLOAK_DOMAIN> > keycloak.log 2>&1 &
+nohup ./bin/kc.sh start --optimized --bootstrap-admin-username tmpadm --bootstrap-admin-password pass --hostname https://<KEYCLOAK_DOMAIN> > keycloak.log 2>&1 &
 ```
 
 This command will set up an admin user so you can log in and create a permanent one from the Keycloak Admin Console:  
@@ -93,7 +132,7 @@ This command will set up an admin user so you can log in and create a permanent 
 For subsequent executions of Keycloak, you can use the following command omitting the admin user bootstrapping parameters:
 
 ```bash
-nohup ./bin/kc.sh start --hostname https://<KEYCLOAK_DOMAIN> > keycloak.log 2>&1 &
+nohup ./bin/kc.sh start --optimized --hostname https://<KEYCLOAK_DOMAIN> > keycloak.log 2>&1 &
 ```
 
 Note that the output logs of the command are saved in a file named `keycloak.log`.
