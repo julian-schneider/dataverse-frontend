@@ -8,7 +8,7 @@ Install [Keycloak](https://www.keycloak.org/downloads.html) from the official we
 
 ### Download Required Oracle JDBC Libraries
 
-Download the following JAR files from the URLs below, and place them in the `keycloak-26.7.0/providers` directory:
+Download the following JAR files from the URLs below, and place them in the `keycloak-26.X.X/providers` directory:
 
 - [ojdbc11-23.8.0.25.04.jar](https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04.jar)
 - [orai18n-23.8.0.25.04.jar](https://repo1.maven.org/maven2/com/oracle/database/nls/orai18n/23.8.0.25.04/orai18n-23.8.0.25.04.jar)
