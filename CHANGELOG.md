@@ -10,11 +10,17 @@ This changelog follows the principles of [Keep a Changelog](https://keepachangel
 
 - Edit Dataset Template Integration: "Edit Template" dropdown on the Dataset Templates listing now opens the Metadata or Terms editor and shows a "Template updated" toast on return.
 - External Tools: Added guestbook and terms modal for Dataverse external tools.
+- Manage Guestbooks page integration, including:
+  - a guestbooks table with sorting, enable/disable actions, preview, and per-guestbook response download
+  - Create Guestbook and Download All Responses actions
+  - the Create Guestbook page
+  - a checkbox for including guestbooks from parent collections
 - Dataset Templates UI integration, including create/edit flows, previews, and skeleton states.
 - Dataset Page: added a sidebar to show dataset reviews
 
 ### Changed
 
+- File pages now include a "Cite Data File" dropdown for downloading file citations in EndNote XML, RIS, and BibTeX formats.
 - Hide "Export Metadata" on dataset and file pages that are not for the latest published dataset version.
 - Show "Export Metadata" on dataset and file pages for draft version.
 - Avoided prop-drilling for file, guestbook, user and external tool repository, so used context to share repository instances.

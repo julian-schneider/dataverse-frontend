@@ -24,8 +24,13 @@ describe('DatasetGuestbook', () => {
 
   beforeEach(() => {
     guestbookRepository = {
+      createGuestbook: cy.stub(),
       getGuestbook: cy.stub(),
       getGuestbooksByCollectionId: cy.stub(),
+      getGuestbookResponsesByGuestbookId: cy.stub(),
+      setGuestbookEnabled: cy.stub(),
+      downloadGuestbookResponsesByCollectionId: cy.stub(),
+      downloadGuestbookResponsesByGuestbookId: cy.stub(),
       assignDatasetGuestbook: cy.stub().resolves(undefined),
       removeDatasetGuestbook: cy.stub().resolves(undefined)
     }
