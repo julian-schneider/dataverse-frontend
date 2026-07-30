@@ -24,8 +24,7 @@ export enum Route {
   GUESTBOOKS = '/:collectionId/guestbooks',
   GUESTBOOKS_CREATE = '/:collectionId/guestbooks/create',
   TEMPLATES_CREATE = '/:collectionId/templates/create',
-  TEMPLATES_EDIT_METADATA = '/:collectionId/templates/:templateId/edit/metadata',
-  TEMPLATES_EDIT_TERMS = '/:collectionId/templates/:templateId/edit/terms',
+  TEMPLATES_EDIT = '/templates/edit',
   FEATURED_ITEM = '/featured-item/:parentCollectionId/:featuredItemId',
   NOT_FOUND_PAGE = '/404',
   AUTH_CALLBACK = '/auth-callback',
@@ -44,10 +43,18 @@ export const RouteWithParams = {
   GUESTBOOKS: (collectionId: string) => `/${collectionId}/guestbooks`,
   GUESTBOOKS_CREATE: (collectionId: string) => `/${collectionId}/guestbooks/create`,
   TEMPLATES_CREATE: (collectionId: string) => `/${collectionId}/templates/create`,
-  TEMPLATES_EDIT_METADATA: (collectionId: string, templateId: number | string) =>
-    `/${collectionId}/templates/${templateId}/edit/metadata`,
-  TEMPLATES_EDIT_TERMS: (collectionId: string, templateId: number | string) =>
-    `/${collectionId}/templates/${templateId}/edit/terms`,
+  TEMPLATES_EDIT: (
+    collectionId: string,
+    templateId: number | string,
+    editMode: TemplateEditMode
+  ) => {
+    const searchParams = new URLSearchParams({
+      [QueryParamKey.ID]: templateId.toString(),
+      [QueryParamKey.OWNER_ID]: collectionId,
+      [QueryParamKey.EDIT_MODE]: editMode
+    })
+    return `${Route.TEMPLATES_EDIT}?${searchParams.toString()}`
+  },
   EDIT_FILE_METADATA: (
     datasetPersistentId: string,
     datasetVersion: string,
@@ -93,9 +100,17 @@ export enum QueryParamKey {
   COLLECTION_ID = 'collectionId',
   TAB = 'tab',
   FILE_ID = 'id',
+  ID = 'id',
+  OWNER_ID = 'ownerId',
+  EDIT_MODE = 'editMode',
   DATASET_VERSION = 'datasetVersion',
   REFERRER = 'referrer',
   AUTH_STATE = 'state',
   VALID_TOKEN_BUT_NOT_LINKED_ACCOUNT = 'validTokenButNotLinkedAccount',
   TOOL_TYPE = 'toolType'
+}
+
+export enum TemplateEditMode {
+  METADATA = 'METADATA',
+  LICENSE = 'LICENSE'
 }

@@ -1,4 +1,5 @@
 import { Route, RouteWithParams } from '@/sections/Route.enum'
+import { TemplateEditMode } from '@/sections/Route.enum'
 import { EditFileMetadataReferrer } from '@/sections/edit-file-metadata/EditFileMetadata'
 import { ReplaceFileReferrer } from '@/sections/replace-file/ReplaceFile'
 
@@ -30,12 +31,12 @@ describe('Route.enum.ts', () => {
     it('should return the correct route for collection templates', () => {
       expect(RouteWithParams.COLLECTION_TEMPLATES('root')).to.be.equal('/root/templates')
       expect(RouteWithParams.TEMPLATES_CREATE('root')).to.be.equal('/root/templates/create')
-      expect(RouteWithParams.TEMPLATES_EDIT_METADATA('root', 10)).to.be.equal(
-        '/root/templates/10/edit/metadata'
+      expect(RouteWithParams.TEMPLATES_EDIT('root', 10, TemplateEditMode.METADATA)).to.be.equal(
+        '/templates/edit?id=10&ownerId=root&editMode=METADATA'
       )
-      expect(RouteWithParams.TEMPLATES_EDIT_TERMS('root', 'template-10')).to.be.equal(
-        '/root/templates/template-10/edit/terms'
-      )
+      expect(
+        RouteWithParams.TEMPLATES_EDIT('root', 'template-10', TemplateEditMode.LICENSE)
+      ).to.be.equal('/templates/edit?id=template-10&ownerId=root&editMode=LICENSE')
     })
 
     it('should return the correct route for EDIT_FILE_METADATA', () => {

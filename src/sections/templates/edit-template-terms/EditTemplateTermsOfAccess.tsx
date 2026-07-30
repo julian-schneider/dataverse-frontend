@@ -1,26 +1,30 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useForm, Controller, FormProvider, useWatch } from 'react-hook-form'
-import { toast } from 'react-toastify'
 import { Form, Row, Col, Button, Alert } from '@iqss/dataverse-design-system'
-import styles from '../edit-license-and-terms/EditLicenseAndTerms.module.scss'
 import { TermsOfAccess } from '@/dataset/domain/models/Dataset'
-import { useDataset } from '../../dataset/DatasetContext'
-import { useUpdateTermsOfAccess } from './useUpdateTermsOfAccess'
-import { useNavigate } from 'react-router-dom'
-import { buildDatasetDraftReturnUrl, buildDatasetTermsReturnUrl } from '../datasetTermsNavigation'
-import { useDatasetRepositories } from '@/shared/contexts/repositories/RepositoriesProvider'
+import { TemplateRepository } from '@/templates/domain/repositories/TemplateRepository'
+import { Template } from '@/templates/domain/models/Template'
+import { useUpdateTemplateTermsOfAccess } from './useUpdateTemplateTermsOfAccess'
+import styles from '@/sections/edit-dataset-terms/edit-license-and-terms/EditLicenseAndTerms.module.scss'
 
-interface EditTermsOfAccessProps {
+interface EditTemplateTermsOfAccessProps {
+  template: Template
+  templateRepository: TemplateRepository
+  onSuccess: () => void
+  onCancel?: () => void
   onFormStateChange?: (isDirty: boolean) => void
 }
 
-export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps) {
-  const { datasetRepository } = useDatasetRepositories()
-  const { t } = useTranslation('dataset')
+export function EditTemplateTermsOfAccess({
+  template,
+  templateRepository,
+  onSuccess,
+  onCancel,
+  onFormStateChange
+}: EditTemplateTermsOfAccessProps) {
+  const { t: tDataset } = useTranslation('dataset')
   const { t: tShared } = useTranslation('shared')
-  const { dataset, refreshDataset } = useDataset()
-  const navigate = useNavigate()
 
   const defaultTermsOfAccess: TermsOfAccess = {
     fileAccessRequest: false,
@@ -33,22 +37,13 @@ export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps)
     studyCompletion: undefined
   }
 
-  const initialTermsOfAccess =
-    (dataset?.termsOfUse.termsOfAccess as TermsOfAccess) ?? defaultTermsOfAccess
+  const initialTermsOfAccess: TermsOfAccess =
+    template.termsOfUse.termsOfAccess ?? defaultTermsOfAccess
   const formContainerRef = useRef<HTMLDivElement>(null)
-  const navigateToDatasetDraftView = useCallback(() => {
-    if (!dataset) return
 
-    navigate(buildDatasetDraftReturnUrl(dataset))
-  }, [dataset, navigate])
-
-  const { handleUpdateTermsOfAccess, isLoading, error } = useUpdateTermsOfAccess({
-    datasetRepository,
-    onSuccessfulUpdateTermsOfAccess: () => {
-      toast.success(t('alerts.termsUpdated.alertText'))
-      refreshDataset()
-      navigateToDatasetDraftView()
-    }
+  const { handleUpdateTermsOfAccess, isLoading, error } = useUpdateTemplateTermsOfAccess({
+    templateRepository,
+    onSuccess
   })
 
   const form = useForm<TermsOfAccess>({
@@ -68,15 +63,12 @@ export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps)
   }, [isDirty, onFormStateChange])
 
   useEffect(() => {
-    if (dataset?.termsOfUse.termsOfAccess) {
-      reset(dataset.termsOfUse.termsOfAccess)
+    if (template.termsOfUse.termsOfAccess) {
+      reset(template.termsOfUse.termsOfAccess)
     }
-  }, [dataset?.termsOfUse.termsOfAccess, reset])
+  }, [template.termsOfUse.termsOfAccess, reset])
 
-  const fileAccessRequestValue = useWatch({
-    control,
-    name: 'fileAccessRequest'
-  })
+  const fileAccessRequestValue = useWatch({ control, name: 'fileAccessRequest' })
   const termsOfAccessForRestrictedFilesValue = useWatch({
     control,
     name: 'termsOfAccessForRestrictedFiles'
@@ -88,8 +80,7 @@ export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps)
     termsOfAccessForRestrictedFilesValue.trim().length > 0
 
   const termsOfAccessFields = useMemo(() => {
-    const termsOfAccess = initialTermsOfAccess
-    return Object.keys(termsOfAccess)
+    return Object.keys(initialTermsOfAccess)
       .filter((fieldName) => fieldName !== 'fileAccessRequest')
       .map((fieldName) => ({
         name: fieldName,
@@ -110,37 +101,30 @@ export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps)
               validate: (value: string | boolean | undefined) =>
                 isRequestAccessEnabled ||
                 (typeof value === 'string' && value.trim().length > 0) ||
-                t('termsTab.termsOfAccessRequiredWhenRequestDisabled')
+                tDataset('termsTab.termsOfAccessRequiredWhenRequestDisabled')
             }
           }
         }
         return field
       })
-  }, [initialTermsOfAccess, isRequestAccessEnabled, t])
-
-  const handleCancel = () => {
-    if (!dataset) return
-
-    navigate(buildDatasetTermsReturnUrl(dataset))
-  }
+  }, [initialTermsOfAccess, isRequestAccessEnabled, tDataset])
 
   return (
     <div ref={formContainerRef}>
       <Alert variant="info" dismissible={false}>
-        {t('termsTab.termsOfAccessInfo')}
+        {tDataset('termsTab.termsOfAccessInfo')}
       </Alert>
 
       <FormProvider {...form}>
         <form
-          onSubmit={handleSubmit((data) => {
-            if (!dataset) return
-            void handleUpdateTermsOfAccess(dataset.id, data)
+          onSubmit={handleSubmit(async (data) => {
+            await handleUpdateTermsOfAccess(template.id, data)
           })}
           noValidate={true}>
           <Form.Group controlId="fileAccessRequest" as={Row}>
             <Col sm={4}>
-              <Form.Group.Label message={t(`termsTab.requestAccessTip`)}>
-                {t('termsTab.requestAccess')}
+              <Form.Group.Label message={tDataset('termsTab.requestAccessTip')}>
+                {tDataset('termsTab.requestAccess')}
               </Form.Group.Label>
             </Col>
             <Col sm={8}>
@@ -151,9 +135,9 @@ export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps)
                   <Form.Group style={{ margin: '5px' }}>
                     <Form.Group.Checkbox
                       id="fileAccessRequest"
-                      checked={value}
+                      checked={value === undefined ? true : Boolean(value)}
                       onChange={onChange}
-                      label={t('termsTab.enableAccessRequest')}
+                      label={tDataset('termsTab.enableAccessRequest')}
                     />
                   </Form.Group>
                 )}
@@ -164,11 +148,11 @@ export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps)
           {termsOfAccessFields.map((field) => (
             <Form.Group key={field.name} controlId={field.name} as={Row}>
               <Form.Group.Label
-                message={t(`termsTab.${field.translationKey}Tip`)}
+                message={tDataset(`termsTab.${field.translationKey}Tip`)}
                 required={field.required}
                 column
                 sm={4}>
-                {t(`termsTab.${field.translationKey}`)}
+                {tDataset(`termsTab.${field.translationKey}`)}
               </Form.Group.Label>
               <Controller
                 name={field.name as keyof TermsOfAccess}
@@ -178,25 +162,14 @@ export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps)
                   <Col sm={8}>
                     <Row>
                       <Col>
-                        {field.type === 'input' ? (
-                          <Form.Group.Input
-                            type="text"
-                            value={value as string}
-                            onChange={onChange}
-                            isInvalid={invalid}
-                            aria-required={field.required}
-                            ref={ref}
-                          />
-                        ) : (
-                          <Form.Group.TextArea
-                            value={value as string}
-                            onChange={onChange}
-                            isInvalid={invalid}
-                            rows={field.rows}
-                            aria-required={field.required}
-                            ref={ref}
-                          />
-                        )}
+                        <Form.Group.TextArea
+                          value={typeof value === 'string' ? value : ''}
+                          onChange={onChange}
+                          isInvalid={invalid}
+                          rows={field.rows}
+                          aria-required={field.required}
+                          ref={ref}
+                        />
                         {field.required && (
                           <Form.Group.Feedback type="invalid">{error?.message}</Form.Group.Feedback>
                         )}
@@ -220,9 +193,16 @@ export function EditTermsOfAccess({ onFormStateChange }: EditTermsOfAccessProps)
               disabled={isLoading || (!isRequestAccessEnabled && !isTermsOfAccessProvided)}>
               {isLoading ? tShared('saving') : tShared('saveChanges')}
             </Button>
-            <Button type="button" variant="secondary" disabled={isLoading} onClick={handleCancel}>
-              {tShared('cancel')}
-            </Button>
+            {onCancel && (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={onCancel}
+                disabled={isLoading}
+                data-testid="cancel-edit-template-terms-of-access-button">
+                {tShared('close')}
+              </Button>
+            )}
           </div>
         </form>
       </FormProvider>
