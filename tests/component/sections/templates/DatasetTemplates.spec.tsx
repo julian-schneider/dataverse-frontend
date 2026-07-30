@@ -967,10 +967,20 @@ describe('Dataset Templates', () => {
         }),
         datasetMetadataBlocks: undefined
       } as unknown as Template
+      const copiedTemplate = TemplateMother.create({
+        id: 13,
+        name: 'copy Template Without Metadata Blocks',
+        collectionAlias: 'root'
+      })
 
       templateRepository.getTemplatesByCollectionId = cy
         .stub()
+        .onFirstCall()
         .resolves([templateWithoutMetadataBlocks])
+        .onSecondCall()
+        .resolves([templateWithoutMetadataBlocks, copiedTemplate])
+        .onThirdCall()
+        .resolves([templateWithoutMetadataBlocks, copiedTemplate])
       templateRepository.getTemplate = cy.stub().resolves(templateWithoutMetadataBlocks)
       templateRepository.createTemplate = cy.stub().resolves()
       metadataBlockInfoRepository.getByCollectionId = cy.stub().resolves([
