@@ -1,37 +1,46 @@
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Alert, Breadcrumb } from '@iqss/dataverse-design-system'
 import { CollectionRepository } from '@/collection/domain/repositories/CollectionRepository'
 import { TemplateRepository } from '@/templates/domain/repositories/TemplateRepository'
 import { MetadataBlockInfoRepository } from '@/metadata-block-info/domain/repositories/MetadataBlockInfoRepository'
 import { useCollection } from '@/sections/collection/useCollection'
+import { useGetTemplate } from '@/templates/domain/hooks/useGetTemplate'
 import { NotFoundPage } from '@/sections/not-found-page/NotFoundPage'
 import { TemplateMetadataForm } from '@/sections/shared/form/TemplateMetadataForm/TemplateMetadataForm'
-import { BreadcrumbsGenerator } from '@/sections/shared/hierarchy/BreadcrumbsGenerator'
+import { RouteWithParams } from '@/sections/Route.enum'
 import { useLoading } from '@/shared/contexts/loading/LoadingContext'
-import { CreateTemplateSkeleton } from './CreateTemplateSkeleton'
-import styles from './CreateTemplate.module.scss'
+import { EditTemplateMetadataSkeleton } from './EditTemplateMetadataSkeleton'
+import styles from '../create-template/CreateTemplate.module.scss'
 
-interface CreateTemplateProps {
+interface EditTemplateMetadataProps {
   collectionId: string
+  templateId: number
   collectionRepository: CollectionRepository
   metadataBlockInfoRepository: MetadataBlockInfoRepository
   templateRepository: TemplateRepository
 }
 
-export const CreateTemplate = ({
+export const EditTemplateMetadata = ({
   collectionId,
+  templateId,
   collectionRepository,
   templateRepository,
   metadataBlockInfoRepository
-}: CreateTemplateProps) => {
+}: EditTemplateMetadataProps) => {
   const { t } = useTranslation('datasetTemplates')
   const { setIsLoading } = useLoading()
   const { collection, isLoading: isLoadingCollection } = useCollection(
     collectionRepository,
     collectionId
   )
+  const { template, isLoadingTemplate, errorGetTemplate } = useGetTemplate({
+    templateRepository,
+    templateId
+  })
 
-  const isLoadingData = isLoadingCollection
+  const isLoadingData = isLoadingCollection || isLoadingTemplate
 
   useEffect(() => {
     setIsLoading(isLoadingData)
@@ -42,24 +51,43 @@ export const CreateTemplate = ({
   }
 
   if (isLoadingData || !collection) {
-    return <CreateTemplateSkeleton />
+    return <EditTemplateMetadataSkeleton />
+  }
+
+  if (errorGetTemplate || !template) {
+    return (
+      <section className={styles.container}>
+        <Alert variant="danger">
+          {errorGetTemplate ?? t('editTemplate.errors.loadingTemplate')}
+        </Alert>
+      </section>
+    )
   }
 
   return (
     <section className={styles.container}>
-      <BreadcrumbsGenerator
-        hierarchy={collection.hierarchy}
-        withActionItem
-        actionItemText={t('createTemplate.pageTitle')}
-      />
+      <Breadcrumb className={styles.breadcrumb}>
+        <Breadcrumb.Item
+          linkAs={Link}
+          linkProps={{ to: RouteWithParams.COLLECTIONS(collectionId) }}>
+          {collectionId}
+        </Breadcrumb.Item>
+        <Breadcrumb.Item
+          linkAs={Link}
+          linkProps={{ to: RouteWithParams.COLLECTION_TEMPLATES(collectionId) }}>
+          {t('pageTitle')}
+        </Breadcrumb.Item>
+        <Breadcrumb.Item active>{t('editTemplate.metadataPageTitle')}</Breadcrumb.Item>
+      </Breadcrumb>
       <header className={styles.header}>
-        <h1>{t('createTemplate.pageTitle')}</h1>
+        <h1>{t('editTemplate.metadataPageTitle')}</h1>
       </header>
       <TemplateMetadataForm
-        mode="create"
+        mode="edit"
         collectionId={collectionId}
         metadataBlockInfoRepository={metadataBlockInfoRepository}
         templateRepository={templateRepository}
+        template={template}
       />
     </section>
   )
