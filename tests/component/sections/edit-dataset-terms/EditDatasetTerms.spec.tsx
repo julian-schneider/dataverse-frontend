@@ -123,8 +123,13 @@ describe('EditDatasetTerms', () => {
     cy.viewport(1920, 1080)
     licenseRepository.getAvailableStandardLicenses = cy.stub().resolves(mockLicenses)
     guestbookRepository = {
+      createGuestbook: cy.stub(),
       getGuestbook: cy.stub(),
       getGuestbooksByCollectionId: cy.stub().resolves(mockGuestbooks),
+      getGuestbookResponsesByGuestbookId: cy.stub(),
+      setGuestbookEnabled: cy.stub(),
+      downloadGuestbookResponsesByCollectionId: cy.stub(),
+      downloadGuestbookResponsesByGuestbookId: cy.stub(),
       assignDatasetGuestbook: cy.stub().resolves(undefined),
       removeDatasetGuestbook: cy.stub().resolves(undefined)
     }
