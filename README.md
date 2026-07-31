@@ -261,7 +261,7 @@ The **QA** environment is a dedicated, short-lived testing space. It is deployed
 >
 > #### Cleaner Display When Fields Allow Multiples
 >
-> When fields such allow multiples, a cleaner display with linebreaks is shown. 
+> When fields such allow multiples, a cleaner display with linebreaks is shown.
 
 </details>
 
