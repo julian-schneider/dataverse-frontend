@@ -7,8 +7,9 @@ export interface GeoDatasetItem {
   url: string
   authors: string
   publicationDate: string
-  lat: number
-  lon: number
+  pinLat: number
+  pinLon: number
+  bboxes: [[number, number], [number, number]][]
 }
 
 const PAGE_SIZE = 1000
@@ -16,6 +17,8 @@ const PAGE_SIZE = 1000
 interface BboxValue {
   southLatitude?: { value: string }
   westLongitude?: { value: string }
+  northLatitude?: { value: string }
+  eastLongitude?: { value: string }
 }
 
 interface GeospatialField {
@@ -49,12 +52,27 @@ function extractGeoItem(item: SearchItem): GeoDatasetItem | null {
   if (!fields) return null
 
   const bboxField = fields.find((f) => f.typeName === 'geographicBoundingBox')
-  const bbox = bboxField?.value?.[0]
-  if (!bbox) return null
+  if (!bboxField?.value?.length) return null
 
-  const south = parseFloat(bbox.southLatitude?.value ?? '')
-  const west = parseFloat(bbox.westLongitude?.value ?? '')
-  if (isNaN(south) || isNaN(west)) return null
+  const bboxes: [[number, number], [number, number]][] = []
+  let latSum = 0
+  let lonSum = 0
+
+  for (const bbox of bboxField.value) {
+    const south = parseFloat(bbox.southLatitude?.value ?? '')
+    const west = parseFloat(bbox.westLongitude?.value ?? '')
+    const north = parseFloat(bbox.northLatitude?.value ?? '')
+    const east = parseFloat(bbox.eastLongitude?.value ?? '')
+    if (isNaN(south) || isNaN(west) || isNaN(north) || isNaN(east)) continue
+    bboxes.push([
+      [south, west],
+      [north, east]
+    ])
+    latSum += (south + north) / 2
+    lonSum += (west + east) / 2
+  }
+
+  if (bboxes.length === 0) return null
 
   const authors = Array.isArray(item.authors)
     ? item.authors.map((a) => (typeof a === 'string' ? a : a.name ?? '')).join(', ')
@@ -66,8 +84,9 @@ function extractGeoItem(item: SearchItem): GeoDatasetItem | null {
     url: item.url ?? '',
     authors,
     publicationDate: item.published_at?.substring(0, 10) ?? '',
-    lat: south,
-    lon: west
+    pinLat: latSum / bboxes.length,
+    pinLon: lonSum / bboxes.length,
+    bboxes: bboxes
   }
 }
 
