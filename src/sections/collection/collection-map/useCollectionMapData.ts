@@ -130,13 +130,13 @@ export function useCollectionMapData(
   const filterQueriesKey = filterQueries?.join('\0') ?? ''
 
   const fetchPage = useCallback(
-    async (pageStart: number, replace: boolean) => {
+    async (pageStart: number, replace: boolean, signal?: AbortSignal) => {
       setIsLoading(true)
       setError(null)
       try {
         const fqs = filterQueriesKey ? (filterQueriesKey.split('\0') as FilterQuery[]) : undefined
         const url = buildSearchUrl(collectionId, pageStart, searchText, fqs)
-        const response = await fetch(url)
+        const response = await fetch(url, signal ? { signal } : undefined)
         if (!response.ok) throw new Error(`HTTP ${response.status}`)
         const json = (await response.json()) as SearchResponse
         const total = json.data?.total_count ?? 0
@@ -148,19 +148,22 @@ export function useCollectionMapData(
         setItems((prev) => (replace ? geoItems : [...prev, ...geoItems]))
         setStart(pageStart + PAGE_SIZE)
       } catch (e) {
+        if (e instanceof DOMException && e.name === 'AbortError') return
         setError(e instanceof Error ? e.message : 'Failed to load map data')
       } finally {
-        setIsLoading(false)
+        if (!signal?.aborted) setIsLoading(false)
       }
     },
     [collectionId, searchText, filterQueriesKey]
   )
 
   useEffect(() => {
+    const controller = new AbortController()
     setItems([])
     setStart(0)
     setTotalCount(0)
-    void fetchPage(0, true)
+    void fetchPage(0, true, controller.signal)
+    return () => controller.abort()
   }, [fetchPage])
 
   const loadMore = useCallback(() => {
