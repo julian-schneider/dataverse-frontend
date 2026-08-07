@@ -1,3 +1,5 @@
+@import 'node_modules/@iqss/dataverse-design-system/src/lib/assets/styles/design-tokens/typography.module';
+
 .map-wrapper {
   border: 1px solid #dee2e6;
   border-radius: 4px;
@@ -7,7 +9,6 @@
 
 .map-status {
   padding: 0.5rem 0.75rem;
-  font-size: 14px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -19,10 +20,9 @@
   height: 480px;
 }
 
-.load-more {
-  padding: 0.5rem 0.75rem;
-  border-top: 1px solid #dee2e6;
-  background: #fff;
+.results {
+  margin-right: 4px;
+  font-weight: $dv-font-weight-bold;
 }
 
 .error {

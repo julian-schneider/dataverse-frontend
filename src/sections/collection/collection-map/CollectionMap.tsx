@@ -1,11 +1,14 @@
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MapContainer, TileLayer, useMap } from 'react-leaflet'
 import { FilterQuery } from '@/collection/domain/models/CollectionSearchCriteria'
 import { useCollectionMapData } from './useCollectionMapData'
 import { MarkerClusterGroup } from './MarkerClusterGroup'
 import styles from './CollectionMap.module.scss'
+import { Button } from '@iqss/dataverse-design-system'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 
 function MapSizeInvalidator({ isVisible }: { isVisible: boolean }) {
   // causes a tile grid update after the map is reopened, in case it was stale due to a window size change
@@ -31,6 +34,7 @@ export function CollectionMap({
   filterQueries,
   isVisible
 }: CollectionMapProps) {
+  const { t } = useTranslation('shared')
   const { items, totalCount, isLoading, error, hasMore, loadMore } = useCollectionMapData(
     collectionId,
     searchText,
@@ -40,8 +44,24 @@ export function CollectionMap({
   return (
     <div className={styles['map-wrapper']}>
       <div className={styles['map-status']}>
-        {`Retrieved ${items.length} with geospatial information (total datasets: ${totalCount})`}
-        {isLoading && <span> Loading...</span>}
+        {isLoading ? (
+          <SkeletonTheme>
+            <Skeleton height={19} width={190} />
+          </SkeletonTheme>
+        ) : (
+          <span className={styles['results']}>
+            {t('pagination.accumulated.moreThanPageSize', {
+              accumulated: items.length,
+              formattedCount: new Intl.NumberFormat().format(totalCount),
+              item: 'result'
+            })}
+          </span>
+        )}
+        {hasMore && (
+          <Button variant="link" type="button" size="sm" onClick={loadMore} disabled={isLoading}>
+            More...
+          </Button>
+        )}
       </div>
 
       {error && <div className={styles.error}>Error: {error}</div>}
@@ -59,17 +79,6 @@ export function CollectionMap({
         <MarkerClusterGroup items={items} />
         <MapSizeInvalidator isVisible={isVisible} />
       </MapContainer>
-
-      {hasMore && (
-        <div className={styles['load-more']}>
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            onClick={loadMore}
-            disabled={isLoading}>
-            More...
-          </button>
-        </div>
-      )}
     </div>
   )
 }

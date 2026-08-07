@@ -12,7 +12,7 @@ export interface GeoDatasetItem {
   bboxes: [[number, number], [number, number]][]
 }
 
-const PAGE_SIZE = 1000
+const PAGE_SIZE = 50
 
 interface BboxValue {
   southLatitude?: { value: string }
