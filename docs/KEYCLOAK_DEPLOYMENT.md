@@ -40,6 +40,7 @@ Copy the generated `dv-spa-kc-theme.jar` file to your Keycloak instance’s `key
 ### Create keycloak.conf
 
 Inside the `keycloak-26.X.X/conf` directory, create a `keycloak.conf` file with the following database configuration, replacing the bracketed variables with the corresponding values for your environment.
+(Note that the keycloak.conf file in dev-env is configured to use a file based H2 database for development purposes only. You will need to change the configuration to use a production database for your Keycloak instance. See below for more details.)
 
 The first database block configures Keycloak's own database, which stores realm, client, session, and server state. The `user-store` named datasource block configures the Dataverse database connection used by the Builtin Users SPI.
 
