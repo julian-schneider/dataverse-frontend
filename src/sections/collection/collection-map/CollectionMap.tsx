@@ -34,7 +34,8 @@ export function CollectionMap({
   filterQueries,
   isVisible
 }: CollectionMapProps) {
-  const { t } = useTranslation('shared')
+  const { t: tShared } = useTranslation('shared')
+  const { t: tCollection } = useTranslation('collection')
   const { items, totalCount, isLoading, error, hasMore, loadMore } = useCollectionMapData(
     collectionId,
     searchText,
@@ -50,7 +51,7 @@ export function CollectionMap({
           </SkeletonTheme>
         ) : (
           <span className={styles['results']}>
-            {t('pagination.accumulated.moreThanPageSize', {
+            {tShared('pagination.accumulated.moreThanPageSize', {
               accumulated: items.length,
               formattedCount: new Intl.NumberFormat().format(totalCount),
               item: 'result'
@@ -59,12 +60,16 @@ export function CollectionMap({
         )}
         {hasMore && (
           <Button variant="link" type="button" size="sm" onClick={loadMore} disabled={isLoading}>
-            More...
+            {tCollection('map.showMore')}
           </Button>
         )}
       </div>
 
-      {error && <div className={styles.error}>Error: {error}</div>}
+      {error && (
+        <div className={styles.error}>
+          {tCollection('map.errorLabel')} {error}
+        </div>
+      )}
 
       <MapContainer
         center={[51.1, 10.382]}

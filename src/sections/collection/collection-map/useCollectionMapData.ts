@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FilterQuery } from '@/collection/domain/models/CollectionSearchCriteria'
 
 export interface GeoDatasetItem {
@@ -121,6 +122,7 @@ export function useCollectionMapData(
   searchText?: string,
   filterQueries?: FilterQuery[]
 ) {
+  const { t } = useTranslation('collection')
   const [items, setItems] = useState<GeoDatasetItem[]>([])
   const [totalCount, setTotalCount] = useState<number>(0)
   const [start, setStart] = useState(0)
@@ -149,12 +151,12 @@ export function useCollectionMapData(
         setStart(pageStart + PAGE_SIZE)
       } catch (e) {
         if (e instanceof DOMException && e.name === 'AbortError') return
-        setError(e instanceof Error ? e.message : 'Failed to load map data')
+        setError(e instanceof Error ? e.message : t('map.failedToLoad'))
       } finally {
         if (!signal?.aborted) setIsLoading(false)
       }
     },
-    [collectionId, searchText, filterQueriesKey]
+    [collectionId, searchText, filterQueriesKey, t]
   )
 
   useEffect(() => {
