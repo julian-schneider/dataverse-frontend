@@ -85,6 +85,7 @@
   "map": {
     "showMore": "Load more",
     "errorLabel": "Error:",
-    "failedToLoad": "Failed to load map data"
+    "failedToLoad": "Failed to load map data",
+    "resultDisplayExplanation": "The map shows only search results that have geospatial information, most relevant first."
   }
 }

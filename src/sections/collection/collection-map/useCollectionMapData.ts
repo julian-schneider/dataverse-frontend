@@ -104,6 +104,7 @@ function buildSearchUrl(
   params.set('subtree', collectionId)
   params.set('start', String(start))
   params.set('per_page', String(PAGE_SIZE))
+  params.append('fq', 'geolocation:*')
   for (const fq of filterQueries ?? []) {
     const idx = fq.indexOf(':')
     if (idx > 0) {

@@ -8,6 +8,7 @@ import { useCollectionMapData } from './useCollectionMapData'
 import { MarkerClusterGroup } from './MarkerClusterGroup'
 import styles from './CollectionMap.module.scss'
 import { Button } from '@iqss/dataverse-design-system'
+import { QuestionMarkTooltip } from '@iqss/dataverse-design-system'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 
 function MapSizeInvalidator({ isVisible }: { isVisible: boolean }) {
@@ -55,7 +56,11 @@ export function CollectionMap({
               accumulated: items.length,
               formattedCount: new Intl.NumberFormat().format(totalCount),
               item: 'result'
-            })}
+            })}{' '}
+            <QuestionMarkTooltip
+              placement="right"
+              message={tCollection('map.resultDisplayExplanation')}
+            />
           </span>
         )}
         {hasMore && (
