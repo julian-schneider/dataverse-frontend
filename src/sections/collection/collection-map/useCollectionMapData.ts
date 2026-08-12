@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ApiConfig } from '@iqss/dataverse-client-javascript'
 import { FilterQuery } from '@/collection/domain/models/CollectionSearchCriteria'
+import { Utils } from '@/shared/helpers/Utils'
 
 export interface GeoDatasetItem {
   persistentId: string
@@ -139,7 +141,10 @@ export function useCollectionMapData(
       try {
         const fqs = filterQueriesKey ? (filterQueriesKey.split('\0') as FilterQuery[]) : undefined
         const url = buildSearchUrl(collectionId, pageStart, searchText, fqs)
-        const response = await fetch(url, signal ? { signal } : undefined)
+        const tokenKey = ApiConfig.bearerTokenLocalStorageKey
+        const token = tokenKey ? Utils.getLocalStorageItem<string>(tokenKey) : null
+        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {}
+        const response = await fetch(url, { signal, headers })
         if (!response.ok) throw new Error(`HTTP ${response.status}`)
         const json = (await response.json()) as SearchResponse
         const total = json.data?.total_count ?? 0
