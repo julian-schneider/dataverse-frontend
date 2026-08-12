@@ -22,6 +22,30 @@ export function MarkerClusterGroup({ items }: Props) {
       let rects: L.Rectangle[] = []
       let inCluster = true
 
+      const showRects = () => {
+        if (rects.length === 0) {
+          rects = item.bboxes.map((bounds) =>
+            L.rectangle(bounds, { color: '#0d6efd', weight: 0.5, fillOpacity: 0.1 })
+          )
+          rects.forEach((r) => map.addLayer(r))
+        }
+      }
+
+      const hideRects = () => {
+        rects.forEach((r) => map.removeLayer(r))
+        rects = []
+      }
+
+      marker.on('mouseover', () => {
+        showRects()
+      })
+
+      marker.on('mouseout', () => {
+        if (!marker.isPopupOpen()) {
+          hideRects()
+        }
+      })
+
       marker.on('click', () => {
         if (inCluster) {
           // while a pin's popup is open, clustering logic shouldn't mess with it
@@ -29,10 +53,7 @@ export function MarkerClusterGroup({ items }: Props) {
           map.addLayer(marker)
           inCluster = false
 
-          rects = item.bboxes.map((bounds) =>
-            L.rectangle(bounds, { color: '#0d6efd', weight: 0.5, fillOpacity: 0.1 })
-          )
-          rects.forEach((r) => map.addLayer(r))
+          showRects()
           const combined = L.featureGroup(rects).getBounds()
           if (!map.getBounds().contains(combined)) {
             map.fitBounds(combined, { padding: [20, 20] })
@@ -47,8 +68,7 @@ export function MarkerClusterGroup({ items }: Props) {
       )
 
       marker.on('popupclose', () => {
-        rects.forEach((r) => map.removeLayer(r))
-        rects = []
+        hideRects()
         if (!inCluster) {
           inCluster = true
           map.removeLayer(marker)
