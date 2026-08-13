@@ -44,9 +44,6 @@ function extractInfoFromInterceptedResponse(interception: Interception) {
 }
 
 describe('Collection Items Panel', () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let _collectionId: string
-
   beforeEach(() => {
     TestsUtils.login().then((token) => {
       cy.wrap(TestsUtils.setup(token)).then(async () => {
@@ -56,8 +53,6 @@ describe('Collection Items Panel', () => {
 
         const collectionName = 'ItemsTestCollection'
         const collection = await CollectionHelper.create(`${collectionName}-${Date.now()}`)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        _collectionId = collection.id!
         // Creates 8 datasets with 1 file each
         for (const _number of numbersOfDatasetsToCreate) {
           await DatasetHelper.createWithFileAndTitle(
