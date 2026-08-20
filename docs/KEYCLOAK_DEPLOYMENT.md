@@ -359,8 +359,8 @@ ConditionPathExists=/opt/dvn/keycloak/bin/keycloakstart.sh
 Requires=postgresql-16.service
 
 [Service]
-User=root
-Group=root
+User=keycloak
+Group=keycloak
 Type=forking
 ExecStart=/opt/dvn/keycloak/bin/keycloakstart.sh
 TimeoutStartSec=600
