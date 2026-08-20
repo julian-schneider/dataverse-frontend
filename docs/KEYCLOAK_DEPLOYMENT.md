@@ -353,14 +353,16 @@ The following startup file (`/etc/systemd/system/keycloak.service`) has been cre
 ```
 [Unit]
 Description=Harvard IQSS Dataverse Keycloak Server
-After=syslog.target network.target
+After=syslog.target network.target postgresql-16.service
 Before=httpd.service
-ConditionPathExists=/opt/dvn/keycloak/current/bin/kc.sh
+ConditionPathExists=/opt/dvn/keycloak/bin/keycloakstart.sh
+Requires=postgresql-16.service
 
 [Service]
-User=keycloak
-Group=keycloak
-ExecStart=/opt/dvn/keycloak/current/bin/kc.sh start --hostname auth.dataverse.harvard.edu --http-enabled=true --proxy-headers xforwarded
+User=root
+Group=root
+Type=forking
+ExecStart=/opt/dvn/keycloak/bin/keycloakstart.sh
 TimeoutStartSec=600
 TimeoutStopSec=600
 Restart=on-failure
@@ -372,6 +374,16 @@ WantedBy=multi-user.target
 
 `systemctl enable keycloak` to make sure Keycloak starts every time the instance boots.
 
+Note that the systemd file above references another shell script, `/opt/dvn/keycloak/bin/keycloakstart.sh` that does the actual starting.
+
+```
+$ cat /opt/dvn/keycloak/bin/keycloakstart.sh
+#!/bin/sh
+
+export DIRECTORY=/opt/dvn/keycloak/current
+
+nohup ${DIRECTORY}/bin/kc.sh start --hostname auth.dataverse.harvard.edu --optimized --http-enabled=true --proxy-headers xforwarded > /var/log/keycloak.log 2>&1 &
+```
 ### Register the Keycloak Dataverse Backend OIDC client in Dataverse
 
 Both the JVM options from this step and the next must be registered within the instance where your Dataverse installation is hosted.
@@ -396,7 +408,7 @@ In the Dataverse instance, you need to enable different OIDC-related feature fla
 ### Upgrades
 
 This section implies a production, or a permanent test/demo etc. instance.
-A developer will not expected to need to upgrade a keycloak instance started as part of their personal dev. environment. It should be easier to simply start a new version from scratch.
+A developer will not be expected to need to upgrade a keycloak instance started as part of their personal dev. environment. It should be easier to simply start a new version from scratch.
 
 The process below also assumes that an external PostgreSQL, or a similar database is used to store the realm(s) and users information. This way the database does not need to be exported and reimported into the new keycloak instance.
 
