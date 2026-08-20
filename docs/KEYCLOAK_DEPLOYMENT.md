@@ -392,3 +392,45 @@ In the Dataverse instance, you need to enable different OIDC-related feature fla
 - `dataverse.feature.api-bearer-auth`
 - `dataverse.feature.api-bearer-auth-provide-missing-claims`
 - `dataverse.feature.api-bearer-auth-use-builtin-user-on-id-match`
+
+### Upgrades
+
+This section implies a production, or a permanent test/demo etc. instance.
+A developer will not expected to need to upgrade a keycloak instance started as part of their personal dev. environment. It should be easier to simply start a new version from scratch.
+
+The process below also assumes that an external PostgreSQL, or a similar database is used to store the realm(s) and users information. This way the database does not need to be exported and reimported into the new keycloak instance.
+
+An upgrade from 26.7.0 to 26.7.2 is used in the command lines below. Adjust as needed (same for the directories used in the examples)
+
+1. Build a new `builtin-users-spi` jar file; make sure the target keycloak version is reflected in the `pom.xml` and any extra user stores - if the keycloak instance serves more than one realm - are listed in the `persistence.xml` file.
+2. Stop the old keycloak: `sudo systemctl stop keycloak`
+3. If you want to be safe, back up the database (exercise for the user)
+4. Download and unzip the new version and switch the link:
+```
+cd /usr/local/keycloak
+sudo unzip /tmp/keycloak-26.7.2.zip
+sudo rm current
+sudo ln -s keycloak-26.7.2 current
+```
+5. Copy the new authenticator jar in place:
+```sudo cp /tmp/keycloak-dv-builtin-users-authenticator-1.0-SNAPSHOT.jar current/providers/```
+6. Copy the other 3 jar files (assumes these have not changed and can be reused!)
+```
+sudo cp keycloak-26.7.0/providers/dv-spa-kc-theme.jar current/providers/
+sudo cp keycloak-26.7.0/providers/ojdbc11-23.8.0.25.04.jar current/providers/
+sudo cp keycloak-26.7.0/providers/orai18n-23.8.0.25.04.jar current/providers/
+```
+7. Copy the config files: (same assumption, that nothing has changed since the last version; consult the installation instruction to be sure)
+```
+sudo cp keycloak-26.7.0/conf/keycloak.conf current/conf/
+sudo cp keycloak-26.7.0/conf/quarkus.properties current/conf/
+```
+8. Build:
+```
+cd current
+sudo ./bin/kc.sh build
+```
+
+You can now start keycloak. Using the setup shown above, with the link `current` always pointing to the latest version, no changes should be needed to the startup.
+None of the extra configuration steps described in the installation instructions are needed, since all the configuration information has been preserved in the database.
+
