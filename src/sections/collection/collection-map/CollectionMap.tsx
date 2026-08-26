@@ -1,3 +1,4 @@
+import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import { useEffect } from 'react'
@@ -10,6 +11,7 @@ import styles from './CollectionMap.module.scss'
 import { Button } from '@iqss/dataverse-design-system'
 import { QuestionMarkTooltip } from '@iqss/dataverse-design-system'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import { CollectionMapData } from './types'
 
 function MapSizeInvalidator({ isVisible }: { isVisible: boolean }) {
   // causes a tile grid update after the map is reopened, in case it was stale due to a window size change
@@ -22,26 +24,29 @@ function MapSizeInvalidator({ isVisible }: { isVisible: boolean }) {
   return null
 }
 
-interface CollectionMapProps {
+export interface CollectionMapProps {
   collectionId: string
   searchText?: string
   filterQueries?: FilterQuery[]
   isVisible: boolean
 }
 
-export function CollectionMap({
-  collectionId,
-  searchText,
-  filterQueries,
-  isVisible
-}: CollectionMapProps) {
+export function CollectionMap(props: CollectionMapProps) {
+  const mapData = useCollectionMapData(props.collectionId, props.searchText, props.filterQueries)
+  return <CollectionMapUI {...props} {...mapData} />
+}
+
+export function CollectionMapUI({
+  isVisible,
+  items,
+  totalCount,
+  isLoading,
+  error,
+  hasMore,
+  loadMore
+}: CollectionMapProps & CollectionMapData) {
   const { t: tShared } = useTranslation('shared')
   const { t: tCollection } = useTranslation('collection')
-  const { items, totalCount, isLoading, error, hasMore, loadMore } = useCollectionMapData(
-    collectionId,
-    searchText,
-    filterQueries
-  )
 
   return (
     <div className={styles['map-wrapper']}>

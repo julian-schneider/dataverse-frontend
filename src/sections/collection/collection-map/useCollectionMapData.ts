@@ -3,17 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ApiConfig } from '@iqss/dataverse-client-javascript'
 import { FilterQuery } from '@/collection/domain/models/CollectionSearchCriteria'
 import { Utils } from '@/shared/helpers/Utils'
-
-export interface GeoDatasetItem {
-  persistentId: string
-  name: string
-  url: string
-  authors: string
-  publicationDate: string
-  pinLat: number
-  pinLon: number
-  bboxes: [[number, number], [number, number]][]
-}
+import { GeoDatasetItem } from './types'
 
 const PAGE_SIZE = 50
 
