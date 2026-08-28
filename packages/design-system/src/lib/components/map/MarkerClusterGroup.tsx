@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet.markercluster'
-import { GeoDatasetItem } from './useCollectionMapData'
+import { GeoDatasetItem } from './types'
 
 interface Props {
   items: GeoDatasetItem[]
@@ -13,11 +13,9 @@ export function MarkerClusterGroup({ items }: Props) {
 
   useEffect(() => {
     const cluster = L.markerClusterGroup()
-    const baseUrl = window.location.origin
 
     const markerList = items.map((item) => {
       const marker = L.marker([item.pinLat, item.pinLon])
-      const datasetUrl = `${baseUrl}/dataset.xhtml?persistentId=${item.persistentId}`
 
       let rects: L.Rectangle[] = []
       let inCluster = true
@@ -62,7 +60,7 @@ export function MarkerClusterGroup({ items }: Props) {
       })
 
       marker.bindPopup(
-        `<a href="${datasetUrl}">${item.name}</a><br>` +
+        `<a href="${item.detailsPageUrl}">${item.name}</a><br>` +
           `${item.authors}; ${item.publicationDate}<br>` +
           `${item.persistentId}`
       )

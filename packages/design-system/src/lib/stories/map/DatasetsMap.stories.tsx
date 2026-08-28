@@ -1,22 +1,20 @@
-import { Meta, StoryObj } from '@storybook/react'
-import { WithI18next } from '../../WithI18next'
-import { CollectionMapUI } from '@/sections/collection/collection-map/CollectionMap'
-import { GeoDatasetItem } from '@/sections/collection/collection-map/types'
+import type { Meta, StoryObj } from '@storybook/react'
+import { DatasetsMap } from '../../components/map/DatasetsMap'
+import { GeoDatasetItem } from '../../components/map/types'
 
-const meta: Meta<typeof CollectionMapUI> = {
-  title: 'Sections/Collection Page/CollectionMap',
-  component: CollectionMapUI,
-  decorators: [WithI18next]
+const meta: Meta<typeof DatasetsMap> = {
+  title: 'Datasets Map',
+  component: DatasetsMap
 }
 
 export default meta
-type Story = StoryObj<typeof CollectionMapUI>
+type Story = StoryObj<typeof DatasetsMap>
 
 const mockItems: GeoDatasetItem[] = [
   {
     persistentId: 'doi:10.1234/1',
     name: 'Cluster dataset 1',
-    url: '',
+    detailsPageUrl: '',
     authors: 'Author Name',
     publicationDate: '2026-01-01',
     pinLat: 52.6,
@@ -31,7 +29,7 @@ const mockItems: GeoDatasetItem[] = [
   {
     persistentId: 'doi:10.1234/2',
     name: 'Cluster dataset 2',
-    url: '',
+    detailsPageUrl: '',
     authors: 'Author Name',
     publicationDate: '2026-01-01',
     pinLat: 53,
@@ -46,7 +44,7 @@ const mockItems: GeoDatasetItem[] = [
   {
     persistentId: 'doi:10.1234/3',
     name: 'Cluster dataset 3',
-    url: '',
+    detailsPageUrl: '',
     authors: 'Author Name',
     publicationDate: '2026-01-01',
     pinLat: 52.8,
@@ -61,7 +59,7 @@ const mockItems: GeoDatasetItem[] = [
   {
     persistentId: 'doi:10.1234/4',
     name: 'Dataset with large bounding box',
-    url: '',
+    detailsPageUrl: '',
     authors: 'Author Name',
     publicationDate: '2026-01-01',
     pinLat: 52.8,
@@ -76,7 +74,7 @@ const mockItems: GeoDatasetItem[] = [
   {
     persistentId: 'doi:10.1234/5',
     name: 'Dataset with 2 bounding boxes',
-    url: '',
+    detailsPageUrl: '',
     authors: 'Author Name',
     publicationDate: '2026-01-01',
     pinLat: 52.8,
@@ -96,7 +94,6 @@ const mockItems: GeoDatasetItem[] = [
 
 export const Default: Story = {
   args: {
-    collectionId: 'root',
     isVisible: true,
     items: mockItems,
     totalCount: 5,

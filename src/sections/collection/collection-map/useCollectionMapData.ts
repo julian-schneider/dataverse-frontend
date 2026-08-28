@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ApiConfig } from '@iqss/dataverse-client-javascript'
 import { FilterQuery } from '@/collection/domain/models/CollectionSearchCriteria'
 import { Utils } from '@/shared/helpers/Utils'
-import { GeoDatasetItem } from './types'
+import { GeoDatasetItem } from '@iqss/dataverse-design-system'
 
 const PAGE_SIZE = 50
 
@@ -22,7 +22,6 @@ interface GeospatialField {
 interface SearchItem {
   global_id?: string
   name?: string
-  url?: string
   authors?: (string | { name?: string })[]
   author_name?: string
   published_at?: string
@@ -74,7 +73,7 @@ function extractGeoItem(item: SearchItem): GeoDatasetItem | null {
   return {
     persistentId: item.global_id ?? '',
     name: item.name ?? '',
-    url: item.url ?? '',
+    detailsPageUrl: `${window.location.origin}/dataset.xhtml?persistentId=${item.global_id ?? ''}`,
     authors,
     publicationDate: item.published_at?.substring(0, 10) ?? '',
     pinLat: latSum / bboxes.length,
