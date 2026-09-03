@@ -1,0 +1,68 @@
+name: Publish Design System Preview
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - 'packages/design-system/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/publish-design-system-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  publish-preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Create .npmrc
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cp .npmrc.example .npmrc
+          sed -i -e "s#<YOUR_GITHUB_AUTH_TOKEN>#${GITHUB_TOKEN}#g" .npmrc
+          sed -i -e 's#//registry.npmjs.org/:_authToken=<YOUR_NPM_AUTH_TOKEN>#; auth token omitted in CI#g' .npmrc
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Dataverse Design System
+        run: npm run build --workspace packages/design-system
+
+      - name: Publish preview package
+        id: publish
+        run: >-
+          npm exec -- pkg-pr-new publish
+          --no-compact
+          --previewVersion
+          --commentWithSha
+          --packageManager=npm
+          ./packages/design-system
+
+      - name: Add preview URL to job summary
+        env:
+          PREVIEW_URLS: ${{ steps.publish.outputs.urls }}
+        run: |
+          echo '## Design system preview' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          echo "npm install ${PREVIEW_URLS}" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove .npmrc
+        if: always()
+        run: rm -f .npmrc
