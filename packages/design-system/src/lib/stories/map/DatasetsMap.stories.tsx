@@ -104,6 +104,13 @@ export const Default: Story = {
   }
 }
 
+export const CustomHeight: Story = {
+  args: {
+    ...Default.args,
+    mapHeight: '50vh'
+  }
+}
+
 export const Loading: Story = {
   args: {
     ...Default.args,
