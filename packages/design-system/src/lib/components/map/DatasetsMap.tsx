@@ -27,7 +27,8 @@ export function DatasetsMap({
   isLoading,
   error,
   hasMore,
-  loadMore
+  loadMore,
+  mapHeight
 }: CollectionMapData) {
   return (
     <div className={styles['map-wrapper']}>
@@ -58,6 +59,7 @@ export function DatasetsMap({
         center={[51.1, 10.382]}
         zoom={3}
         scrollWheelZoom={false}
+        style={{ height: mapHeight }}
         className={styles['map-container']}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

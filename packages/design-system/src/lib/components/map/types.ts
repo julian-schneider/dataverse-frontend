@@ -25,4 +25,5 @@ export interface CollectionMapData {
   hasMore: boolean
   loadMore: () => void
   isVisible: boolean
+  mapHeight?: string | number //string: css value. number: pixels. defaults to 480px.
 }
