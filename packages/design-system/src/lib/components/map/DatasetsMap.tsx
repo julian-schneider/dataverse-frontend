@@ -28,7 +28,11 @@ export function DatasetsMap({
   error,
   hasMore,
   loadMore,
-  mapHeight
+  mapHeight,
+  tileLayer,
+  colors,
+  terminalClusterBehavior = 'carousel-popup',
+  markerPlacement = 'bounding-box-centers'
 }: CollectionMapData) {
   return (
     <div className={styles['map-wrapper']}>
@@ -58,15 +62,24 @@ export function DatasetsMap({
       <MapContainer
         center={[51.1, 10.382]}
         zoom={3}
-        scrollWheelZoom={false}
+        scrollWheelZoom
         style={{ height: mapHeight }}
         className={styles['map-container']}>
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          maxZoom={19}
+          {...tileLayer}
+          attribution={
+            tileLayer?.attribution ??
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          }
+          url={tileLayer?.url ?? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'}
+          maxZoom={tileLayer?.maxZoom ?? 19}
         />
-        <MarkerClusterGroup items={items} />
+        <MarkerClusterGroup
+          items={items}
+          colors={colors}
+          terminalClusterBehavior={terminalClusterBehavior}
+          markerPlacement={markerPlacement}
+        />
         <MapSizeInvalidator isVisible={isVisible} />
       </MapContainer>
     </div>

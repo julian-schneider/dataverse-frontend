@@ -1,21 +1,43 @@
+import type { TileLayerProps } from 'react-leaflet'
+
 /**
  * Represents a dataset with geographic information, for display on DatasetsMap.
  *
- * `pinLat`/`pinLon` determine where the marker is placed.
- * `bboxes` are bounding boxes shown on marker hover/click.
+ * `bboxes` must contain at least one bounding box.
  * The remaining fields (`name`, `authors`, `publicationDate`, `detailsPageUrl`, `persistentId`)
  * are displayed in a popup that opens on marker click.
  */
+export type DatasetBoundingBox = [[number, number], [number, number]]
+
 export interface GeoDatasetItem {
   persistentId: string
   name: string
   detailsPageUrl: string
   authors: string
   publicationDate: string
-  pinLat: number
-  pinLon: number
-  bboxes: [[number, number], [number, number]][]
+  bboxes: DatasetBoundingBox[]
 }
+
+export interface DatasetMapColors {
+  boundingBox?: string // bbox preview shown on pin hover
+  pinPrimary?: string // fill color
+  pinSecondary?: string // border and text color
+  terminalPinPrimary?: string // fill color
+  terminalPinSecondary?: string // border and text color
+  clusterSmall?: string // <10 pin clusters use this
+  clusterMedium?: string // <100 pins
+  clusterLarge?: string // >=100 pins
+  clusterPreview?: string // preview area shown on cluster hover
+}
+
+/** Overrides for the tile layer used by default. */
+export type DatasetMapTileLayer = Partial<TileLayerProps>
+
+/** Behavior of clusters that cannot be separated even at maximum zoom. */
+export type TerminalClusterBehavior = 'carousel-popup' | 'spiderfy'
+
+/** Determines whether datasets with multiple bounding boxes place one centered marker, or one per box. */
+export type DatasetMarkerPlacement = 'bounding-box-centers' | 'dataset-center'
 
 export interface CollectionMapData {
   items: GeoDatasetItem[]
@@ -26,4 +48,8 @@ export interface CollectionMapData {
   loadMore: () => void
   isVisible: boolean
   mapHeight?: string | number //string: css value. number: pixels. defaults to 480px.
+  tileLayer?: DatasetMapTileLayer
+  colors?: DatasetMapColors
+  terminalClusterBehavior?: TerminalClusterBehavior // defaults to carousel-popup
+  markerPlacement?: DatasetMarkerPlacement // defaults to bounding-box-centers
 }
